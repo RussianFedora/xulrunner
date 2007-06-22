@@ -1,0 +1,15 @@
+Index: gfx/src/thebes/nsThebesDeviceContext.cpp
+===================================================================
+RCS file: /cvsroot/mozilla/gfx/src/thebes/nsThebesDeviceContext.cpp,v
+retrieving revision 1.54
+diff -u -r1.54 nsThebesDeviceContext.cpp
+--- gfx/src/thebes/nsThebesDeviceContext.cpp	19 Mar 2007 23:16:15 -0000	1.54
++++ gfx/src/thebes/nsThebesDeviceContext.cpp	22 Mar 2007 15:10:19 -0000
+@@ -228,6 +228,7 @@
+ 
+     NS_ASSERTION(dpi != -1, "no dpi set");
+ 
++    dotsArePixels = PR_FALSE;
+     if (dotsArePixels) {
+         // First figure out the closest multiple of 96, which is the number of
+         // dev pixels per CSS pixel.  Then, divide that into AppUnitsPerCSSPixel()
