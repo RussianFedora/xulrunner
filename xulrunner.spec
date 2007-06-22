@@ -100,6 +100,9 @@ rm -rf $RPM_BUILD_ROOT
 make install DESTDIR=$RPM_BUILD_ROOT
 rm -f %{buildroot}%{_libdir}/xulrunner-%{version}%{prerelease}/sdk/*.so
 
+# own mozilla plugin dir (#135050)
+%{__mkdir_p} $RPM_BUILD_ROOT%{_libdir}/mozilla/plugins
+
 # set up our default preferences
 %{__cp} %{SOURCE12} $RPM_BUILD_ROOT/%{mozappdir}/greprefs/all-olpc.js
 %{__cp} %{SOURCE12} $RPM_BUILD_ROOT/%{mozappdir}/defaults/pref/all-olpc.js
@@ -111,6 +114,7 @@ rm -f %{buildroot}%{_libdir}/xulrunner-%{version}%{prerelease}/sdk/*.so
 %defattr(-,root,root,-)
 %doc LICENSE LEGAL
 %{_bindir}/xulrunner
+%{_libdir}/mozilla
 %{_libdir}/xulrunner-%{version}%{prerelease}/chrome
 %{_libdir}/xulrunner-%{version}%{prerelease}/components
 %{_libdir}/xulrunner-%{version}%{prerelease}/defaults
@@ -142,6 +146,7 @@ rm -f %{buildroot}%{_libdir}/xulrunner-%{version}%{prerelease}/sdk/*.so
 - Fix release scheme
 - Fix URL
 - Temporarily disable system nspr
+- Own mozilla plugin dir
 
 * Thu Jun 21 2007 John (J5) Palmieri <johnp@redhat.com> 1.9-5.a5pre.cvs20070519.1
 - add firefox-0.7.3-psfonts.patch
