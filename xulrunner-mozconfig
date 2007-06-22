@@ -1,7 +1,8 @@
 . $topsrcdir/xulrunner/config/mozconfig
 
 ac_add_options --with-system-nss
-ac_add_options --with-system-nspr
+# FIXME We need to fix nspr and reenable this.
+#ac_add_options --with-system-nspr
 ac_add_options --with-system-jpeg
 ac_add_options --with-system-zlib
 ac_add_options --with-system-png

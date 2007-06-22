@@ -3,13 +3,13 @@
 %define nss_version 3.10
 %define cairo_version 1.3.12
 %define prerelease a5pre
-%define alphatag cvs20070519
+%define alphatag 20070519cvs
 
 Summary:        XUL Runner
 Name:           xulrunner
 Version:        1.9
-Release:        5.%{prerelease}.%{alphatag}.1
-URL:            http://developer.mozilla.org/en/docs/XULRunner
+Release:        0.1.%{prerelease}.%{alphatag}
+URL:            http://dev.laptop.org/~marco/xulrunner-1.9a5pre-cvs20070519.tar.bz2
 License:        MPL/LGPL
 Group:          Applications/Internet
 Source0:        xulrunner-%{version}%{prerelease}-%{alphatag}.tar.bz2
@@ -138,6 +138,11 @@ rm -f %{buildroot}%{_libdir}/xulrunner-%{version}%{prerelease}/sdk/*.so
 %{_datadir}/aclocal/nspr.m4
 
 %changelog
+* Fri Jun 22 2007 Marco Pesenti Gritti <mpg@redhat.com> 1.9-0.1.a5pre.20070519cvs
+- Fix release scheme
+- Fix URL
+- Temporarily disable system nspr
+
 * Thu Jun 21 2007 John (J5) Palmieri <johnp@redhat.com> 1.9-5.a5pre.cvs20070519.1
 - add firefox-0.7.3-psfonts.patch
 - fix provides typo
