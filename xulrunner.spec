@@ -44,7 +44,7 @@ Requires:       nss >= %{nss_version}
 Requires:       pkgconfig
 
 Provides:       gecko-libs = %{version}
-%define mozappdir %{_libdir}/%{name}-%{version}
+%define mozappdir %{_libdir}/%{name}-%{version}%{prerelease}
 
 %description
 XULRunner is a Mozilla runtime package that can be used to bootstrap XUL+XPCOM
