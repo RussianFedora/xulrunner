@@ -12,7 +12,7 @@ Release:        0.1.%{prerelease}.%{alphatag}
 URL:            http://dev.laptop.org/~marco/xulrunner-1.9a5pre-cvs20070519.tar.bz2
 License:        MPL/LGPL
 Group:          Applications/Internet
-Source0:        xulrunner-%{version}%{prerelease}-%{alphatag}.tar.bz2
+Source0:        xulrunner-%{version}%{prerelease}-cvs20070519.tar.bz2
 Source10:       xulrunner-mozconfig
 Source12:       xulrunner-olpc-default-prefs.js
 
