@@ -135,7 +135,7 @@ rm -f %{buildroot}%{_libdir}/xulrunner-%{version}%{prerelease}/sdk/*.so
 %files devel
 %defattr(-, root, root)
 %{_bindir}/xulrunner-config
-%{_libdir}/xulrunner-%{version}%{prerelease}/sdk
+%{_libdir}/xulrunner-%{version}%{prerelease}/*.a
 %{_libdir}/pkgconfig/*
 %{_includedir}/xulrunner-%{version}%{prerelease}
 %{_datadir}/idl/xulrunner-%{version}%{prerelease}
