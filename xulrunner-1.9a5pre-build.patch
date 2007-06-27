@@ -29,7 +29,7 @@ diff -u -r3.554 rules.mk
 +
 +ifneq (,$(SDK_LIBRARY))
 +install:: $(SDK_LIBRARY)
-+	$(SYSINSTALL) $(IFLAGS1) $^ $(DESTDIR)$(mozappdir)/sdk
++	$(SYSINSTALL) $(IFLAGS1) $^ $(DESTDIR)$(mozappdir)
 +endif
 +
  endif

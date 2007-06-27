@@ -8,7 +8,7 @@
 Summary:        XUL Runner
 Name:           xulrunner
 Version:        1.9
-Release:        0.1.%{prerelease}.%{alphatag}
+Release:        0.2.%{prerelease}.%{alphatag}
 URL:            http://dev.laptop.org/~marco/xulrunner-1.9a5pre-cvs20070519.tar.bz2
 License:        MPL/LGPL
 Group:          Applications/Internet
@@ -142,6 +142,9 @@ rm -f %{buildroot}%{_libdir}/xulrunner-%{version}%{prerelease}/sdk/*.so
 %{_datadir}/aclocal/nspr.m4
 
 %changelog
+* Wed Jun 27 2007 Marco Pesenti Gritti <mpg@redhat.com> - 1.9-0.2.a5pre.20070519cvs
+- Install the static libraries in lib/xulrunner-*
+
 * Fri Jun 22 2007 Marco Pesenti Gritti <mpg@redhat.com> 1.9-0.1.a5pre.20070519cvs
 - Fix release scheme
 - Fix URL
