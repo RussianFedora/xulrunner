@@ -8,10 +8,10 @@ Summary:        XUL Runner
 Name:           xulrunner
 Version:        1.9
 Release:        0.3.%{prerelease}
-URL:            http://dev.laptop.org/pub/sugar/xulrunner/xulrunner-%{prerelease}.%{alphatag}-.tar.bz2
+URL:            http://dev.laptop.org/pub/sugar/xulrunner
 License:        MPL/LGPL
 Group:          Applications/Internet
-Source0:        xulrunner-%{version}%{prerelease}-cvs20070519.tar.bz2
+Source0:        xulrunner-%{version}%{prerelease}.tar.bz2
 Source10:       xulrunner-mozconfig
 Source12:       xulrunner-olpc-default-prefs.js
 
