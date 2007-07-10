@@ -1,11 +1,12 @@
 . $topsrcdir/xulrunner/config/mozconfig
 
 ac_add_options --with-system-nss
-# FIXME We need to fix nspr and reenable this.
+# FIXME we need to fix nspr and reenable this.
 #ac_add_options --with-system-nspr
 ac_add_options --with-system-jpeg
 ac_add_options --with-system-zlib
-ac_add_options --with-system-png
+# FIXME missing APNG support
+#ac_add_options --with-system-png
 ac_add_options --with-pthreads
 ac_add_options --disable-strip
 ac_add_options --disable-tests

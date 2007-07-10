@@ -38,6 +38,7 @@ BuildRequires:  libXt-devel
 BuildRequires:  libXrender-devel
 BuildRequires:  python-devel
 BuildRequires:  nspr-devel
+BuildRequires:  curl-devel
 
 Requires:       nss >= %{nss_version}
 Requires:       pkgconfig
@@ -142,6 +143,8 @@ rm -f %{buildroot}%{_libdir}/xulrunner-%{version}%{prerelease}/sdk/*.so
 
 %changelog
 * Tue Jul 10 2007 Marco Pesenti Gritti <mpg@redhat.com> - 1.9-0.3.a6pre
+- Require curl-devel for airbag
+- Disable system png for now, it misses APNG
 - Update to a6pre
 
 * Wed Jun 27 2007 Marco Pesenti Gritti <mpg@redhat.com> - 1.9-0.2.a5pre.20070519cvs
