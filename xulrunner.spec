@@ -2,14 +2,13 @@
 
 %define nss_version 3.10
 %define cairo_version 1.3.12
-%define prerelease a5pre
-%define alphatag 20070519cvs
+%define prerelease a6pre
 
 Summary:        XUL Runner
 Name:           xulrunner
 Version:        1.9
-Release:        0.2.%{prerelease}.%{alphatag}
-URL:            http://dev.laptop.org/~marco/xulrunner-1.9a5pre-cvs20070519.tar.bz2
+Release:        0.3.%{prerelease}
+URL:            http://dev.laptop.org/pub/sugar/xulrunner/xulrunner-%{prerelease}.%{alphatag}-.tar.bz2
 License:        MPL/LGPL
 Group:          Applications/Internet
 Source0:        xulrunner-%{version}%{prerelease}-cvs20070519.tar.bz2
@@ -142,6 +141,9 @@ rm -f %{buildroot}%{_libdir}/xulrunner-%{version}%{prerelease}/sdk/*.so
 %{_datadir}/aclocal/nspr.m4
 
 %changelog
+* Tue Jul 10 2007 Marco Pesenti Gritti <mpg@redhat.com> - 1.9-0.3.a6pre
+- Update to a6pre
+
 * Wed Jun 27 2007 Marco Pesenti Gritti <mpg@redhat.com> - 1.9-0.2.a5pre.20070519cvs
 - Install the static libraries in lib/xulrunner-*
 
