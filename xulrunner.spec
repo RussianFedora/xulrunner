@@ -145,6 +145,7 @@ rm -f %{buildroot}%{_libdir}/xulrunner-%{version}%{prerelease}/sdk/*.so
 * Tue Jul 10 2007 Marco Pesenti Gritti <mpg@redhat.com> - 1.9-0.3.a6pre
 - Require curl-devel for airbag
 - Disable system png for now, it misses APNG
+- Disable system nss for now
 - Update to a6pre
 
 * Wed Jun 27 2007 Marco Pesenti Gritti <mpg@redhat.com> - 1.9-0.2.a5pre.20070519cvs
