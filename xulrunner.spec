@@ -62,7 +62,7 @@ Provides: gecko-devel = %{version}
 XUL Runner devel is...
 
 %prep
-%setup -q -n mozilla
+%setup -q -n xulrunner-%{version}%{prerelease}
 
 %patch201 -p0 -b .dpi
 %patch202 -p0 -b .build
