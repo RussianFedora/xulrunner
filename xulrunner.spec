@@ -121,6 +121,7 @@ rm -f %{buildroot}%{_libdir}/xulrunner-%{version}%{prerelease}/sdk/*.so
 %{_libdir}/xulrunner-%{version}%{prerelease}/dictionaries
 %{_libdir}/xulrunner-%{version}%{prerelease}/greprefs
 %{_libdir}/xulrunner-%{version}%{prerelease}/icons
+%{_libdir}/xulrunner-%{version}%{prerelease}/modules
 %{_libdir}/xulrunner-%{version}%{prerelease}/plugins
 %{_libdir}/xulrunner-%{version}%{prerelease}/res
 %{_libdir}/xulrunner-%{version}%{prerelease}/*.so
@@ -130,6 +131,9 @@ rm -f %{buildroot}%{_libdir}/xulrunner-%{version}%{prerelease}/sdk/*.so
 %{_libdir}/xulrunner-%{version}%{prerelease}/updater
 %{_libdir}/xulrunner-%{version}%{prerelease}/xp*
 %{_libdir}/xulrunner-%{version}%{prerelease}/xulrunner*
+%{_libdir}/xulrunner-%{version}%{prerelease}/crashreporter
+%{_libdir}/xulrunner-%{version}%{prerelease}/*.chk
+
 %{python_sitearch}/xpcom
 
 %files devel
@@ -147,6 +151,7 @@ rm -f %{buildroot}%{_libdir}/xulrunner-%{version}%{prerelease}/sdk/*.so
 - Disable system png for now, it misses APNG
 - Disable system nss for now
 - Update to a6
+- Add some missing files
 
 * Wed Jun 27 2007 Marco Pesenti Gritti <mpg@redhat.com> - 1.9-0.2.a5pre.20070519cvs
 - Install the static libraries in lib/xulrunner-*
