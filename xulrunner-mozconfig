@@ -1,7 +1,7 @@
 . $topsrcdir/xulrunner/config/mozconfig
 
 # FIXME failures in nsNSSComponent.cpp
-ac_add_options --with-system-nss
+#ac_add_options --with-system-nss
 # FIXME we need to fix nspr and reenable this.
 #ac_add_options --with-system-nspr
 ac_add_options --with-system-jpeg
