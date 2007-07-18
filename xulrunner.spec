@@ -63,7 +63,7 @@ XUL Runner devel is...
 %prep
 %setup -q -n xulrunner-%{version}%{prerelease}
 
-%patch2 -p0 -b .no-native-theme
+%patch1 -p0 -b .no-native-theme
 %patch2 -p0 -b .dpi
 %patch3 -p0 -b .build
 %patch4 -p1 -b .psfonts
