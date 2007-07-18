@@ -15,12 +15,10 @@ Source0:        xulrunner-%{version}%{prerelease}.tar.bz2
 Source10:       xulrunner-mozconfig
 Source12:       xulrunner-olpc-default-prefs.js
 
-# build patches
-
-# patches from upstream (Patch100+)
-Patch201:       xulrunner-1.9a3pre-dpi.patch
-Patch202:       xulrunner-1.9a5pre-build.patch
-Patch203:       firefox-0.7.3-psfonts.patch
+Patch1:         xulrunner-1.9a6-no-native-theme.patch
+Patch2:         xulrunner-1.9a3pre-dpi.patch
+Patch3:         xulrunner-1.9a5pre-build.patch
+Patch4:         firefox-0.7.3-psfonts.patch
 
 # ---------------------------------------------------
 
@@ -65,9 +63,10 @@ XUL Runner devel is...
 %prep
 %setup -q -n xulrunner-%{version}%{prerelease}
 
-%patch201 -p0 -b .dpi
-%patch202 -p0 -b .build
-%patch203 -p1 -b .psfonts
+%patch2 -p0 -b .no-native-theme
+%patch2 -p0 -b .dpi
+%patch3 -p0 -b .build
+%patch4 -p1 -b .psfonts
 
 %{__rm} -f .mozconfig
 %{__cp} %{SOURCE10} .mozconfig
@@ -146,6 +145,9 @@ rm -f %{buildroot}%{_libdir}/xulrunner-%{version}%{prerelease}/sdk/*.so
 %{_datadir}/aclocal/nspr.m4
 
 %changelog
+* Wed Jul 18 2007 Marco Pesenti Gritti <mpg@redhat.com> - 1.9-0.3.a6
+- Add patch to disable native theme
+
 * Tue Jul 10 2007 Marco Pesenti Gritti <mpg@redhat.com> - 1.9-0.3.a6
 - Require curl-devel for airbag
 - Disable system png for now, it misses APNG
