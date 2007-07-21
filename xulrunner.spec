@@ -7,7 +7,7 @@
 Summary:        XUL Runner
 Name:           xulrunner
 Version:        1.9
-Release:        0.4.%{prerelease}
+Release:        0.5.%{prerelease}
 URL:            http://dev.laptop.org/pub/sugar/xulrunner
 License:        MPL/LGPL
 Group:          Applications/Internet
@@ -145,6 +145,9 @@ rm -f %{buildroot}%{_libdir}/xulrunner-%{version}%{prerelease}/sdk/*.so
 %{_datadir}/aclocal/nspr.m4
 
 %changelog
+* Sat Jul 21 2007 Marco Pesenti Gritti <mpg@redhat.com> - 1.9-0.5.a6
+- Better no theme patch to preserve native scrollbars.
+
 * Wed Jul 18 2007 Marco Pesenti Gritti <mpg@redhat.com> - 1.9-0.4.a6
 - Add patch to disable native theme
 
