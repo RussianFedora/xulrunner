@@ -2,23 +2,23 @@
 
 %define nss_version 3.10
 %define cairo_version 1.3.12
-%define prerelease a6
+%define alpha 20070820cvs 
 
 Summary:        XUL Runner
 Name:           xulrunner
 Version:        1.9
-Release:        0.5.%{prerelease}
+Release:        0.6.%{alpha}%{?dist}
 URL:            http://dev.laptop.org/pub/sugar/xulrunner
 License:        MPL/LGPL
 Group:          Applications/Internet
-Source0:        xulrunner-%{version}%{prerelease}.tar.bz2
+Source0:        xulrunner-%{version}.%{alpha}.tar.bz2
 Source10:       xulrunner-mozconfig
 Source12:       xulrunner-olpc-default-prefs.js
 
 Patch1:         xulrunner-1.9a6-no-native-theme.patch
 Patch2:         xulrunner-1.9a3pre-dpi.patch
 Patch3:         xulrunner-1.9a5pre-build.patch
-Patch4:         firefox-0.7.3-psfonts.patch
+#Patch4:         firefox-0.7.3-psfonts.patch
 
 # ---------------------------------------------------
 
@@ -61,12 +61,12 @@ Provides: gecko-devel = %{version}
 XUL Runner devel is...
 
 %prep
-%setup -q -n xulrunner-%{version}%{prerelease}
+%setup -q -n xulrunner-%{version}.%{alpha}
 
 %patch1 -p0 -b .no-native-theme
 %patch2 -p0 -b .dpi
 %patch3 -p0 -b .build
-%patch4 -p1 -b .psfonts
+#%patch4 -p1 -b .psfonts
 
 %{__rm} -f .mozconfig
 %{__cp} %{SOURCE10} .mozconfig
@@ -145,6 +145,10 @@ rm -f %{buildroot}%{_libdir}/xulrunner-%{version}%{prerelease}/sdk/*.so
 %{_datadir}/aclocal/nspr.m4
 
 %changelog
+* Mon Aug 20 2007 John (J5) Palmieri <johnp@redhat.com> - 1.9-0.6.20070820cvs
+- new HEAD snapshot build
+- remove ps-font patch as it no longer applies
+
 * Sat Jul 21 2007 Marco Pesenti Gritti <mpg@redhat.com> - 1.9-0.5.a6
 - Better no theme patch to preserve native scrollbars.
 
