@@ -7,7 +7,7 @@
 Summary:        XUL Runner
 Name:           xulrunner
 Version:        1.9
-Release:        0.6.%{alpha}%{?dist}
+Release:        0.7.%{alpha}%{?dist}
 URL:            http://dev.laptop.org/pub/sugar/xulrunner
 License:        MPL/LGPL
 Group:          Applications/Internet
@@ -18,7 +18,6 @@ Source12:       xulrunner-olpc-default-prefs.js
 Patch1:         xulrunner-1.9a6-no-native-theme.patch
 Patch2:         xulrunner-1.9a3pre-dpi.patch
 Patch3:         xulrunner-1.9a5pre-build.patch
-#Patch4:         firefox-0.7.3-psfonts.patch
 
 # ---------------------------------------------------
 
@@ -66,7 +65,6 @@ XUL Runner devel is...
 %patch1 -p0 -b .no-native-theme
 %patch2 -p0 -b .dpi
 %patch3 -p0 -b .build
-#%patch4 -p1 -b .psfonts
 
 %{__rm} -f .mozconfig
 %{__cp} %{SOURCE10} .mozconfig
@@ -145,6 +143,9 @@ rm -f %{buildroot}%{_libdir}/xulrunner-%{version}%{prerelease}/sdk/*.so
 %{_datadir}/aclocal/nspr.m4
 
 %changelog
+* Wed Aug 22 2007 Marco Pesenti Gritti <mpg@redhat.com> - 1.9-0.7.20070820cvs
+- Update the pyxpcom build patch
+
 * Mon Aug 20 2007 John (J5) Palmieri <johnp@redhat.com> - 1.9-0.6.20070820cvs
 - new HEAD snapshot build
 - remove ps-font patch as it no longer applies

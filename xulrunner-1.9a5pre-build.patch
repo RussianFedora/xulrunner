@@ -63,3 +63,19 @@ diff -u -r3.554 rules.mk
  
  clobber::
  	rm -rf $(DIST)/bin/python/xpcom
+Index: extensions/python/dom/test/pyxultest/application.ini
+===================================================================
+RCS file: /cvsroot/mozilla/extensions/python/dom/test/pyxultest/application.ini,v
+retrieving revision 1.2
+diff -u -r1.2 application.ini
+--- extensions/python/dom/test/pyxultest/application.ini	29 Apr 2006 01:56:36 -0000	1.2
++++ extensions/python/dom/test/pyxultest/application.ini	21 Aug 2007 22:36:44 -0000
+@@ -15,7 +15,7 @@
+ 
+ ; This field specifies your application's build ID (timestamp).  This field is
+ ; required.
+-BuildID=@BUILD_ID@
++BuildID=20070625
+ 
+ ; This field specifies a compact copyright notice for your application.  This
+ ; field is optional.
