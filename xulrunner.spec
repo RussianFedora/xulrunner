@@ -108,10 +108,13 @@ make install DESTDIR=$RPM_BUILD_ROOT
 %files
 %defattr(-,root,root,-)
 %doc LICENSE LEGAL
+%{_bindir}/xulrunner
+%{_sysconfdir}/gre.d/*.system.conf
 %{_libdir}/xulrunner-%{version}%{prerelease}
 
 %files devel
 %defattr(-, root, root)
+%{_libdir}/pkgconfig/*.pc
 %{_datadir}/idl/xulrunner-%{version}%{prerelease}
 %{_libdir}/xulrunner-devel-%{version}%{prerelease}
 %{_includedir}/xulrunner-%{version}%{prerelease}
