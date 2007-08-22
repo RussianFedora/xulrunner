@@ -1,5 +1,3 @@
-%{!?python_sitearch: %define python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib(1)")}
-
 %define nss_version 3.10
 %define cairo_version 1.3.12
 %define alpha 20070820cvs 
@@ -111,8 +109,6 @@ make install DESTDIR=$RPM_BUILD_ROOT
 %defattr(-,root,root,-)
 %doc LICENSE LEGAL
 %{_libdir}/xulrunner-%{version}%{prerelease}
-
-%{python_sitearch}/xpcom
 
 %files devel
 %defattr(-, root, root)
