@@ -6,7 +6,7 @@
 Summary:        XUL Runner
 Name:           xulrunner
 Version:        1.9
-Release:        0.7.%{alpha}%{?dist}
+Release:        0.8.%{alpha}%{?dist}
 URL:            http://dev.laptop.org/pub/sugar/xulrunner
 License:        MPL/LGPL
 Group:          Applications/Internet
@@ -110,6 +110,7 @@ make install DESTDIR=$RPM_BUILD_ROOT
 %doc LICENSE LEGAL
 %{_bindir}/xulrunner
 %{_sysconfdir}/gre.d/*.system.conf
+%{_libdir}/mozilla
 %{_libdir}/xulrunner-%{version}%{prerelease}
 
 %files devel
@@ -120,6 +121,9 @@ make install DESTDIR=$RPM_BUILD_ROOT
 %{_includedir}/xulrunner-%{version}%{prerelease}
 
 %changelog
+* Thu Aug 23 2007 Marco Pesenti Gritti <mpg@redhat.com> - 1.9-0.8.20070820cvs
+- Own mozilla plugin dir
+
 * Wed Aug 22 2007 Marco Pesenti Gritti <mpg@redhat.com> - 1.9-0.7.20070820cvs
 - Update the pyxpcom build patch
 - Adapt to the new build installation
