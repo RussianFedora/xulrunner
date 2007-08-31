@@ -206,7 +206,7 @@ MOZ_APP_DIR=%{_libdir}/${INTERNAL_APP_NAME}
 
 %{__mkdir_p} $RPM_BUILD_ROOT{%{_libdir},%{_bindir},%{_datadir}/applications}
 
-%{__install} -p -D %{SOURCE22} $RPM_BUILD_ROOT%{_datadir}/pixmaps/%{name}.png
+#%{__install} -p -D %{SOURCE22} $RPM_BUILD_ROOT%{_datadir}/pixmaps/%{name}.png
 
 #desktop-file-install --vendor mozilla \
 #  --dir $RPM_BUILD_ROOT%{_datadir}/applications \
