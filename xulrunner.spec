@@ -9,6 +9,8 @@
 
 %define official_branding 0
 
+ExcludeArch: ppc64
+
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
 Version:        1.9
