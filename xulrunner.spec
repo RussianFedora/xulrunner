@@ -23,40 +23,27 @@ Group:          Applications/Internet
 %endif
 Source0:        %{tarball}
 Source10:       %{name}-mozconfig
-Source11:       %{name}-mozconfig-branded
 Source12:       %{name}-redhat-default-prefs.js
 #Source20:       %{name}.desktop
 #Source21:       %{name}.sh.in
-Source22:       firefox.png
+#Source22:       firefox.png
 Source23:       %{name}.1
-Source50:       firefox-xremote-client.sh.in
+#Source50:       firefox-xremote-client.sh.in
 Source100:      find-external-requires
 
 # build patches
 Patch1:         firefox-2.0-link-layout.patch
-Patch3:         firefox-1.1-nss-system-nspr.patch
-Patch4:         firefox-1.5-with-system-nss.patch
-Patch5:         firefox-2.0-visibility.patch
 
 # customization patches
-Patch20:        firefox-redhat-homepage.patch
 Patch21:        firefox-0.7.3-psfonts.patch
-Patch22:        firefox-1.1-default-applications.patch
 
 # local bugfixes
-Patch40:        firefox-1.5-bullet-bill.patch
 Patch41:        firefox-2.0.0.4-undo-uriloader.patch
 Patch42:        firefox-1.1-uriloader.patch
 
 # font system fixes
-Patch81:        firefox-1.5-nopangoxft.patch
-Patch82:        firefox-1.5-pango-mathml.patch
-Patch83:        firefox-1.5-pango-cursor-position.patch
-Patch84:        firefox-2.0-pango-printing.patch
 
 # Other
-Patch100:       firefox-1.5-thread-cleanup.patch
-Patch102:       firefox-1.5-theme-change.patch
 Patch104:       firefox-1.5-ppc64.patch
 
 %if %{official_branding}
