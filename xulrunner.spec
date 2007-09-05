@@ -126,7 +126,7 @@ Gecko development files.
 #%patch5  -p1 -b .visibility
 
 #%patch20 -p0
-%patch21 -p1 -b .psfonts
+#%patch21 -p1 -b .psfonts
 #%patch22 -p0 -b .default-applications
 #%patch40 -p1 -b .bullet-bill
 %patch41 -p1 -b .undo-uriloader
