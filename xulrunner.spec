@@ -35,6 +35,7 @@ Source100:      find-external-requires
 
 # build patches
 Patch1:         firefox-2.0-link-layout.patch
+Patch2:         camellia256.patch
 
 # customization patches
 Patch21:        firefox-0.7.3-psfonts.patch
@@ -121,6 +122,7 @@ Gecko development files.
 %prep
 %setup -q -n mozilla
 %patch1   -p1 -b .link-layout
+%patch2   -Rp1 -b .camellia256
 #%patch3  -p1
 #%patch4  -p1
 #%patch5  -p1 -b .visibility
@@ -370,3 +372,4 @@ fi
 %changelog
 * Wed Sep  5 2007 Christopher Aillon <caillon@redhat.com> 1.9-0.alpha7.1
 - Initial cut at XULRunner 1.9 Alpha 7
+- Temporarily revert camellia 256 support since our nss doesn't support it yet
