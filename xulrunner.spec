@@ -122,7 +122,7 @@ Gecko development files.
 %prep
 %setup -q -n mozilla
 %patch1   -p1 -b .link-layout
-%patch2   -Rp1 -b .camellia256
+%patch2   -R -p1 -b .camellia256
 #%patch3  -p1
 #%patch4  -p1
 #%patch5  -p1 -b .visibility
