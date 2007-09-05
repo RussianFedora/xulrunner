@@ -9,7 +9,7 @@
 
 %define official_branding 0
 
-ExcludeArch: ppc64
+ExcludeArch: ppc64 ppc
 
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
