@@ -129,8 +129,8 @@ Gecko development files.
 #%patch21 -p1 -b .psfonts
 #%patch22 -p0 -b .default-applications
 #%patch40 -p1 -b .bullet-bill
-%patch41 -p1 -b .undo-uriloader
-%patch42 -p0 -b .uriloader
+#%patch41 -p1 -b .undo-uriloader
+#%patch42 -p0 -b .uriloader
 #%patch81 -p1 -b .nopangoxft
 #%patch82 -p1 -b .pango-mathml
 #%patch83 -p1 -b .pango-cursor-position
