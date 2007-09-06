@@ -225,7 +225,7 @@ MOZ_APP_DIR=%{_libdir}/${INTERNAL_APP_NAME}
 
 # set up our default preferences
 %{__cat} %{SOURCE12} | %{__sed} -e 's,RPM_VERREL,%{version}-%{release},g' > rh-default-prefs
-%{__cp} rh-default-prefs $RPM_BUILD_ROOT/${MOZ_APP_DIR}/defaults/pref/all-redhat.js
+%{__install} -p -D -m 644 rh-default-prefs $RPM_BUILD_ROOT/${MOZ_APP_DIR}/defaults/pref/all-redhat.js
 %{__rm} rh-default-prefs
 
 # set up our default bookmarks
