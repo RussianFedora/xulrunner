@@ -1,22 +1,22 @@
 %define nss_version 3.10
 %define cairo_version 1.3.12
-%define alpha 20070820cvs 
-%define prerelease a8pre
+%define prerelease a6pre
 
 Summary:        XUL Runner
 Name:           xulrunner
 Version:        1.9
-Release:        0.8.%{alpha}%{?dist}
+Release:        0.9.%{?dist}
 URL:            http://dev.laptop.org/pub/sugar/xulrunner
 License:        MPL/LGPL
 Group:          Applications/Internet
-Source0:        xulrunner-%{version}.%{alpha}.tar.bz2
+Source0:        xulrunner-%{version}.tar.bz2
 Source10:       xulrunner-mozconfig
 Source12:       xulrunner-olpc-default-prefs.js
 
 Patch1:         xulrunner-1.9a6-no-native-theme.patch
 Patch2:         xulrunner-1.9a3pre-dpi.patch
 Patch3:         xulrunner-1.9a5pre-build.patch
+Patch4:         xulrunner-1.9a6-xds.patch
 
 # ---------------------------------------------------
 
@@ -59,11 +59,12 @@ Provides: gecko-devel = %{version}
 XUL Runner devel is...
 
 %prep
-%setup -q -n xulrunner-%{version}.%{alpha}
+%setup -q -n xulrunner-%{version}
 
 %patch1 -p0 -b .no-native-theme
 %patch2 -p0 -b .dpi
 %patch3 -p0 -b .build
+%patch4 -p0 -b .xds
 
 %{__rm} -f .mozconfig
 %{__cp} %{SOURCE10} .mozconfig
@@ -121,6 +122,9 @@ make install DESTDIR=$RPM_BUILD_ROOT
 %{_includedir}/xulrunner-%{version}%{prerelease}
 
 %changelog
+* Mon Sep 17 2007 Marco Pesenti Gritti <mpg@redhat.com> - 1.9-0.9.
+- Downgrade the source to pre6, add a patch for XdndDirectSave support
+
 * Thu Aug 23 2007 Marco Pesenti Gritti <mpg@redhat.com> - 1.9-0.8.20070820cvs
 - Own mozilla plugin dir
 
