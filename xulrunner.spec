@@ -1,11 +1,11 @@
 %define nss_version 3.10
 %define cairo_version 1.3.12
-%define prerelease a6pre
+%define prerelease a6
 
 Summary:        XUL Runner
 Name:           xulrunner
 Version:        1.9
-Release:        0.9.%{?dist}
+Release:        0.9.%{prerelease}%{?dist}
 URL:            http://dev.laptop.org/pub/sugar/xulrunner
 License:        MPL/LGPL
 Group:          Applications/Internet
@@ -59,7 +59,7 @@ Provides: gecko-devel = %{version}
 XUL Runner devel is...
 
 %prep
-%setup -q -n xulrunner-%{version}
+%setup -q -n xulrunner-%{version}%{prerelease}
 
 %patch1 -p0 -b .no-native-theme
 %patch2 -p0 -b .dpi
