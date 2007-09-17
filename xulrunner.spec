@@ -9,7 +9,7 @@ Release:        0.9.%{prerelease}%{?dist}
 URL:            http://dev.laptop.org/pub/sugar/xulrunner
 License:        MPL/LGPL
 Group:          Applications/Internet
-Source0:        xulrunner-%{version}.tar.bz2
+Source0:        xulrunner-%{version}%{prerelease}.tar.bz2
 Source10:       xulrunner-mozconfig
 Source12:       xulrunner-olpc-default-prefs.js
 
