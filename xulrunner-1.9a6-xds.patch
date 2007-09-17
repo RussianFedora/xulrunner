@@ -1,0 +1,310 @@
+Index: content/base/src/nsContentAreaDragDrop.cpp
+===================================================================
+RCS file: /cvsroot/mozilla/content/base/src/nsContentAreaDragDrop.cpp,v
+retrieving revision 1.69
+diff -u -r1.69 nsContentAreaDragDrop.cpp
+--- content/base/src/nsContentAreaDragDrop.cpp	8 Jul 2007 07:08:07 -0000	1.69
++++ content/base/src/nsContentAreaDragDrop.cpp	16 Sep 2007 20:11:36 -0000
+@@ -855,9 +855,6 @@
+     return NS_ERROR_NO_INTERFACE;
+   }
+ 
+-  rv = inDestFile->CreateUnique(nsIFile::NORMAL_FILE_TYPE, 0600);
+-  NS_ENSURE_SUCCESS(rv, rv);
+-
+   // we rely on the fact that the WPB is refcounted by the channel etc,
+   // so we don't keep a ref to it. It will die when finished.
+   nsCOMPtr<nsIWebBrowserPersist> persist =
+@@ -921,21 +918,32 @@
+     if (targetFilename.IsEmpty())
+       return NS_ERROR_FAILURE;
+ 
+-    // get the target directory from the kFilePromiseDirectoryMime
+-    // flavor
+-    nsCOMPtr<nsISupports> dirPrimitive;
++    nsCOMPtr<nsIFile> file;
++
++    nsCOMPtr<nsISupports> fullpathPrimitive;
+     dataSize = 0;
+-    aTransferable->GetTransferData(kFilePromiseDirectoryMime,
+-                                   getter_AddRefs(dirPrimitive), &dataSize);
+-    nsCOMPtr<nsILocalFile> destDirectory = do_QueryInterface(dirPrimitive);
+-    if (!destDirectory)
+-      return NS_ERROR_FAILURE;
++    aTransferable->GetTransferData(kFilePromiseFullpathMime,
++                                   getter_AddRefs(fullpathPrimitive), &dataSize);
++    file = do_QueryInterface(fullpathPrimitive);
++    if (!file) {
++      // get the target directory from the kFilePromiseDirectoryMime
++      // flavor
++      nsCOMPtr<nsISupports> dirPrimitive;
++      dataSize = 0;
++      aTransferable->GetTransferData(kFilePromiseDirectoryMime,
++                                     getter_AddRefs(dirPrimitive), &dataSize);
++      nsCOMPtr<nsILocalFile> destDirectory = do_QueryInterface(dirPrimitive);
++      if (!destDirectory)
++        return NS_ERROR_FAILURE;
+ 
+-    nsCOMPtr<nsIFile> file;
+-    rv = destDirectory->Clone(getter_AddRefs(file));
+-    NS_ENSURE_SUCCESS(rv, rv);
++      rv = destDirectory->Clone(getter_AddRefs(file));
++      NS_ENSURE_SUCCESS(rv, rv);
+ 
+-    file->Append(targetFilename);
++      file->Append(targetFilename);
++
++      rv = file->CreateUnique(nsIFile::NORMAL_FILE_TYPE, 0600);
++      NS_ENSURE_SUCCESS(rv, rv);
++    }
+ 
+     // now save the file
+     rv = SaveURIToFile(sourceURLString, file);
+Index: widget/public/nsITransferable.idl
+===================================================================
+RCS file: /cvsroot/mozilla/widget/public/nsITransferable.idl,v
+retrieving revision 1.12
+diff -u -r1.12 nsITransferable.idl
+--- widget/public/nsITransferable.idl	12 Jun 2006 17:30:22 -0000	1.12
++++ widget/public/nsITransferable.idl	16 Sep 2007 20:12:24 -0000
+@@ -70,6 +70,7 @@
+ #define kFilePromiseMime            "application/x-moz-file-promise"
+ // a synthetic flavor, put into the transferable once we know the destination directory of a file drag
+ #define kFilePromiseDirectoryMime   "application/x-moz-file-promise-dir"
++#define kFilePromiseFullpathMime    "application/x-moz-file-promise-fullpath"
+ 
+ %}
+ 
+Index: widget/src/gtk2/nsDragService.cpp
+===================================================================
+RCS file: /cvsroot/mozilla/widget/src/gtk2/nsDragService.cpp,v
+retrieving revision 1.19
+diff -u -r1.19 nsDragService.cpp
+--- widget/src/gtk2/nsDragService.cpp	7 Aug 2007 15:18:38 -0000	1.19
++++ widget/src/gtk2/nsDragService.cpp	16 Sep 2007 20:12:26 -0000
+@@ -60,11 +60,16 @@
+ #include "gfxASurface.h"
+ #include "nsImageToPixbuf.h"
+ 
++#define XDS_ATOM   gdk_atom_intern("XdndDirectSave0", FALSE)
++#define TEXT_ATOM  gdk_atom_intern("text/plain", FALSE)
++#define MAX_XDS_ATOM_VAL_LEN 4096
++
+ static PRLogModuleInfo *sDragLm = NULL;
+ 
+ static const char gMimeListType[] = "application/x-moz-internal-item-list";
+ static const char gMozUrlType[] = "_NETSCAPE_URL";
+ static const char gTextUriListType[] = "text/uri-list";
++static const char gDirectSaveType[] = "XdndDirectSave0";
+ 
+ static void
+ invisibleSourceDragEnd(GtkWidget        *aWidget,
+@@ -79,6 +84,11 @@
+                            guint32           aTime,
+                            gpointer          aData);
+ 
++void
++invisibleSourceDragBegin(GtkWidget        *aWidget,
++                         GdkDragContext   *aContext,
++                         gpointer          aData);
++
+ nsDragService::nsDragService()
+ {
+     // We have to destroy the hidden widget before the event loop stops
+@@ -96,6 +106,8 @@
+     // from our drag source
+     gtk_signal_connect(GTK_OBJECT(mHiddenWidget), "drag_data_get",
+                        GTK_SIGNAL_FUNC(invisibleSourceDragDataGet), this);
++    gtk_signal_connect(GTK_OBJECT(mHiddenWidget), "drag_begin",
++                       GTK_SIGNAL_FUNC(invisibleSourceDragBegin), this);
+     gtk_signal_connect(GTK_OBJECT(mHiddenWidget), "drag_end",
+                        GTK_SIGNAL_FUNC(invisibleSourceDragEnd), this);
+ 
+@@ -989,6 +1001,21 @@
+                                    id %ld\n", urlTarget->target, urlAtom));
+                             targetArray.AppendElement(urlTarget);
+                         }
++                        // XdndDirectSave
++                        if (strcmp(flavorStr, kFilePromiseMime) == 0) {
++                            // get the atom for the unicode string
++                            GdkAtom directsaveAtom =
++                              gdk_atom_intern(gDirectSaveType, FALSE);
++                            GtkTargetEntry *directsaveTarget =
++                             (GtkTargetEntry *)g_malloc(sizeof(GtkTargetEntry));
++                            directsaveTarget->target = g_strdup(gDirectSaveType);
++                            directsaveTarget->flags = 0;
++                            directsaveTarget->info = GPOINTER_TO_UINT(directsaveAtom);
++                            PR_LOG(sDragLm, PR_LOG_DEBUG,
++                                   ("automatically adding target %s with \
++                                   id %ld\n", directsaveTarget->target, directsaveAtom));
++                            targetArray.AppendElement(directsaveTarget);
++                        }
+                     }
+                 } // foreach flavor in item
+             } // if valid flavor list
+@@ -1024,6 +1051,52 @@
+ }
+ 
+ void
++nsDragService::SourceBeginDrag(GdkDragContext *context)
++{
++    nsCOMPtr<nsISupports> genericItem;
++    mSourceDataItems->GetElementAt(0, getter_AddRefs(genericItem));
++    nsCOMPtr<nsITransferable> transferable(do_QueryInterface(genericItem));
++
++    nsresult rv;
++    nsCOMPtr<nsISupportsArray> flavorList;
++    rv = transferable->FlavorsTransferableCanImport(getter_AddRefs(flavorList));
++    NS_ENSURE_SUCCESS(rv,);
++
++    PRUint32 cnt;
++    flavorList->Count(&cnt);
++
++    for (PRUint32 i = 0; i < cnt; ++i) {
++        nsCOMPtr<nsISupports> genericWrapper;
++        flavorList->GetElementAt(i, getter_AddRefs(genericWrapper));
++        nsCOMPtr<nsISupportsCString> currentFlavor(do_QueryInterface(genericWrapper, &rv));
++        NS_ENSURE_SUCCESS(rv,);
++
++        nsXPIDLCString flavorStr;
++        currentFlavor->ToString(getter_Copies(flavorStr));
++        if (strcmp(flavorStr, kFilePromiseDestFilename) == 0) {
++            PRUint32 dataSize = 0;
++            nsCOMPtr<nsISupports> tmp;
++            transferable->GetTransferData(kFilePromiseDestFilename,
++                                          getter_AddRefs(tmp), &dataSize);
++            nsCOMPtr<nsISupportsString> fileName = do_QueryInterface(tmp, &rv);
++            NS_ENSURE_SUCCESS(rv,);
++
++            nsAutoString filenameStr;
++            fileName->GetData(filenameStr);
++
++            nsCString filenameCStr;
++            CopyUTF16toUTF8(filenameStr, filenameCStr);
++
++            gdk_property_change(context->source_window,
++                                XDS_ATOM, TEXT_ATOM,
++                                8, GDK_PROP_MODE_REPLACE,
++                                (guchar *)filenameCStr.get(),
++                                filenameCStr.Length());
++        }
++    }
++}
++
++void
+ nsDragService::SourceEndDrag(void)
+ {
+     // this just releases the list of data items that we provide
+@@ -1106,6 +1179,8 @@
+                              guint32           aTime)
+ {
+     PR_LOG(sDragLm, PR_LOG_DEBUG, ("nsDragService::SourceDataGet"));
++    nsresult rv;
++
+     GdkAtom atom = (GdkAtom)aInfo;
+     nsXPIDLCString mimeFlavor;
+     gchar *typeName = 0;
+@@ -1134,6 +1209,7 @@
+         // we can convert it.
+         PRBool needToDoConversionToPlainText = PR_FALSE;
+         const char* actualFlavor = mimeFlavor;
++printf("%s\n", actualFlavor);
+         if (strcmp(mimeFlavor,kTextMime) == 0) {
+             actualFlavor = kUnicodeMime;
+             needToDoConversionToPlainText = PR_TRUE;
+@@ -1150,16 +1226,60 @@
+             actualFlavor = gTextUriListType;
+             needToDoConversionToPlainText = PR_TRUE;
+         }
++        else if (strcmp(mimeFlavor, gTextUriListType) == 0) {
++            actualFlavor = gTextUriListType;
++            needToDoConversionToPlainText = PR_TRUE;
++        }
++        else if (strcmp(mimeFlavor, gDirectSaveType) == 0) {
++            guchar *propText;
++            gint propLen;
++
++            if (!gdk_property_get(aContext->source_window,
++                                 XDS_ATOM, TEXT_ATOM,
++                                 0, MAX_XDS_ATOM_VAL_LEN,
++                                 FALSE, NULL, NULL, &propLen,
++                                 (unsigned char **)&propText))
++                return;
++
++            /* Zero-terminate the string */
++            propText = (guchar *)g_realloc(propText, propLen + 1);
++            propText[propLen] = '\0';
++
++            char *fullpath;
++            fullpath = g_filename_from_uri((gchar *)propText, NULL, NULL);
++            if (!fullpath)
++                return;
++
++            nsCOMPtr<nsILocalFile> file;
++            rv = NS_NewNativeLocalFile(nsDependentCString(fullpath),
++                                       PR_FALSE, getter_AddRefs(file));
++            NS_ENSURE_SUCCESS(rv,);
++
++            item->SetTransferData(kFilePromiseFullpathMime, file,
++                                  sizeof(nsILocalFile*));
++
++            actualFlavor = kFilePromiseMime;
++
++            g_free(fullpath);
++        }
+         else
+             actualFlavor = mimeFlavor;
+ 
+         PRUint32 tmpDataLen = 0;
+         void    *tmpData = NULL;
+-        nsresult rv;
+         nsCOMPtr<nsISupports> data;
+         rv = item->GetTransferData(actualFlavor,
+                                    getter_AddRefs(data),
+                                    &tmpDataLen);
++
++        if (strcmp(actualFlavor, kFilePromiseMime) == 0) {
++            const char *result = NS_SUCCEEDED(rv) ? "S" : "F";
++            gtk_selection_data_set(aSelectionData,
++                                   aSelectionData->target,
++                                   8, (guchar *)result, 1);
++            return;
++        }
++
+         if (NS_SUCCEEDED(rv)) {
+             nsPrimitiveHelpers::CreateDataFromPrimitive (actualFlavor, data,
+                                                          &tmpData, tmpDataLen);
+@@ -1224,6 +1344,18 @@
+ 
+ /* static */
+ void
++invisibleSourceDragBegin(GtkWidget        *aWidget,
++                         GdkDragContext   *aContext,
++                         gpointer          aData)
++{
++    PR_LOG(sDragLm, PR_LOG_DEBUG, ("invisibleDragBegin"));
++    nsDragService *dragService = (nsDragService *)aData;
++    // The drag has ended.  Release the hostages!
++    dragService->SourceBeginDrag(aContext);
++}
++
++/* static */
++void
+ invisibleSourceDragEnd(GtkWidget        *aWidget,
+                        GdkDragContext   *aContext,
+                        gpointer          aData)
+Index: widget/src/gtk2/nsDragService.h
+===================================================================
+RCS file: /cvsroot/mozilla/widget/src/gtk2/nsDragService.h,v
+retrieving revision 1.4
+diff -u -r1.4 nsDragService.h
+--- widget/src/gtk2/nsDragService.h	12 Apr 2007 04:37:40 -0000	1.4
++++ widget/src/gtk2/nsDragService.h	16 Sep 2007 20:12:26 -0000
+@@ -101,6 +101,7 @@
+     // This is called when the drag started with the invisible widget
+     // finishes.  It's called from within the drag service code but from
+     // a callback - it needs to be public.
++    void           SourceBeginDrag(GdkDragContext *context);
+     void           SourceEndDrag(void);
+     void           SourceDataGet(GtkWidget        *widget,
+                                  GdkDragContext   *context,
