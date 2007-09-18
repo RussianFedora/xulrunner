@@ -313,6 +313,7 @@ fi
 %{_libdir}/%{name}-*/xulrunner-bin
 %{_libdir}/%{name}-*/xulrunner-stub
 %{_libdir}/%{name}-*/platform.ini
+%{_libdir}/%{name}-*/crashreporter
 
 # XXX See if these are needed still
 %{_libdir}/%{name}-*/updater*
