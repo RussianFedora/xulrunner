@@ -1,5 +1,3 @@
-%define indexhtml file:///usr/share/doc/HTML/index.html
-%define default_bookmarks_file %{_datadir}/bookmarks/default-bookmarks.html
 %define desktop_file_utils_version 0.9
 %define nspr_version 4.6
 %define nss_version 3.11.1
@@ -14,7 +12,7 @@ ExcludeArch: ppc64 ppc
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
 Version:        1.9
-Release:        0.alpha7.1%{?dist}
+Release:        0.alpha7.2%{?dist}
 URL:            http://www.mozilla.org/projects/xulrunner/
 License:        MPL/LGPL
 Group:          Applications/Internet
@@ -28,14 +26,14 @@ Source10:       %{name}-mozconfig
 Source12:       %{name}-redhat-default-prefs.js
 #Source20:       %{name}.desktop
 #Source21:       %{name}.sh.in
-#Source22:       firefox.png
 Source23:       %{name}.1
-#Source50:       firefox-xremote-client.sh.in
 Source100:      find-external-requires
+Source101:      add-gecko-provides.in
 
 # build patches
 Patch1:         firefox-2.0-link-layout.patch
 Patch2:         camellia256.patch
+Patch3:         xulrunner-compile.patch
 
 # customization patches
 Patch21:        firefox-0.7.3-psfonts.patch
@@ -123,23 +121,8 @@ Gecko development files.
 %setup -q -n mozilla
 %patch1   -p1 -b .link-layout
 %patch2   -R -p1 -b .camellia256
-#%patch3  -p1
-#%patch4  -p1
-#%patch5  -p1 -b .visibility
+%patch3   -p1
 
-#%patch20 -p0
-#%patch21 -p1 -b .psfonts
-#%patch22 -p0 -b .default-applications
-#%patch40 -p1 -b .bullet-bill
-#%patch41 -p1 -b .undo-uriloader
-#%patch42 -p0 -b .uriloader
-#%patch81 -p1 -b .nopangoxft
-#%patch82 -p1 -b .pango-mathml
-#%patch83 -p1 -b .pango-cursor-position
-#%patch84 -p0 -b .pango-printing
-
-#%patch100 -p1 -b .thread-cleanup
-#%patch102 -p0 -b .theme-change
 %patch104 -p1 -b .ppc64
 
 # For branding specific patches.
@@ -159,10 +142,6 @@ Gecko development files.
 %if %{official_branding}
 %{__cat} %{SOURCE11} >> .mozconfig
 %endif
-
-# set up our default bookmarks
-cp %{default_bookmarks_file} $RPM_BUILD_DIR/mozilla/profile/defaults/bookmarks.html
-
 
 #---------------------------------------------------------------------
 
@@ -197,7 +176,8 @@ INTERNAL_GECKO=`./config/milestone.pl --topsrcdir=.`
 INTERNAL_APP_NAME=%{name}-${INTERNAL_GECKO}
 MOZ_APP_DIR=%{_libdir}/${INTERNAL_APP_NAME}
 
-#DESTDIR=$RPM_BUILD_ROOT make install
+DESTDIR=$RPM_BUILD_ROOT make install
+
 %{__mkdir_p} $RPM_BUILD_ROOT/${MOZ_APP_DIR} \
              $RPM_BUILD_ROOT%{_datadir}/idl/${INTERNAL_APP_NAME} \
              $RPM_BUILD_ROOT%{_includedir}/${INTERNAL_APP_NAME}
@@ -208,34 +188,17 @@ MOZ_APP_DIR=%{_libdir}/${INTERNAL_APP_NAME}
 
 %{__mkdir_p} $RPM_BUILD_ROOT{%{_libdir},%{_bindir},%{_datadir}/applications}
 
-#%{__install} -p -D %{SOURCE22} $RPM_BUILD_ROOT%{_datadir}/pixmaps/%{name}.png
-
 #desktop-file-install --vendor mozilla \
 #  --dir $RPM_BUILD_ROOT%{_datadir}/applications \
 #  --add-category WebBrowser \
 #  --add-category Network \
 #  %{SOURCE20} 
 
-%if 0
-# set up the xulrunner start script
-%{__cat} %{SOURCE21} | %{__sed} -e 's,FIREFOX_VERSION,%{version},g' > \
-  $RPM_BUILD_ROOT%{_bindir}/xulrunner
-%{__chmod} 755 $RPM_BUILD_ROOT%{_bindir}/xulrunner
-%endif
-
 # set up our default preferences
 %{__cat} %{SOURCE12} | %{__sed} -e 's,RPM_VERREL,%{version}-%{release},g' > rh-default-prefs
 %{__install} -p -D -m 644 rh-default-prefs $RPM_BUILD_ROOT/${MOZ_APP_DIR}/defaults/pref/all-redhat.js
 %{__rm} rh-default-prefs
 
-# set up our default bookmarks
-%{__rm} -f $RPM_BUILD_ROOT${MOZ_APP_DIR}/defaults/profile/bookmarks.html
-ln -s %{default_bookmarks_file} $RPM_BUILD_ROOT${MOZ_APP_DIR}/defaults/profile/bookmarks.html
-
-%{__cat} %{SOURCE50} | %{__sed} -e "s,FFDIR,${MOZ_APP_DIR},g" -e 's,LIBDIR,%{_libdir},g' > \
-  $RPM_BUILD_ROOT${MOZ_APP_DIR}/firefox-xremote-client
-
-%{__chmod} 755 $RPM_BUILD_ROOT${MOZ_APP_DIR}/firefox-xremote-client
 %{__install} -p -D -m 644 %{SOURCE23} $RPM_BUILD_ROOT%{_mandir}/man1/%{name}.1
 
 %{__rm} -f $RPM_BUILD_ROOT${MOZ_APP_DIR}/%{name}-config
@@ -286,10 +249,16 @@ install -c -m 644 build/unix/*.pc \
 GRE_PATH=${MOZ_APP_DIR}
 EOF
 
+GECKO_VERSION=$(./config/milestone.pl --topsrcdir='.')
+%{__cat} %{SOURCE101} | %{__sed} -e "s/@GECKO_VERSION@/$GECKO_VERSION/g" > \
+                        %{_builddir}/add-gecko-provides
+chmod 700 %{_builddir}/add-gecko-provides
+                        
 # Copy over the LICENSE
 install -c -m 644 LICENSE $RPM_BUILD_ROOT${MOZ_APP_DIR}
 
 # ghost files
+%{__mkdir_p} $RPM_BUILD_ROOT${MOZ_APP_DIR}/components
 touch $RPM_BUILD_ROOT${MOZ_APP_DIR}/components/compreg.dat
 touch $RPM_BUILD_ROOT${MOZ_APP_DIR}/components/xpti.dat
 
@@ -316,7 +285,6 @@ fi
 %defattr(-,root,root,-)
 %{_bindir}/xulrunner
 %exclude %{_bindir}/xulrunner-config
-%{_datadir}/pixmaps/%{name}.png
 %{_mandir}/man1/*
 %{_libdir}/mozilla
 %dir /etc/gre.d
@@ -332,7 +300,6 @@ fi
 %{_libdir}/%{name}-*/components/*.so
 %{_libdir}/%{name}-*/components/*.xpt
 %{_libdir}/%{name}-*/components/*.js
-%{_libdir}/%{name}-*/crashreporter
 %{_libdir}/%{name}-*/defaults
 %{_libdir}/%{name}-*/greprefs
 %{_libdir}/%{name}-*/icons
@@ -340,12 +307,12 @@ fi
 %{_libdir}/%{name}-*/plugins
 %{_libdir}/%{name}-*/res
 %{_libdir}/%{name}-*/*.so
-%{_libdir}/%{name}-*/firefox-xremote-client
 %{_libdir}/%{name}-*/mozilla-xremote-client
 %{_libdir}/%{name}-*/run-mozilla.sh
 %{_libdir}/%{name}-*/regxpcom
 %{_libdir}/%{name}-*/xulrunner-bin
 %{_libdir}/%{name}-*/xulrunner-stub
+%{_libdir}/%{name}-*/platform.ini
 
 # XXX See if these are needed still
 %{_libdir}/%{name}-*/updater*
@@ -360,6 +327,7 @@ fi
 %{_libdir}/%{name}-*/xpidl
 %{_libdir}/%{name}-*/xpt_dump
 %{_libdir}/%{name}-*/xpt_link
+%{_libdir}/%{name}-*/*.a
 %{_libdir}/pkgconfig/%{name}-xpcom.pc
 %{_libdir}/pkgconfig/%{name}-plugin.pc
 %{_libdir}/pkgconfig/%{name}-js.pc
@@ -370,6 +338,9 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
+* Tue Sep 18 2007 Martin Stransky <stransky@redhat.com> 1.9-0.alpha7.2
+- build fixes
+
 * Wed Sep  5 2007 Christopher Aillon <caillon@redhat.com> 1.9-0.alpha7.1
 - Initial cut at XULRunner 1.9 Alpha 7
 - Temporarily revert camellia 256 support since our nss doesn't support it yet
