@@ -12,7 +12,7 @@
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
 Version:        1.9
-Release:        0.alpha7.3%{?dist}
+Release:        0.alpha7.4%{?dist}
 URL:            http://www.mozilla.org/projects/xulrunner/
 License:        MPL/LGPL
 Group:          Applications/Internet
@@ -340,6 +340,9 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
+* Thu Sep 20 2007 David Woodhouse <dwmw2@infradead.org> 1.9-0.alpha7.4
+- build fixes for ppc/ppc64
+
 * Tue Sep 20 2007 Martin Stransky <stransky@redhat.com> 1.9-0.alpha7.3
 - removed conflicts with the current gecko-based apps
 - added updated ppc64 patch

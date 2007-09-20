@@ -5,22 +5,24 @@ retrieving revision 1.92
 diff -u -B -u -p -r1.92 Makefile.in
 --- xpcom/reflect/xptcall/src/md/unix/Makefile.in	14 Dec 2006 19:13:43 -0000	1.92
 +++ xpcom/reflect/xptcall/src/md/unix/Makefile.in	29 Jan 2007 17:49:54 -0000
-@@ -275,6 +275,15 @@ AS		:= $(CC) -c -x assembler-with-cpp
+@@ -268,11 +268,16 @@ endif
+ #
+ # Linux/PPC
+ #
+-ifeq ($(OS_ARCH)$(OS_TEST),Linuxppc)
++ifeq ($(OS_ARCH)$(OS_TEST),Linuxpowerpc)
+ CPPSRCS		:= xptcinvoke_ppc_linux.cpp xptcstubs_ppc_linux.cpp
+ ASFILES		:= xptcinvoke_asm_ppc_linux.s xptcstubs_asm_ppc_linux.s
+ AS		:= $(CC) -c -x assembler-with-cpp
  endif
++ifeq ($(OS_ARCH)$(OS_TEST),Linuxpowerpc64)
++CPPSRCS		:= xptcinvoke_ppc64_linux.cpp xptcstubs_ppc64_linux.cpp
++ASFILES		:= xptcinvoke_asm_ppc64_linux.s xptcstubs_asm_ppc64_linux.s
++AS		:= $(CC) -c -x assembler-with-cpp
++endif
  
  #
-+# Linux/PPC64
-+#
-+ifeq ($(OS_ARCH)$(OS_TEST),Linuxppc64)
-+CPPSRCS                := xptcinvoke_ppc64_linux.cpp xptcstubs_ppc64_linux.cpp
-+ASFILES                := xptcinvoke_asm_ppc64_linux.s xptcstubs_asm_ppc64_linux.s
-+AS             := $(CC) -c -x assembler-with-cpp
-+endif
-+
-+#
  # NetBSD/PPC
- #
- ifneq (,$(filter NetBSDmacppc NetBSDbebox NetBSDofppc NetBSDprep NetBSDamigappc,$(OS_ARCH)$(OS_TEST)))                           
 Index: xpcom/reflect/xptcall/src/md/unix/xptcinvoke_ppc_netbsd.cpp
 ===================================================================
 RCS file: /cvsroot/mozilla/xpcom/reflect/xptcall/src/md/unix/xptcinvoke_ppc_netbsd.cpp,v
@@ -93,21 +95,21 @@ diff -u -B -u -p -r1.3 xptcinvoke_ppc_netbsd.cpp
 +
 +
 +#
-+# NS_InvokeByIndex(nsISupports* that, PRUint32 methodIndex,
++# NS_InvokeByIndex_P(nsISupports* that, PRUint32 methodIndex,
 +#                  PRUint32 paramCount, nsXPTCVariant* params)
 +#
 +
 +        .section ".toc","aw"
 +        .section ".text"
 +        .align 2
-+        .globl  NS_InvokeByIndex
++        .globl  NS_InvokeByIndex_P
 +        .section ".opd","aw"
 +        .align 3
-+NS_InvokeByIndex:
-+        .quad   .NS_InvokeByIndex,.TOC.@tocbase
++NS_InvokeByIndex_P:
++        .quad   .NS_InvokeByIndex_P,.TOC.@tocbase
 +        .previous
-+        .type   NS_InvokeByIndex,@function
-+.NS_InvokeByIndex:
++        .type   NS_InvokeByIndex_P,@function
++.NS_InvokeByIndex_P:
 +        mflr    0
 +        std     0,16(r1)
 +
@@ -200,7 +202,7 @@ diff -u -B -u -p -r1.3 xptcinvoke_ppc_netbsd.cpp
 +        mtlr    0
 +        blr
 +
-+        .size   NS_InvokeByIndex,.-.NS_InvokeByIndex
++        .size   NS_InvokeByIndex_P,.-.NS_InvokeByIndex_P
 +
 +        # Magic indicating no need for an executable stack
 +        .section .note.GNU-stack, "", @progbits ; .previous
@@ -250,9 +252,9 @@ diff -u -B -u -p -r1.3 xptcinvoke_ppc_netbsd.cpp
 +
 +// Platform specific code to invoke XPCOM methods on native objects
 +
-+// The purpose of NS_InvokeByIndex() is to map a platform
++// The purpose of NS_InvokeByIndex_P() is to map a platform
 +// independent call to the platform ABI. To do that,
-+// NS_InvokeByIndex() has to determine the method to call via vtable
++// NS_InvokeByIndex_P() has to determine the method to call via vtable
 +// access. The parameters for the method are read from the
 +// nsXPTCVariant* and prepared for the native ABI.
 +
@@ -335,7 +337,7 @@ diff -u -B -u -p -r1.3 xptcinvoke_ppc_netbsd.cpp
 +}
 +
 +EXPORT_XPCOM_API(nsresult)
-+NS_InvokeByIndex(nsISupports* that, PRUint32 methodIndex,
++NS_InvokeByIndex_P(nsISupports* that, PRUint32 methodIndex,
 +                 PRUint32 paramCount, nsXPTCVariant* params);
 +
 --- /dev/null	2000-10-22 01:01:00.000000000 +0000
