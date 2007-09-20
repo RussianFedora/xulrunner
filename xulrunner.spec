@@ -7,12 +7,12 @@
 
 %define official_branding 0
 
-ExcludeArch: ppc64 ppc
+#ExcludeArch: ppc64 ppc
 
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
 Version:        1.9
-Release:        0.alpha7.2%{?dist}
+Release:        0.alpha7.3%{?dist}
 URL:            http://www.mozilla.org/projects/xulrunner/
 License:        MPL/LGPL
 Group:          Applications/Internet
@@ -45,7 +45,8 @@ Patch42:        firefox-1.1-uriloader.patch
 # font system fixes
 
 # Other
-Patch104:       firefox-1.5-ppc64.patch
+#Patch104:       firefox-1.5-ppc64.patch
+Patch105:       mozilla-firefox-head.ppc64.patch
 
 %if %{official_branding}
 # Required by Mozilla Corporation
@@ -84,8 +85,8 @@ Requires:       nss >= %{nss_version}
 Requires:       desktop-file-utils >= %{desktop_file_utils_version}
 Requires:       system-bookmarks
 Obsoletes:      phoenix, mozilla-firebird, MozillaFirebird
-Obsoletes:      mozilla <= 37:1.7.13
-Obsoletes:      firefox < 2.1
+#Obsoletes:      mozilla <= 37:1.7.13
+#Obsoletes:      firefox < 2.1
 Provides:       webclient
 Provides:       gecko-libs = %{version}
 
@@ -104,8 +105,8 @@ XULRunner provides the XUL Runtime environment for Gecko applications.
 %package devel
 Summary: Development files for Gecko
 Group: Development/Libraries
-Obsoletes: mozilla-devel
-Obsoletes: firefox-devel < 2.1
+#Obsoletes: mozilla-devel
+#Obsoletes: firefox-devel < 2.1
 Requires: xulrunner = %{version}-%{release}
 Requires: nspr-devel >= %{nspr_version}
 Requires: nss-devel >= %{nss_version}
@@ -123,7 +124,8 @@ Gecko development files.
 %patch2   -R -p1 -b .camellia256
 %patch3   -p1
 
-%patch104 -p1 -b .ppc64
+#%patch104 -p1 -b .ppc64
+%patch105 -p0 -b .ppc64
 
 # For branding specific patches.
 
@@ -237,17 +239,17 @@ install -c -m 644 build/unix/*.pc \
 %endif
 
 # GRE stuff
-%ifarch x86_64 ia64 ppc64 s390x
-%define gre_conf_file gre64.conf
-%else
-%define gre_conf_file gre.conf
-%endif
+#%ifarch x86_64 ia64 ppc64 s390x
+#%define gre_conf_file gre64.conf
+#%else
+#%define gre_conf_file gre.conf
+#%endif
 
-%{__mkdir_p} $RPM_BUILD_ROOT/etc/gre.d/
-%{__cat} > $RPM_BUILD_ROOT/etc/gre.d/%{gre_conf_file} << EOF
-[%{version}]
-GRE_PATH=${MOZ_APP_DIR}
-EOF
+#%{__mkdir_p} $RPM_BUILD_ROOT/etc/gre.d/
+#%{__cat} > $RPM_BUILD_ROOT/etc/gre.d/%{gre_conf_file} << EOF
+#[%{version}]
+#GRE_PATH=${MOZ_APP_DIR}
+#EOF
 
 GECKO_VERSION=$(./config/milestone.pl --topsrcdir='.')
 %{__cat} %{SOURCE101} | %{__sed} -e "s/@GECKO_VERSION@/$GECKO_VERSION/g" > \
@@ -287,8 +289,8 @@ fi
 %exclude %{_bindir}/xulrunner-config
 %{_mandir}/man1/*
 %{_libdir}/mozilla
-%dir /etc/gre.d
-/etc/gre.d/%{gre_conf_file}
+#%dir /etc/gre.d
+#/etc/gre.d/%{gre_conf_file}
 
 %dir %{_libdir}/%{name}-*
 %{_libdir}/%{name}-*/LICENSE
@@ -338,6 +340,10 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
+* Tue Sep 20 2007 Martin Stransky <stransky@redhat.com> 1.9-0.alpha7.3
+- removed conflicts with the current gecko-based apps
+- added updated ppc64 patch
+
 * Tue Sep 18 2007 Martin Stransky <stransky@redhat.com> 1.9-0.alpha7.2
 - build fixes
 
