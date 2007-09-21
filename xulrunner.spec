@@ -7,8 +7,6 @@
 
 %define official_branding 0
 
-#ExcludeArch: ppc64 ppc
-
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
 Version:        1.9
@@ -45,8 +43,7 @@ Patch42:        firefox-1.1-uriloader.patch
 # font system fixes
 
 # Other
-#Patch104:       firefox-1.5-ppc64.patch
-Patch105:       mozilla-firefox-head.ppc64.patch
+Patch104:       mozilla-firefox-head.ppc64.patch
 
 %if %{official_branding}
 # Required by Mozilla Corporation
@@ -124,8 +121,7 @@ Gecko development files.
 %patch2   -R -p1 -b .camellia256
 %patch3   -p1
 
-#%patch104 -p1 -b .ppc64
-%patch105 -p0 -b .ppc64
+%patch104 -p0 -b .ppc64
 
 # For branding specific patches.
 
