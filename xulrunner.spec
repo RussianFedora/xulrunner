@@ -12,7 +12,7 @@ Name:           xulrunner
 Version:        1.9
 Release:        0.alpha7.4%{?dist}
 URL:            http://www.mozilla.org/projects/xulrunner/
-License:        MPL/LGPL
+License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
 %if %{official_branding}
 %define tarball xulrunner-%{version}-source.tar.bz2
