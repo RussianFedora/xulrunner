@@ -98,7 +98,6 @@ make -f client.mk build
 %install
 rm -rf $RPM_BUILD_ROOT
 make install DESTDIR=$RPM_BUILD_ROOT
-rm -f %{buildroot}%{_libdir}/xulrunner-%{version}%{prerelease}/sdk/*.so
 
 # own mozilla plugin dir (#135050)
 %{__mkdir_p} $RPM_BUILD_ROOT%{_libdir}/mozilla/plugins
@@ -114,36 +113,16 @@ rm -f %{buildroot}%{_libdir}/xulrunner-%{version}%{prerelease}/sdk/*.so
 %defattr(-,root,root,-)
 %doc LICENSE LEGAL
 %{_bindir}/xulrunner
+%{_sysconfdir}/gre.d/*.system.conf
 %{_libdir}/mozilla
-%{_libdir}/xulrunner-%{version}%{prerelease}/chrome
-%{_libdir}/xulrunner-%{version}%{prerelease}/components
-%{_libdir}/xulrunner-%{version}%{prerelease}/defaults
-%{_libdir}/xulrunner-%{version}%{prerelease}/dictionaries
-%{_libdir}/xulrunner-%{version}%{prerelease}/greprefs
-%{_libdir}/xulrunner-%{version}%{prerelease}/icons
-%{_libdir}/xulrunner-%{version}%{prerelease}/modules
-%{_libdir}/xulrunner-%{version}%{prerelease}/plugins
-%{_libdir}/xulrunner-%{version}%{prerelease}/res
-%{_libdir}/xulrunner-%{version}%{prerelease}/*.so
-%{_libdir}/xulrunner-%{version}%{prerelease}/mozilla-xremote-client
-%{_libdir}/xulrunner-%{version}%{prerelease}/regxpcom
-%{_libdir}/xulrunner-%{version}%{prerelease}/run-mozilla.sh
-%{_libdir}/xulrunner-%{version}%{prerelease}/updater
-%{_libdir}/xulrunner-%{version}%{prerelease}/xp*
-%{_libdir}/xulrunner-%{version}%{prerelease}/xulrunner*
-%{_libdir}/xulrunner-%{version}%{prerelease}/crashreporter
-%{_libdir}/xulrunner-%{version}%{prerelease}/*.chk
-
-%{python_sitearch}/xpcom
+%{_libdir}/xulrunner-%{version}%{prerelease}
 
 %files devel
 %defattr(-, root, root)
-%{_bindir}/xulrunner-config
-%{_libdir}/xulrunner-%{version}%{prerelease}/*.a
-%{_libdir}/pkgconfig/*
-%{_includedir}/xulrunner-%{version}%{prerelease}
+%{_libdir}/pkgconfig/*.pc
 %{_datadir}/idl/xulrunner-%{version}%{prerelease}
-%{_datadir}/aclocal/nspr.m4
+%{_libdir}/xulrunner-devel-%{version}%{prerelease}
+%{_includedir}/xulrunner-%{version}%{prerelease}
 
 %changelog
 * Wed Oct 10 2007 Marco Pesenti Gritti <mpg@redhat.com> - 1.9-0.10.a9
