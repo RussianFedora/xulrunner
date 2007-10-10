@@ -2,16 +2,17 @@
 
 %define nss_version 3.10
 %define cairo_version 1.3.12
-%define prerelease a6
+%define prerelease a9
+%define alphatag 20071007cvs
 
 Summary:        XUL Runner
 Name:           xulrunner
 Version:        1.9
-Release:        0.9.%{prerelease}%{?dist}
+Release:        0.10.%{prerelease}%{?dist}
 URL:            http://dev.laptop.org/pub/sugar/xulrunner
 License:        MPL/LGPL
 Group:          Applications/Internet
-Source0:        xulrunner-%{version}%{prerelease}.tar.bz2
+Source0:        xulrunner-%{version}.%{alphatag}.tar.bz2
 Source10:       xulrunner-mozconfig
 Source12:       xulrunner-olpc-default-prefs.js
 
@@ -145,7 +146,10 @@ rm -f %{buildroot}%{_libdir}/xulrunner-%{version}%{prerelease}/sdk/*.so
 %{_datadir}/aclocal/nspr.m4
 
 %changelog
-* Mon Sep 17 2007 Marco Pesenti Gritti <mpg@redhat.com> - 1.9-0.9.
+* Wed Oct 10 2007 Marco Pesenti Gritti <mpg@redhat.com> - 1.9-0.10.a9
+- Upgrade to an a9 snapshot
+
+* Mon Sep 17 2007 Marco Pesenti Gritti <mpg@redhat.com> - 1.9-0.9.a6
 - Downgrade the source to pre6, add a patch for XdndDirectSave support
 
 * Thu Aug 23 2007 Marco Pesenti Gritti <mpg@redhat.com> - 1.9-0.8.20070820cvs
