@@ -2,7 +2,7 @@
 
 %define nss_version 3.10
 %define cairo_version 1.3.12
-%define prerelease a9
+%define prerelease a9pre
 %define alphatag 20071007cvs
 
 Summary:        XUL Runner
