@@ -7,17 +7,18 @@
 
 %define official_branding 0
 
+
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
 Version:        1.9
-Release:        0.alpha7.4%{?dist}
+Release:        0.alpha9.1%{?dist}
 URL:            http://www.mozilla.org/projects/xulrunner/
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
 %if %{official_branding}
 %define tarball xulrunner-%{version}-source.tar.bz2
 %else
-%define tarball xulrunner-1.9a7-source.tar.bz2
+%define tarball xulrunner-20071029.tar.bz2
 %endif
 Source0:        %{tarball}
 Source10:       %{name}-mozconfig
@@ -44,6 +45,7 @@ Patch42:        firefox-1.1-uriloader.patch
 
 # Other
 Patch104:       mozilla-firefox-head.ppc64.patch
+Patch105:       mozilla-xpcom.patch
 
 %if %{official_branding}
 # Required by Mozilla Corporation
@@ -122,6 +124,14 @@ Gecko development files.
 %patch3   -p1
 
 %patch104 -p0 -b .ppc64
+
+# Install missing *.pc files
+pushd xulrunner/installer
+cp libxul.pc.in mozilla-xpcom.pc.in
+popd
+
+%patch105 -p1
+
 
 # For branding specific patches.
 
@@ -230,8 +240,6 @@ install -c -m 755 dist/bin/xpcshell \
   dist/bin/xpt_dump \
   dist/bin/xpt_link \
   $RPM_BUILD_ROOT/${MOZ_APP_DIR}
-install -c -m 644 build/unix/*.pc \
-  $RPM_BUILD_ROOT/%{_libdir}/pkgconfig
 %endif
 
 # GRE stuff
@@ -260,6 +268,11 @@ install -c -m 644 LICENSE $RPM_BUILD_ROOT${MOZ_APP_DIR}
 touch $RPM_BUILD_ROOT${MOZ_APP_DIR}/components/compreg.dat
 touch $RPM_BUILD_ROOT${MOZ_APP_DIR}/components/xpti.dat
 
+# remove unused files
+rm -rf $RPM_BUILD_ROOT/etc/gre.d
+rm -rf $RPM_BUILD_ROOT/usr/lib/xulrunner-1.9a9pre/crashreporter
+rm -rf $RPM_BUILD_ROOT/usr/lib/xulrunner-1.9a9pre/crashreporter.ini
+
 #---------------------------------------------------------------------
 
 %clean
@@ -282,20 +295,19 @@ fi
 %files
 %defattr(-,root,root,-)
 %{_bindir}/xulrunner
-%exclude %{_bindir}/xulrunner-config
+#%exclude %{_bindir}/xulrunner-config
 %{_mandir}/man1/*
 %{_libdir}/mozilla
 #%dir /etc/gre.d
 #/etc/gre.d/%{gre_conf_file}
-
 %dir %{_libdir}/%{name}-*
 %{_libdir}/%{name}-*/LICENSE
+%{_libdir}/%{name}-*/README.txt
 %{_libdir}/%{name}-*/chrome
 %{_libdir}/%{name}-*/dictionaries
 %dir %{_libdir}/%{name}-*/components
 %ghost %{_libdir}/%{name}-*/components/compreg.dat
 %ghost %{_libdir}/%{name}-*/components/xpti.dat
-%{_libdir}/%{name}-*/components/*.so
 %{_libdir}/%{name}-*/components/*.xpt
 %{_libdir}/%{name}-*/components/*.js
 %{_libdir}/%{name}-*/defaults
@@ -308,9 +320,13 @@ fi
 %{_libdir}/%{name}-*/mozilla-xremote-client
 %{_libdir}/%{name}-*/run-mozilla.sh
 %{_libdir}/%{name}-*/regxpcom
+%{_libdir}/%{name}-*/xulrunner
 %{_libdir}/%{name}-*/xulrunner-bin
 %{_libdir}/%{name}-*/xulrunner-stub
 %{_libdir}/%{name}-*/platform.ini
+%{_libdir}/%{name}-*/libfreebl3.chk
+%{_libdir}/%{name}-*/libsoftokn3.chk
+%{_libdir}/%{name}-*/dependentlibs.list
 
 # XXX See if these are needed still
 %{_libdir}/%{name}-*/updater*
@@ -320,22 +336,24 @@ fi
 %defattr(-,root,root)
 %{_datadir}/idl/%{name}-*
 %{_includedir}/%{name}-*
+%dir %{_libdir}/%{name}-devel-*
+%{_libdir}/%{name}-devel-*/*
 %{_libdir}/%{name}-*/xpcshell
 %{_libdir}/%{name}-*/xpicleanup
 %{_libdir}/%{name}-*/xpidl
 %{_libdir}/%{name}-*/xpt_dump
 %{_libdir}/%{name}-*/xpt_link
 %{_libdir}/%{name}-*/*.a
-%{_libdir}/pkgconfig/%{name}-xpcom.pc
-%{_libdir}/pkgconfig/%{name}-plugin.pc
-%{_libdir}/pkgconfig/%{name}-js.pc
-%exclude %{_libdir}/pkgconfig/%{name}-nspr.pc
-%exclude %{_libdir}/pkgconfig/%{name}-nss.pc
+%{_libdir}/%{name}-*/xpcom-config.h
+%{_libdir}/pkgconfig/*.pc
 %endif
 
 #---------------------------------------------------------------------
 
 %changelog
+* Tue Oct 30 2007 Martin Stransky <stransky@redhat.com> 1.9-0.alpha9.1
+- updated to the latest trunk
+
 * Thu Sep 20 2007 David Woodhouse <dwmw2@infradead.org> 1.9-0.alpha7.4
 - build fixes for ppc/ppc64
 
