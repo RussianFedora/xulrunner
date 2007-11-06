@@ -1,7 +1,13 @@
-diff -up mozilla/xulrunner/installer/mozilla-xpcom.pc.in.old mozilla/xulrunner/installer/mozilla-xpcom.pc.in
---- mozilla/xulrunner/installer/mozilla-xpcom.pc.in.old	2007-08-03 16:46:28.000000000 +0200
-+++ mozilla/xulrunner/installer/mozilla-xpcom.pc.in	2007-10-30 16:48:09.000000000 +0100
-@@ -8,7 +8,7 @@ includetype=stable
+--- mozilla/xulrunner/installer/mozilla-xpcom.pc.in.xul	2007-11-01 11:49:13.000000000 +0100
++++ mozilla/xulrunner/installer/mozilla-xpcom.pc.in	2007-11-01 11:49:13.000000000 +0100
+@@ -2,13 +2,14 @@ prefix=%prefix%
+ sdkdir=%sdkdir%
+ includedir=%includedir%
+ idldir=%idldir%
++libdir=%sdkdir%/lib
+ includetype=stable
+ 
+ # Note: the default pkg-config includes will only list include directories
  # that contain stable (frozen or safe for linking) header files. To include
  # nonfrozen headers, run pkg-config with --define-variable=includetype=unstable
  
@@ -10,14 +16,93 @@ diff -up mozilla/xulrunner/installer/mozilla-xpcom.pc.in.old mozilla/xulrunner/i
  Description: The Mozilla Runtime and Embedding Engine
  Version: %MOZILLA_VERSION%
  Requires: %NSPR_NAME% >= %NSPR_VERSION%
-diff -up mozilla/xulrunner/installer/Makefile.in.old mozilla/xulrunner/installer/Makefile.in
---- mozilla/xulrunner/installer/Makefile.in.old	2007-08-10 14:56:59.000000000 +0200
-+++ mozilla/xulrunner/installer/Makefile.in	2007-10-30 16:48:46.000000000 +0100
-@@ -87,6 +87,7 @@ pkg_config_files = \
+--- mozilla/xulrunner/installer/xulrunner-plugin.pc.in.xul	2007-11-01 11:49:13.000000000 +0100
++++ mozilla/xulrunner/installer/xulrunner-plugin.pc.in	2007-11-01 11:51:50.000000000 +0100
+@@ -1,6 +1,7 @@
+ prefix=%prefix%
+ sdkdir=%sdkdir%
+ includedir=%includedir%
++libdir=%sdkdir%/lib
+ 
+ Name: Mozilla Plug-In API
+ Description: Mozilla Plug-In API
+--- mozilla/xulrunner/installer/libxul.pc.in.xul	2007-08-03 16:46:28.000000000 +0200
++++ mozilla/xulrunner/installer/libxul.pc.in	2007-11-01 11:49:13.000000000 +0100
+@@ -2,6 +2,7 @@ prefix=%prefix%
+ sdkdir=%sdkdir%
+ includedir=%includedir%
+ idldir=%idldir%
++libdir=%sdkdir%/lib
+ includetype=stable
+ 
+ # Note: the default pkg-config includes will only list include directories
+--- mozilla/xulrunner/installer/xulrunner-js.pc.in.xul	2007-11-01 11:49:13.000000000 +0100
++++ mozilla/xulrunner/installer/xulrunner-js.pc.in	2007-11-01 11:51:32.000000000 +0100
+@@ -1,6 +1,7 @@
+ prefix=%prefix%
+ sdkdir=%sdkdir%
+ includedir=%includedir%
++libdir=%sdkdir%/lib
+ 
+ Name: JavaScript
+ Description: The Mozilla JavaScript Library
+--- mozilla/xulrunner/installer/libxul-embedding.pc.in.xul	2007-08-03 16:46:28.000000000 +0200
++++ mozilla/xulrunner/installer/libxul-embedding.pc.in	2007-11-01 11:50:48.000000000 +0100
+@@ -2,6 +2,7 @@ prefix=%prefix%
+ sdkdir=%sdkdir%
+ includedir=%includedir%
+ idldir=%idldir%
++libdir=%sdkdir%/lib
+ includetype=stable
+ 
+ # Note: the default pkg-config cflags will only list include directories
+--- mozilla/xulrunner/installer/xulrunner-embedding.pc.in.xul	2007-11-01 11:49:13.000000000 +0100
++++ mozilla/xulrunner/installer/xulrunner-embedding.pc.in	2007-11-01 11:51:13.000000000 +0100
+@@ -2,13 +2,14 @@ prefix=%prefix%
+ sdkdir=%sdkdir%
+ includedir=%includedir%
+ idldir=%idldir%
++libdir=%sdkdir%/lib
+ includetype=stable
+ 
+ # Note: the default pkg-config cflags will only list include directories
+ # that contain stable (frozen or safe for linking) header files. To include
+ # nonfrozen headers, run pkg-config with --define-variable=includetype=unstable
+ 
+-Name: libxul-embedding
++Name: xulrunner-embedding
+ Description: Static library for version-independent embedding of the Mozilla runtime
+ Version: %MOZILLA_VERSION%
+ Libs: -L${sdkdir}/lib -lxpcomglue
+--- mozilla/xulrunner/installer/xulrunner-xpcom.pc.in.xul	2007-11-01 11:49:13.000000000 +0100
++++ mozilla/xulrunner/installer/xulrunner-xpcom.pc.in	2007-11-01 11:52:20.000000000 +0100
+@@ -3,12 +3,13 @@ sdkdir=%sdkdir%
+ includedir=%includedir%
+ idldir=%idldir%
+ includetype=stable
++libdir=%sdkdir%/lib
+ 
+ # Note: the default pkg-config includes will only list include directories
+ # that contain stable (frozen or safe for linking) header files. To include
+ # nonfrozen headers, run pkg-config with --define-variable=includetype=unstable
+ 
+-Name: libxul
++Name: xulrunner-xpcom
+ Description: The Mozilla Runtime and Embedding Engine
+ Version: %MOZILLA_VERSION%
+ Requires: %NSPR_NAME% >= %NSPR_VERSION%
+--- mozilla/xulrunner/installer/Makefile.in.xul	2007-08-10 14:56:59.000000000 +0200
++++ mozilla/xulrunner/installer/Makefile.in	2007-11-01 11:55:06.000000000 +0100
+@@ -87,6 +87,12 @@ pkg_config_files = \
  	libxul-embedding.pc \
  	mozilla-js.pc \
  	mozilla-plugin.pc \
 +	mozilla-xpcom.pc \
++	mozilla-embedding.pc \
++	xulrunner-js.pc \
++	xulrunner-plugin.pc \
++	xulrunner-xpcom.pc \
++	xulrunner-embedding.pc \
  	$(NULL)
  
  ifdef MOZ_NATIVE_NSPR

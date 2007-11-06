@@ -11,7 +11,7 @@
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
 Version:        1.9
-Release:        0.alpha9.1%{?dist}
+Release:        0.alpha9.2%{?dist}
 URL:            http://www.mozilla.org/projects/xulrunner/
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
@@ -33,6 +33,7 @@ Source101:      add-gecko-provides.in
 Patch1:         firefox-2.0-link-layout.patch
 Patch2:         camellia256.patch
 Patch3:         xulrunner-compile.patch
+Patch4:         mozilla-build.patch
 
 # customization patches
 Patch21:        firefox-0.7.3-psfonts.patch
@@ -122,12 +123,22 @@ Gecko development files.
 %patch1   -p1 -b .link-layout
 %patch2   -R -p1 -b .camellia256
 %patch3   -p1
+%patch4   -p1
 
 %patch104 -p0 -b .ppc64
 
 # Install missing *.pc files
 pushd xulrunner/installer
+
+# Copy as xpcom
 cp libxul.pc.in mozilla-xpcom.pc.in
+cp libxul-embedding.pc.in mozilla-embedding.pc.in
+
+# Copy to expected xulrunner-*.pc
+cp mozilla-js.pc.in xulrunner-js.pc.in
+cp mozilla-plugin.pc.in xulrunner-plugin.pc.in
+cp mozilla-xpcom.pc.in xulrunner-xpcom.pc.in
+cp mozilla-embedding.pc.in xulrunner-embedding.pc.in
 popd
 
 %patch105 -p1
@@ -351,6 +362,9 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
+* Tue Nov 6 2007 Martin Stransky <stransky@redhat.com> 1.9-0.alpha9.2
+- build fixes
+
 * Tue Oct 30 2007 Martin Stransky <stransky@redhat.com> 1.9-0.alpha9.1
 - updated to the latest trunk
 
