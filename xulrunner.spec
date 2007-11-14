@@ -1,6 +1,6 @@
 %define desktop_file_utils_version 0.9
-%define nspr_version 4.6
-%define nss_version 3.11.1
+%define nspr_version 4.6.99
+%define nss_version 3.11.99
 %define cairo_version 0.5
 %define builddir %{_builddir}/mozilla
 %define build_devel_package 1
@@ -11,7 +11,7 @@
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
 Version:        1.9
-Release:        0.alpha9.3%{?dist}
+Release:        0.alpha9.4%{?dist}
 URL:            http://www.mozilla.org/projects/xulrunner/
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
@@ -371,6 +371,9 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
+* Wed Nov 14 2007 Martin Stransky <stransky@redhat.com> 1.9-0.alpha9.4
+- added proper nss/nspr dependencies
+
 * Wed Nov 14 2007 Martin Stransky <stransky@redhat.com> 1.9-0.alpha9.3
 - more build fixes, use system nss libraries
 
