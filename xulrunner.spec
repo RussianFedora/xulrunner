@@ -47,6 +47,7 @@ Patch42:        firefox-1.1-uriloader.patch
 # Other
 Patch104:       mozilla-firefox-head.ppc64.patch
 Patch105:       mozilla-xpcom.patch
+Patch106:       mozilla-sqlite-build.patch
 
 %if %{official_branding}
 # Required by Mozilla Corporation
@@ -141,7 +142,8 @@ cp mozilla-xpcom.pc.in xulrunner-xpcom.pc.in
 cp mozilla-embedding.pc.in xulrunner-embedding.pc.in
 popd
 
-%patch105 -p1
+%patch105 -p1 -b .pkg
+%patch106 -p1 -b .sqlite
 
 
 # For branding specific patches.
@@ -284,6 +286,16 @@ rm -rf $RPM_BUILD_ROOT/etc/gre.d
 rm -rf $RPM_BUILD_ROOT/usr/lib/xulrunner-1.9a9pre/crashreporter
 rm -rf $RPM_BUILD_ROOT/usr/lib/xulrunner-1.9a9pre/crashreporter.ini
 
+rm -rf $RPM_BUILD_ROOT${MOZ_APP_DIR}/*.a
+
+rm -rf $RPM_BUILD_ROOT${MOZ_APP_DIR}/bin
+rm -rf $RPM_BUILD_ROOT${MOZ_APP_DIR}/lib
+rm -rf $RPM_BUILD_ROOT${MOZ_APP_DIR}/include
+rm -rf $RPM_BUILD_ROOT${MOZ_APP_DIR}/idl
+
+rm -rf $RPM_BUILD_ROOT${MOZ_APP_DIR}/sdk/lib
+ln -s ${MOZ_APP_DIR} $RPM_BUILD_ROOT${MOZ_APP_DIR}/sdk/lib
+
 #---------------------------------------------------------------------
 
 %clean
@@ -335,8 +347,6 @@ fi
 %{_libdir}/%{name}-*/xulrunner-bin
 %{_libdir}/%{name}-*/xulrunner-stub
 %{_libdir}/%{name}-*/platform.ini
-%{_libdir}/%{name}-*/libfreebl3.chk
-%{_libdir}/%{name}-*/libsoftokn3.chk
 %{_libdir}/%{name}-*/dependentlibs.list
 
 # XXX See if these are needed still
@@ -347,21 +357,23 @@ fi
 %defattr(-,root,root)
 %{_datadir}/idl/%{name}-*
 %{_includedir}/%{name}-*
-%dir %{_libdir}/%{name}-devel-*
-%{_libdir}/%{name}-devel-*/*
+%dir %{_libdir}/%{name}-*
 %{_libdir}/%{name}-*/xpcshell
 %{_libdir}/%{name}-*/xpicleanup
 %{_libdir}/%{name}-*/xpidl
 %{_libdir}/%{name}-*/xpt_dump
 %{_libdir}/%{name}-*/xpt_link
-%{_libdir}/%{name}-*/*.a
 %{_libdir}/%{name}-*/xpcom-config.h
+%{_libdir}/%{name}-*/sdk/*
 %{_libdir}/pkgconfig/*.pc
 %endif
 
 #---------------------------------------------------------------------
 
 %changelog
+* Wed Nov 14 2007 Martin Stransky <stransky@redhat.com> 1.9-0.alpha9.3
+- more build fixes, use system nss libraries
+
 * Tue Nov 6 2007 Martin Stransky <stransky@redhat.com> 1.9-0.alpha9.2
 - build fixes
 
