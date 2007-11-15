@@ -11,7 +11,7 @@
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
 Version:        1.9
-Release:        0.alpha9.4%{?dist}
+Release:        0.alpha9.5%{?dist}
 URL:            http://www.mozilla.org/projects/xulrunner/
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
@@ -46,8 +46,9 @@ Patch42:        firefox-1.1-uriloader.patch
 
 # Other
 Patch104:       mozilla-firefox-head.ppc64.patch
-Patch105:       mozilla-xpcom.patch
-Patch106:       mozilla-sqlite-build.patch
+Patch105:       mozilla-sqlite-build.patch
+Patch106:       mozilla-gtkmozembed.patch
+Patch107:       mozilla-xulrunner-pkgconfig.patch
 
 %if %{official_branding}
 # Required by Mozilla Corporation
@@ -127,6 +128,8 @@ Gecko development files.
 %patch4   -p1
 
 %patch104 -p0 -b .ppc64
+%patch105 -p1 -b .sqlite
+%patch106 -p1
 
 # Install missing *.pc files
 pushd xulrunner/installer
@@ -140,10 +143,10 @@ cp mozilla-js.pc.in xulrunner-js.pc.in
 cp mozilla-plugin.pc.in xulrunner-plugin.pc.in
 cp mozilla-xpcom.pc.in xulrunner-xpcom.pc.in
 cp mozilla-embedding.pc.in xulrunner-embedding.pc.in
+cp mozilla-gtkmozembed.pc.in xulrunner-gtkmozembed.pc.in
 popd
 
-%patch105 -p1 -b .pkg
-%patch106 -p1 -b .sqlite
+%patch107 -p1 -b .old
 
 
 # For branding specific patches.
@@ -268,6 +271,12 @@ install -c -m 755 dist/bin/xpcshell \
 #GRE_PATH=${MOZ_APP_DIR}
 #EOF
 
+# Library path
+%{__mkdir_p} $RPM_BUILD_ROOT/etc/ld.so.conf.d
+%{__cat} > $RPM_BUILD_ROOT/etc/ld.so.conf.d/xulrunner.conf << EOF
+${MOZ_APP_DIR}
+EOF
+
 GECKO_VERSION=$(./config/milestone.pl --topsrcdir='.')
 %{__cat} %{SOURCE101} | %{__sed} -e "s/@GECKO_VERSION@/$GECKO_VERSION/g" > \
                         %{_builddir}/add-gecko-provides
@@ -304,9 +313,11 @@ ln -s ${MOZ_APP_DIR} $RPM_BUILD_ROOT${MOZ_APP_DIR}/sdk/lib
 #---------------------------------------------------------------------
 
 %post
+/sbin/ldconfig
 #update-desktop-database %{_datadir}/applications
 
 %postun
+/sbin/ldconfig
 #update-desktop-database %{_datadir}/applications
 
 %preun
@@ -348,6 +359,7 @@ fi
 %{_libdir}/%{name}-*/xulrunner-stub
 %{_libdir}/%{name}-*/platform.ini
 %{_libdir}/%{name}-*/dependentlibs.list
+%{_sysconfdir}/ld.so.conf.d/xulrunner.conf
 
 # XXX See if these are needed still
 %{_libdir}/%{name}-*/updater*
@@ -371,6 +383,10 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
+* Thu Nov 15 2007 Martin Stransky <stransky@redhat.com> 1.9-0.alpha9.5
+- registered xulrunner libs system-wide
+- added xulrunner-gtkmozembed.pc
+
 * Wed Nov 14 2007 Martin Stransky <stransky@redhat.com> 1.9-0.alpha9.4
 - added proper nss/nspr dependencies
 
