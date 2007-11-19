@@ -11,7 +11,7 @@
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
 Version:        1.9
-Release:        0.alpha9.5%{?dist}
+Release:        0.alpha9.6%{?dist}
 URL:            http://www.mozilla.org/projects/xulrunner/
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
@@ -295,7 +295,7 @@ rm -rf $RPM_BUILD_ROOT/etc/gre.d
 rm -rf $RPM_BUILD_ROOT/usr/lib/xulrunner-1.9a9pre/crashreporter
 rm -rf $RPM_BUILD_ROOT/usr/lib/xulrunner-1.9a9pre/crashreporter.ini
 
-rm -rf $RPM_BUILD_ROOT${MOZ_APP_DIR}/*.a
+#rm -rf $RPM_BUILD_ROOT${MOZ_APP_DIR}/*.a
 
 rm -rf $RPM_BUILD_ROOT${MOZ_APP_DIR}/bin
 rm -rf $RPM_BUILD_ROOT${MOZ_APP_DIR}/lib
@@ -377,12 +377,16 @@ fi
 %{_libdir}/%{name}-*/xpt_link
 %{_libdir}/%{name}-*/xpcom-config.h
 %{_libdir}/%{name}-*/sdk/*
+%{_libdir}/%{name}-*/*.a
 %{_libdir}/pkgconfig/*.pc
 %endif
 
 #---------------------------------------------------------------------
 
 %changelog
+* Mon Nov 19 2007 Martin Stransky <stransky@redhat.com> 1.9-0.alpha9.6
+- packed all gecko libraries (#389391)
+
 * Thu Nov 15 2007 Martin Stransky <stransky@redhat.com> 1.9-0.alpha9.5
 - registered xulrunner libs system-wide
 - added xulrunner-gtkmozembed.pc
