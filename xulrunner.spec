@@ -292,8 +292,8 @@ touch $RPM_BUILD_ROOT${MOZ_APP_DIR}/components/xpti.dat
 
 # remove unused files
 rm -rf $RPM_BUILD_ROOT/etc/gre.d
-rm -rf $RPM_BUILD_ROOT/usr/lib/xulrunner-1.9a9pre/crashreporter
-rm -rf $RPM_BUILD_ROOT/usr/lib/xulrunner-1.9a9pre/crashreporter.ini
+rm -rf $RPM_BUILD_ROOT${MOZ_APP_DIR}/crashreporter
+rm -rf $RPM_BUILD_ROOT${MOZ_APP_DIR}/crashreporter.ini
 
 #rm -rf $RPM_BUILD_ROOT${MOZ_APP_DIR}/*.a
 
