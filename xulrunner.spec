@@ -11,14 +11,14 @@
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
 Version:        1.9
-Release:        0.alpha9.6%{?dist}
+Release:        0.beta1.1%{?dist}
 URL:            http://www.mozilla.org/projects/xulrunner/
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
 %if %{official_branding}
 %define tarball xulrunner-%{version}-source.tar.bz2
 %else
-%define tarball xulrunner-20071029.tar.bz2
+%define tarball xulrunner-20071120.tar.bz2
 %endif
 Source0:        %{tarball}
 Source10:       %{name}-mozconfig
@@ -384,6 +384,9 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
+* Tue Nov 20 2007 Martin Stransky <stransky@redhat.com> 1.9-0.beta1.1
+- update to beta 1
+
 * Mon Nov 19 2007 Martin Stransky <stransky@redhat.com> 1.9-0.alpha9.6
 - packed all gecko libraries (#389391)
 
