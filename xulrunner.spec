@@ -61,7 +61,7 @@ Provides: gecko-devel = %{version}
 XUL Runner devel is...
 
 %prep
-%setup -q -n xulrunner-%{version}
+%setup -q -n xulrunner-%{version}%{prerelease}
 
 %patch1 -p0 -b .no-native-theme
 %patch2 -p0 -b .dpi
