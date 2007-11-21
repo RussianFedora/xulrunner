@@ -69,8 +69,8 @@ Patch204:       xulrunner-1.9a6-xds.patch
 # ---------------------------------------------------
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-BuildRequires:  nspr-devel >= %{nspr_version}
-BuildRequires:  nss-devel >= %{nss_version}
+#BuildRequires:  nspr-devel >= %{nspr_version}
+#BuildRequires:  nss-devel >= %{nss_version}
 BuildRequires:  cairo-devel >= %{cairo_version}
 BuildRequires:  libpng-devel, libjpeg-devel
 BuildRequires:  zlib-devel, zip
