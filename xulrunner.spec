@@ -134,7 +134,7 @@ Gecko development files.
 %patch4   -p1
 
 %patch104 -p0 -b .ppc64
-%patch105 -p1 -b .sqlite
+#%patch105 -p1 -b .sqlite
 %patch106 -p1
 
 %patch201 -p0 -b .no-native-theme
