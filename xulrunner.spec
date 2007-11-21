@@ -87,6 +87,7 @@ BuildRequires:  libXt-devel
 BuildRequires:  libXrender-devel
 #BuildRequires:  system-bookmarks
 BuildRequires:  curl-devel
+BuildRequires:  python-devel
 
 #Requires:       nspr >= %{nspr_version}
 #Requires:       nss >= %{nss_version}
