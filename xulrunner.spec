@@ -2,17 +2,16 @@
 
 %define nss_version 3.10
 %define cairo_version 1.3.12
-%define prerelease a9pre
-%define alphatag 20071007cvs
+%define prerelease b1
 
 Summary:        XUL Runner
 Name:           xulrunner
 Version:        1.9
-Release:        0.10.%{prerelease}%{?dist}
+Release:        0.11.%{prerelease}%{?dist}
 URL:            http://dev.laptop.org/pub/sugar/xulrunner
 License:        MPL/LGPL
 Group:          Applications/Internet
-Source0:        xulrunner-%{version}.%{alphatag}.tar.bz2
+Source0:        xulrunner-%{version}.tar.bz2
 Source10:       xulrunner-mozconfig
 Source12:       xulrunner-olpc-default-prefs.js
 
@@ -62,7 +61,7 @@ Provides: gecko-devel = %{version}
 XUL Runner devel is...
 
 %prep
-%setup -q -n xulrunner-%{version}.%{alphatag}
+%setup -q -n xulrunner-%{version}
 
 %patch1 -p0 -b .no-native-theme
 %patch2 -p0 -b .dpi
@@ -125,6 +124,9 @@ make install DESTDIR=$RPM_BUILD_ROOT
 %{_includedir}/xulrunner-%{version}%{prerelease}
 
 %changelog
+* Wed Nov 21 2007 Marco Pesenti Gritti <mpg@redhat.com> - 1.9-0.11.b1
+- Update to 1.9b1
+
 * Wed Oct 10 2007 Marco Pesenti Gritti <mpg@redhat.com> - 1.9-0.10.a9
 - Upgrade to an a9 snapshot
 
