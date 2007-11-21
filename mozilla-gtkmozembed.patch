@@ -1,0 +1,17 @@
+diff -up mozilla/xulrunner/installer/mozilla-gtkmozembed.pc.in.old mozilla/xulrunner/installer/mozilla-gtkmozembed.pc.in
+--- mozilla/xulrunner/installer/mozilla-gtkmozembed.pc.in.old	2007-11-15 15:45:47.000000000 +0100
++++ mozilla/xulrunner/installer/mozilla-gtkmozembed.pc.in	2007-11-15 16:09:59.000000000 +0100
+@@ -0,0 +1,13 @@
++prefix=%prefix%
++sdkdir=%sdkdir%
++includedir=%includedir%
++idldir=%idldir%
++includetype=stable
++libdir=%sdkdir%
++
++Name: mozilla-gtkembedmoz
++Description: Mozilla Embedding Widget for Gtk+
++Version: %MOZILLA_VERSION%
++Requires: %MOZ_APP_NAME%-xpcom = %MOZILLA_VERSION%
++Libs: -L${libdir} -lxpcomglue_s -lxul -lxpcom
++Cflags: -I${includedir}/gtkembedmoz

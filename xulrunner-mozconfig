@@ -1,19 +1,20 @@
 . $topsrcdir/xulrunner/config/mozconfig
 
-# FIXME failures in nsNSSComponent.cpp
-#ac_add_options --with-system-nss
-# FIXME we need to fix nspr and reenable this.
+ac_add_options --prefix="$PREFIX"
+ac_add_options --libdir="$LIBDIR"
 #ac_add_options --with-system-nspr
+#ac_add_options --with-system-nss
 ac_add_options --with-system-jpeg
 ac_add_options --with-system-zlib
-# FIXME missing APNG support
 #ac_add_options --with-system-png
 ac_add_options --with-pthreads
 ac_add_options --disable-strip
 ac_add_options --disable-tests
-ac_add_options --disable-debug
 ac_add_options --disable-installer
+ac_add_options --disable-debug
 ac_add_options --enable-optimize="$RPM_OPT_FLAGS"
+#ac_add_options --enable-debug
+#ac_add_options --disable-optimize
 ac_add_options --enable-xinerama
 ac_add_options --enable-default-toolkit=cairo-gtk2
 ac_add_options --disable-xprint
@@ -24,9 +25,10 @@ ac_add_options --enable-application=xulrunner
 ac_add_options --disable-javaxpcom
 ac_add_options --disable-gnomeui
 ac_add_options --disable-gnomevfs
+#ac_add_options --enable-extensions=default,cookie
 ac_add_options --enable-extensions=default,cookie,python
-ac_add_options --prefix="$PREFIX"
-ac_add_options --libdir="$LIBDIR"
+ac_add_options --disable-airbag
+
 export BUILD_OFFICIAL=1
 export MOZILLA_OFFICIAL=1
 mk_add_options BUILD_OFFICIAL=1
