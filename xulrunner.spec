@@ -117,8 +117,8 @@ Group: Development/Libraries
 #Obsoletes: mozilla-devel
 #Obsoletes: firefox-devel < 2.1
 Requires: xulrunner = %{version}-%{release}
-Requires: nspr-devel >= %{nspr_version}
-Requires: nss-devel >= %{nss_version}
+#Requires: nspr-devel >= %{nspr_version}
+#Requires: nss-devel >= %{nss_version}
 Provides: gecko-devel = %{version}
 
 %description devel
