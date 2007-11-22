@@ -11,7 +11,7 @@
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
 Version:        1.9
-Release:        0.beta1.1%{?dist}
+Release:        0.beta1.2%{?dist}
 URL:            http://www.mozilla.org/projects/xulrunner/
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
@@ -400,7 +400,10 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
-* Wed Nov 21 2007 Marco Pesenti Gritti <marco@localhost.localdomain> - 1.9-0.beta1.1
+* Thu Nov 22 2007 Marco Pesenti Gritti <mpg@redhat.com> - 1.9-0.beta1.2
+- Remove nspr and nss requires from devel
+
+* Wed Nov 21 2007 Marco Pesenti Gritti <mpg@redhat.com> - 1.9-0.beta1.1
 - Resync with devel
 
 * Wed Oct 10 2007 Marco Pesenti Gritti <mpg@redhat.com> - 1.9-0.10.a9
