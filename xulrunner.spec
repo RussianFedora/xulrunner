@@ -356,12 +356,16 @@ fi
 %ghost %{_libdir}/%{name}-*/components/xpti.dat
 %{_libdir}/%{name}-*/components/*.xpt
 %{_libdir}/%{name}-*/components/*.js
+%{_libdir}/%{name}-*/components/*.so
+%{_libdir}/%{name}-*/components/pyabout.*
 %{_libdir}/%{name}-*/defaults
 %{_libdir}/%{name}-*/greprefs
 %{_libdir}/%{name}-*/icons
 %{_libdir}/%{name}-*/modules
 %{_libdir}/%{name}-*/plugins
+%{_libdir}/%{name}-*/python
 %{_libdir}/%{name}-*/res
+%{_libdir}/%{name}-*/*.chk
 %{_libdir}/%{name}-*/*.so
 %{_libdir}/%{name}-*/mozilla-xremote-client
 %{_libdir}/%{name}-*/run-mozilla.sh
