@@ -138,7 +138,7 @@ Gecko development files.
 #%patch105 -p1 -b .sqlite
 %patch106 -p1
 
-%patch201 -p0 -b .no-native-theme
+#%patch201 -p0 -b .no-native-theme
 %patch202 -p0 -b .dpi
 %patch203 -p0 -b .build
 %patch204 -p0 -b .xds
@@ -400,6 +400,9 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
+* Sat Nov 24 2007 Marco Pesenti Gritti <mpg@redhat.com> - 1.9-0.beta1.2
+- Disable no-native-theme patch
+
 * Thu Nov 22 2007 Marco Pesenti Gritti <mpg@redhat.com> - 1.9-0.beta1.2
 - Remove nspr and nss requires from devel
 
