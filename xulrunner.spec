@@ -11,7 +11,7 @@
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
 Version:        1.9
-Release:        0.beta1.2%{?dist}
+Release:        0.beta1.3%{?dist}
 URL:            http://www.mozilla.org/projects/xulrunner/
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
@@ -259,17 +259,18 @@ install -c -m 755 dist/bin/xpcshell \
 %endif
 
 # GRE stuff
-#%ifarch x86_64 ia64 ppc64 s390x
-#%define gre_conf_file gre64.conf
-#%else
-#%define gre_conf_file gre.conf
-#%endif
+%ifarch x86_64 ia64 ppc64 s390x
+%define gre_conf_file gre64.conf
+%else
+%define gre_conf_file gre.conf
+%endif
 
-#%{__mkdir_p} $RPM_BUILD_ROOT/etc/gre.d/
-#%{__cat} > $RPM_BUILD_ROOT/etc/gre.d/%{gre_conf_file} << EOF
-#[%{version}]
-#GRE_PATH=${MOZ_APP_DIR}
-#EOF
+%{__rm} -rf $RPM_BUILD_ROOT/etc/gre.d
+%{__mkdir_p} $RPM_BUILD_ROOT/etc/gre.d/
+%{__cat} > $RPM_BUILD_ROOT/etc/gre.d/%{gre_conf_file} << EOF
+[%{version}]
+GRE_PATH=${MOZ_APP_DIR}
+EOF
 
 # Library path
 %{__mkdir_p} $RPM_BUILD_ROOT/etc/ld.so.conf.d
@@ -291,7 +292,6 @@ touch $RPM_BUILD_ROOT${MOZ_APP_DIR}/components/compreg.dat
 touch $RPM_BUILD_ROOT${MOZ_APP_DIR}/components/xpti.dat
 
 # remove unused files
-rm -rf $RPM_BUILD_ROOT/etc/gre.d
 rm -rf $RPM_BUILD_ROOT${MOZ_APP_DIR}/crashreporter
 rm -rf $RPM_BUILD_ROOT${MOZ_APP_DIR}/crashreporter.ini
 
@@ -332,8 +332,8 @@ fi
 #%exclude %{_bindir}/xulrunner-config
 %{_mandir}/man1/*
 %{_libdir}/mozilla
-#%dir /etc/gre.d
-#/etc/gre.d/%{gre_conf_file}
+%dir /etc/gre.d
+/etc/gre.d/%{gre_conf_file}
 %dir %{_libdir}/%{name}-*
 %{_libdir}/%{name}-*/LICENSE
 %{_libdir}/%{name}-*/README.txt
@@ -384,6 +384,9 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
+* Tue Nov 27 2007 Martin Stransky <stransky@redhat.com> 1.9-0.beta1.3
+- export /etc/gre.d/gre.conf (it's used by python gecko applications)
+
 * Mon Nov 26 2007 Martin Stransky <stransky@redhat.com> 1.9-0.beta1.2
 - added xulrunner/js include dir to xulrunner-js
 
