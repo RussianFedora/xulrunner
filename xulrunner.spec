@@ -11,7 +11,7 @@
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
 Version:        1.9
-Release:        0.beta1.3%{?dist}
+Release:        0.beta1.4%{?dist}
 URL:            http://www.mozilla.org/projects/xulrunner/
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
@@ -400,6 +400,9 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
+* Thu Nov 29 2007 Marco Pesenti Gritti <mpg@redhat.com> - 1.9-0.beta1.4
+- More comprehensive patch to disable native theming
+
 * Sat Nov 24 2007 Marco Pesenti Gritti <mpg@redhat.com> - 1.9-0.beta1.3
 - Disable no-native-theme patch
 
