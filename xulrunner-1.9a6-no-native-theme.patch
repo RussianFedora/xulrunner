@@ -17,8 +17,8 @@
  }
  
  static PRInt32 CheckWidgetStyle(GtkWidget* aWidget, const char* aStyle, PRInt32 aMetric) {
---- widget/src/gtk2/Makefile.in.old	2007-12-01 14:58:29.000000000 +0100
-+++ widget/src/gtk2/Makefile.in	2007-12-01 14:58:42.000000000 +0100
+--- widget/src/gtk2/Makefile.in.no-native-theme	2007-10-06 14:08:46.000000000 +0200
++++ widget/src/gtk2/Makefile.in	2007-12-01 16:04:12.000000000 +0100
 @@ -52,8 +52,6 @@
  
  PACKAGE_FILE = widget_gtk2.pkg
@@ -28,3 +28,14 @@
  REQUIRES	= xpcom \
  		  string \
  		  gfx \
+@@ -139,8 +137,9 @@
+ 		mozcontainer.h \
+ 		$(NULL)
+ 
+-ifdef NATIVE_THEME_SUPPORT
+ CSRCS		+= gtk2drawing.c
++
++ifdef NATIVE_THEME_SUPPORT
+ CPPSRCS		+= nsNativeThemeGTK.cpp
+ DEFINES		+= -DNATIVE_THEME_SUPPORT
+ endif
