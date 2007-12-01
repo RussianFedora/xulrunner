@@ -1,14 +1,3 @@
---- widget/src/gtk2/Makefile.in.old	2007-11-29 14:19:58.000000000 +0100
-+++ widget/src/gtk2/Makefile.in	2007-11-29 14:20:03.000000000 +0100
-@@ -52,7 +52,7 @@
- 
- PACKAGE_FILE = widget_gtk2.pkg
- 
--NATIVE_THEME_SUPPORT = 1
-+NATIVE_THEME_SUPPORT = 0
- 
- REQUIRES	= xpcom \
- 		  string \
 --- widget/src/gtk2/nsLookAndFeel.cpp.old	2007-11-29 14:21:09.000000000 +0100
 +++ widget/src/gtk2/nsLookAndFeel.cpp	2007-11-29 14:22:37.000000000 +0100
 @@ -83,6 +83,7 @@
@@ -28,3 +17,14 @@
  }
  
  static PRInt32 CheckWidgetStyle(GtkWidget* aWidget, const char* aStyle, PRInt32 aMetric) {
+--- widget/src/gtk2/Makefile.in.old	2007-12-01 14:58:29.000000000 +0100
++++ widget/src/gtk2/Makefile.in	2007-12-01 14:58:42.000000000 +0100
+@@ -52,8 +52,6 @@
+ 
+ PACKAGE_FILE = widget_gtk2.pkg
+ 
+-NATIVE_THEME_SUPPORT = 1
+-
+ REQUIRES	= xpcom \
+ 		  string \
+ 		  gfx \
