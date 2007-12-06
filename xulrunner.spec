@@ -11,7 +11,7 @@
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
 Version:        1.9
-Release:        0.beta1.3%{?dist}
+Release:        0.beta1.4%{?dist}
 URL:            http://www.mozilla.org/projects/xulrunner/
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
@@ -48,7 +48,7 @@ Patch42:        firefox-1.1-uriloader.patch
 Patch104:       mozilla-firefox-head.ppc64.patch
 Patch105:       mozilla-sqlite-build.patch
 Patch106:       mozilla-gtkmozembed.patch
-Patch107:       mozilla-xulrunner-pkgconfig.patch
+Patch107:       mozilla-pkgconfig.patch
 
 %if %{official_branding}
 # Required by Mozilla Corporation
@@ -146,7 +146,7 @@ cp mozilla-embedding.pc.in xulrunner-embedding.pc.in
 cp mozilla-gtkmozembed.pc.in xulrunner-gtkmozembed.pc.in
 popd
 
-%patch107 -p1 -b .old
+%patch107 -p1 -b .pkg
 
 
 # For branding specific patches.
@@ -384,6 +384,9 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
+* Thu Dec 06 2007 Martin Stransky <stransky@redhat.com> 1.9-0.beta1.4
+- fixed mozilla-plugin.pc (#412971)
+
 * Tue Nov 27 2007 Martin Stransky <stransky@redhat.com> 1.9-0.beta1.3
 - export /etc/gre.d/gre.conf (it's used by python gecko applications)
 
