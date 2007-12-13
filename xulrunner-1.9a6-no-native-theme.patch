@@ -1,41 +1,92 @@
---- widget/src/gtk2/nsLookAndFeel.cpp.old	2007-11-29 14:21:09.000000000 +0100
-+++ widget/src/gtk2/nsLookAndFeel.cpp	2007-11-29 14:22:37.000000000 +0100
-@@ -83,6 +83,7 @@
+--- /tmp/nsNativeThemeGTK.cpp	2007-12-13 20:18:32.000000000 +0100
++++ widget/src/gtk2/nsNativeThemeGTK.cpp	2007-12-13 20:19:01.000000000 +0100
+@@ -983,48 +983,6 @@
+     return PR_FALSE;
  
- nsresult nsLookAndFeel::NativeGetColor(const nsColorID aID, nscolor& aColor)
- {
-+#if 0
-     nsresult res = NS_OK;
- 
-     switch (aID) {
-@@ -308,6 +309,8 @@
-     }
- 
-     return res;
-+#endif
-+    return NS_ERROR_FAILURE;
- }
- 
- static PRInt32 CheckWidgetStyle(GtkWidget* aWidget, const char* aStyle, PRInt32 aMetric) {
---- widget/src/gtk2/Makefile.in.no-native-theme	2007-10-06 14:08:46.000000000 +0200
-+++ widget/src/gtk2/Makefile.in	2007-12-01 16:04:12.000000000 +0100
-@@ -52,8 +52,6 @@
- 
- PACKAGE_FILE = widget_gtk2.pkg
- 
--NATIVE_THEME_SUPPORT = 1
+   switch (aWidgetType) {
+-  case NS_THEME_BUTTON:
+-  case NS_THEME_BUTTON_FOCUS:
+-  case NS_THEME_RADIO:
+-  case NS_THEME_RADIO_SMALL:
+-  case NS_THEME_CHECKBOX:
+-  case NS_THEME_CHECKBOX_SMALL:
+-  case NS_THEME_TOOLBOX: // N/A
+-  case NS_THEME_TOOLBAR:
+-  case NS_THEME_TOOLBAR_BUTTON:
+-  case NS_THEME_TOOLBAR_DUAL_BUTTON: // so we can override the border with 0
+-    // case NS_THEME_TOOLBAR_DUAL_BUTTON_DROPDOWN:
+-    // case NS_THEME_TOOLBAR_SEPARATOR:
+-  case NS_THEME_TOOLBAR_GRIPPER:
+-  case NS_THEME_STATUSBAR:
+-  case NS_THEME_STATUSBAR_PANEL:
+-  case NS_THEME_STATUSBAR_RESIZER_PANEL:
+-  case NS_THEME_RESIZER:
+-  case NS_THEME_LISTBOX:
+-    // case NS_THEME_LISTBOX_LISTITEM:
+-  case NS_THEME_TREEVIEW:
+-    // case NS_THEME_TREEVIEW_TREEITEM:
+-  case NS_THEME_TREEVIEW_TWISTY:
+-    // case NS_THEME_TREEVIEW_LINE:
+-    // case NS_THEME_TREEVIEW_HEADER:
+-  case NS_THEME_TREEVIEW_HEADER_CELL:
+-  case NS_THEME_TREEVIEW_HEADER_SORTARROW:
+-  case NS_THEME_TREEVIEW_TWISTY_OPEN:
+-    case NS_THEME_PROGRESSBAR:
+-    case NS_THEME_PROGRESSBAR_CHUNK:
+-    case NS_THEME_PROGRESSBAR_VERTICAL:
+-    case NS_THEME_PROGRESSBAR_CHUNK_VERTICAL:
+-    case NS_THEME_TAB:
+-    // case NS_THEME_TAB_PANEL:
+-    case NS_THEME_TAB_LEFT_EDGE:
+-    case NS_THEME_TAB_RIGHT_EDGE:
+-    case NS_THEME_TAB_PANELS:
+-  case NS_THEME_TOOLTIP:
+-    // case NS_THEME_SPINNER:
+-  case NS_THEME_SPINNER_UP_BUTTON:
+-  case NS_THEME_SPINNER_DOWN_BUTTON:
+-    // case NS_THEME_SCROLLBAR:  (n/a for gtk)
+-    // case NS_THEME_SCROLLBAR_SMALL: (n/a for gtk)
+   case NS_THEME_SCROLLBAR_BUTTON_UP:
+   case NS_THEME_SCROLLBAR_BUTTON_DOWN:
+   case NS_THEME_SCROLLBAR_BUTTON_LEFT:
+@@ -1033,40 +991,7 @@
+   case NS_THEME_SCROLLBAR_TRACK_VERTICAL:
+   case NS_THEME_SCROLLBAR_THUMB_HORIZONTAL:
+   case NS_THEME_SCROLLBAR_THUMB_VERTICAL:
+-    // case NS_THEME_SCROLLBAR_GRIPPER_HORIZONTAL:  (n/a for gtk)
+-    // case NS_THEME_SCROLLBAR_GRIPPER_VERTICAL:  (n/a for gtk)
+-  case NS_THEME_TEXTFIELD:
+-  case NS_THEME_TEXTFIELD_MULTILINE:
+-    // case NS_THEME_TEXTFIELD_CARET:
+-  case NS_THEME_DROPDOWN_TEXTFIELD:
+-  case NS_THEME_SCALE_HORIZONTAL:
+-  case NS_THEME_SCALE_THUMB_HORIZONTAL:
+-  case NS_THEME_SCALE_VERTICAL:
+-  case NS_THEME_SCALE_THUMB_VERTICAL:
+-    // case NS_THEME_SCALE_THUMB_START:
+-    // case NS_THEME_SCALE_THUMB_END:
+-    // case NS_THEME_SCALE_TICK:
+-  case NS_THEME_CHECKBOX_CONTAINER:
+-  case NS_THEME_RADIO_CONTAINER:
+-  case NS_THEME_CHECKBOX_LABEL:
+-  case NS_THEME_RADIO_LABEL:
+-  case NS_THEME_MENUBAR:
+-  case NS_THEME_MENUPOPUP:
+-  case NS_THEME_MENUITEM:
+-  case NS_THEME_CHECKMENUITEM:
+-  case NS_THEME_RADIOMENUITEM:
+-  case NS_THEME_WINDOW:
+-  case NS_THEME_DIALOG:
+-  case NS_THEME_DROPDOWN:
+-  case NS_THEME_DROPDOWN_TEXT:
+     return !IsWidgetStyled(aPresContext, aFrame, aWidgetType);
 -
- REQUIRES	= xpcom \
- 		  string \
- 		  gfx \
-@@ -139,8 +137,9 @@
- 		mozcontainer.h \
- 		$(NULL)
+-  case NS_THEME_DROPDOWN_BUTTON:
+-    // "Native" dropdown buttons cause padding and margin problems, but only
+-    // in HTML so allow them in XUL.
+-    return (!aFrame || aFrame->GetContent()->IsNodeOfType(nsINode::eXUL)) &&
+-           !IsWidgetStyled(aPresContext, aFrame, aWidgetType);
+-
+   }
  
--ifdef NATIVE_THEME_SUPPORT
- CSRCS		+= gtk2drawing.c
-+
-+ifdef NATIVE_THEME_SUPPORT
- CPPSRCS		+= nsNativeThemeGTK.cpp
- DEFINES		+= -DNATIVE_THEME_SUPPORT
- endif
+   return PR_FALSE;
