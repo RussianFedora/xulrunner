@@ -11,14 +11,14 @@
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
 Version:        1.9
-Release:        0.beta1.4%{?dist}
+Release:        0.beta2.1%{?dist}
 URL:            http://www.mozilla.org/projects/xulrunner/
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
 %if %{official_branding}
 %define tarball xulrunner-%{version}-source.tar.bz2
 %else
-%define tarball xulrunner-20071120.tar.bz2
+%define tarball xulrunner-20071212.tar.bz2
 %endif
 Source0:        %{tarball}
 Source10:       %{name}-mozconfig
@@ -34,6 +34,8 @@ Patch1:         firefox-2.0-link-layout.patch
 Patch2:         camellia256.patch
 Patch3:         xulrunner-compile.patch
 Patch4:         mozilla-build.patch
+Patch5:         xulrunner-path.patch
+Patch6:         xulrunner-version.patch
 
 # customization patches
 Patch21:        firefox-0.7.3-psfonts.patch
@@ -126,8 +128,10 @@ Gecko development files.
 %patch2   -R -p1 -b .camellia256
 %patch3   -p1
 %patch4   -p1
+%patch5   -p1
+%patch6   -p1 -b .ver
 
-%patch104 -p0 -b .ppc64
+%patch104 -p1 -b .ppc64
 %patch105 -p1 -b .sqlite
 %patch106 -p1
 
@@ -170,7 +174,7 @@ popd
 #---------------------------------------------------------------------
 
 %build
-INTERNAL_GECKO=`./config/milestone.pl --topsrcdir=.`
+INTERNAL_GECKO="1.9pre"
 MOZ_APP_DIR=%{_libdir}/%{name}-${INTERNAL_GECKO}
 
 # Build with -Os as it helps the browser; also, don't override mozilla's warning
@@ -196,7 +200,7 @@ make -f client.mk build
 %install
 %{__rm} -rf $RPM_BUILD_ROOT
 
-INTERNAL_GECKO=`./config/milestone.pl --topsrcdir=.`
+INTERNAL_GECKO="1.9pre"
 INTERNAL_APP_NAME=%{name}-${INTERNAL_GECKO}
 MOZ_APP_DIR=%{_libdir}/${INTERNAL_APP_NAME}
 
@@ -204,7 +208,7 @@ DESTDIR=$RPM_BUILD_ROOT make install
 
 %{__mkdir_p} $RPM_BUILD_ROOT/${MOZ_APP_DIR} \
              $RPM_BUILD_ROOT%{_datadir}/idl/${INTERNAL_APP_NAME} \
-             $RPM_BUILD_ROOT%{_includedir}/${INTERNAL_APP_NAME}
+             $RPM_BUILD_ROOT%{_includedir}/${INTERNAL_APP_NAME}             
 %{__install} -p -d dist/sdk/include $RPM_BUILD_ROOT%{_includedir}/${INTERNAL_APP_NAME}
 %{__install} -p -d dist/sdk/idl $RPM_BUILD_ROOT%{_datadir}/idl/${INTERNAL_APP_NAME}
 %{__install} -p dist/sdk/bin/* $RPM_BUILD_ROOT/$MOZ_APP_DIR
@@ -278,7 +282,7 @@ EOF
 ${MOZ_APP_DIR}
 EOF
 
-GECKO_VERSION=$(./config/milestone.pl --topsrcdir='.')
+GECKO_VERSION=="1.9pre"
 %{__cat} %{SOURCE101} | %{__sed} -e "s/@GECKO_VERSION@/$GECKO_VERSION/g" > \
                         %{_builddir}/add-gecko-provides
 chmod 700 %{_builddir}/add-gecko-provides
@@ -292,17 +296,17 @@ touch $RPM_BUILD_ROOT${MOZ_APP_DIR}/components/compreg.dat
 touch $RPM_BUILD_ROOT${MOZ_APP_DIR}/components/xpti.dat
 
 # remove unused files
-rm -rf $RPM_BUILD_ROOT${MOZ_APP_DIR}/crashreporter
-rm -rf $RPM_BUILD_ROOT${MOZ_APP_DIR}/crashreporter.ini
+%{__rm} -rf $RPM_BUILD_ROOT${MOZ_APP_DIR}/crashreporter
+%{__rm} -rf $RPM_BUILD_ROOT${MOZ_APP_DIR}/crashreporter.ini
 
 #rm -rf $RPM_BUILD_ROOT${MOZ_APP_DIR}/*.a
 
-rm -rf $RPM_BUILD_ROOT${MOZ_APP_DIR}/bin
-rm -rf $RPM_BUILD_ROOT${MOZ_APP_DIR}/lib
-rm -rf $RPM_BUILD_ROOT${MOZ_APP_DIR}/include
-rm -rf $RPM_BUILD_ROOT${MOZ_APP_DIR}/idl
+%{__rm} -rf $RPM_BUILD_ROOT${MOZ_APP_DIR}/bin
+%{__rm} -rf $RPM_BUILD_ROOT${MOZ_APP_DIR}/lib
+%{__rm} -rf $RPM_BUILD_ROOT${MOZ_APP_DIR}/include
+%{__rm} -rf $RPM_BUILD_ROOT${MOZ_APP_DIR}/idl
 
-rm -rf $RPM_BUILD_ROOT${MOZ_APP_DIR}/sdk/lib
+%{__rm} -rf $RPM_BUILD_ROOT${MOZ_APP_DIR}/sdk/lib
 ln -s ${MOZ_APP_DIR} $RPM_BUILD_ROOT${MOZ_APP_DIR}/sdk/lib
 
 #---------------------------------------------------------------------
@@ -342,8 +346,7 @@ fi
 %dir %{_libdir}/%{name}-*/components
 %ghost %{_libdir}/%{name}-*/components/compreg.dat
 %ghost %{_libdir}/%{name}-*/components/xpti.dat
-%{_libdir}/%{name}-*/components/*.xpt
-%{_libdir}/%{name}-*/components/*.js
+%{_libdir}/%{name}-*/components/*
 %{_libdir}/%{name}-*/defaults
 %{_libdir}/%{name}-*/greprefs
 %{_libdir}/%{name}-*/icons
@@ -384,6 +387,9 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
+* Wed Dec 12 2007 Martin Stransky <stransky@redhat.com> 1.9-0.beta2.1
+- updated to Beta 2.
+
 * Thu Dec 06 2007 Martin Stransky <stransky@redhat.com> 1.9-0.beta1.4
 - fixed mozilla-plugin.pc (#412971)
 

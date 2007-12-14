@@ -1,6 +1,6 @@
-diff -up mozilla/storage/build/Makefile.in.old mozilla/storage/build/Makefile.in
---- mozilla/storage/build/Makefile.in.old	2007-08-10 18:19:57.000000000 +0200
-+++ mozilla/storage/build/Makefile.in	2007-11-14 09:17:00.000000000 +0100
+diff -up mozilla/storage/build/Makefile.in.sqlite mozilla/storage/build/Makefile.in
+--- mozilla/storage/build/Makefile.in.sqlite	2007-08-10 18:19:57.000000000 +0200
++++ mozilla/storage/build/Makefile.in	2007-12-13 12:06:36.000000000 +0100
 @@ -21,7 +21,6 @@
  #
  # Contributor(s):
@@ -21,9 +21,9 @@ diff -up mozilla/storage/build/Makefile.in.old mozilla/storage/build/Makefile.in
  EXTRA_DSO_LDOPTS += \
  	$(LIBS_DIR) \
  	$(EXTRA_DSO_LIBS) \
-diff -up mozilla/toolkit/library/libxul-config.mk.old mozilla/toolkit/library/libxul-config.mk
---- mozilla/toolkit/library/libxul-config.mk.old	2007-09-17 01:48:08.000000000 +0200
-+++ mozilla/toolkit/library/libxul-config.mk	2007-11-14 09:14:16.000000000 +0100
+diff -up mozilla/toolkit/library/libxul-config.mk.sqlite mozilla/toolkit/library/libxul-config.mk
+--- mozilla/toolkit/library/libxul-config.mk.sqlite	2007-12-08 02:38:35.000000000 +0100
++++ mozilla/toolkit/library/libxul-config.mk	2007-12-13 12:06:36.000000000 +0100
 @@ -21,7 +21,6 @@
  # the Initial Developer. All Rights Reserved.
  #
@@ -40,9 +40,9 @@ diff -up mozilla/toolkit/library/libxul-config.mk.old mozilla/toolkit/library/li
  endif
  
  ifdef MOZ_PLACES
-diff -up mozilla/xpcom/stub/Makefile.in.old mozilla/xpcom/stub/Makefile.in
---- mozilla/xpcom/stub/Makefile.in.old	2007-10-13 23:13:52.000000000 +0200
-+++ mozilla/xpcom/stub/Makefile.in	2007-11-14 09:15:28.000000000 +0100
+diff -up mozilla/xpcom/stub/Makefile.in.sqlite mozilla/xpcom/stub/Makefile.in
+--- mozilla/xpcom/stub/Makefile.in.sqlite	2007-10-13 23:13:52.000000000 +0200
++++ mozilla/xpcom/stub/Makefile.in	2007-12-13 12:06:36.000000000 +0100
 @@ -91,7 +91,6 @@ DEPENDENT_LIBS_LIST += \
  ifdef MOZ_ENABLE_LIBXUL
  
@@ -51,9 +51,9 @@ diff -up mozilla/xpcom/stub/Makefile.in.old mozilla/xpcom/stub/Makefile.in
  	$(LIB_PREFIX)softokn3$(DLL_SUFFIX) \
  	$(LIB_PREFIX)nss3$(DLL_SUFFIX) \
  	$(LIB_PREFIX)ssl3$(DLL_SUFFIX) \
-diff -up mozilla/config/static-config.mk.old mozilla/config/static-config.mk
---- mozilla/config/static-config.mk.old	2007-07-24 00:02:20.000000000 +0200
-+++ mozilla/config/static-config.mk	2007-11-14 09:14:16.000000000 +0100
+diff -up mozilla/config/static-config.mk.sqlite mozilla/config/static-config.mk
+--- mozilla/config/static-config.mk.sqlite	2007-07-24 00:02:20.000000000 +0200
++++ mozilla/config/static-config.mk	2007-12-13 12:06:36.000000000 +0100
 @@ -98,10 +98,6 @@ ifdef MOZ_ENABLE_PANGO
  STATIC_EXTRA_LIBS	+= $(MOZ_PANGO_LIBS)
  endif
@@ -65,9 +65,9 @@ diff -up mozilla/config/static-config.mk.old mozilla/config/static-config.mk
  ifdef MOZ_ENABLE_STARTUP_NOTIFICATION
  STATIC_EXTRA_LIBS	+= $(MOZ_STARTUP_NOTIFICATION_LIBS)
  endif
-diff -up mozilla/config/system-headers.old mozilla/config/system-headers
---- mozilla/config/system-headers.old	2007-10-12 14:34:46.000000000 +0200
-+++ mozilla/config/system-headers	2007-11-14 09:14:16.000000000 +0100
+diff -up mozilla/config/system-headers.sqlite mozilla/config/system-headers
+--- mozilla/config/system-headers.sqlite	2007-10-12 14:34:46.000000000 +0200
++++ mozilla/config/system-headers	2007-12-13 12:06:36.000000000 +0100
 @@ -617,8 +617,6 @@ SIOUX.h
  size_t.h
  someincludefile.h
@@ -77,9 +77,9 @@ diff -up mozilla/config/system-headers.old mozilla/config/system-headers
  ssdef.h
  sslerr.h
  ssl.h
-diff -up mozilla/db/sqlite3/src/sqlite3file.h.old mozilla/db/sqlite3/src/sqlite3file.h
---- mozilla/db/sqlite3/src/sqlite3file.h.old	2007-07-25 04:18:54.000000000 +0200
-+++ mozilla/db/sqlite3/src/sqlite3file.h	2007-11-14 09:14:16.000000000 +0100
+diff -up mozilla/db/sqlite3/src/sqlite3file.h.sqlite mozilla/db/sqlite3/src/sqlite3file.h
+--- mozilla/db/sqlite3/src/sqlite3file.h.sqlite	2007-07-25 04:18:54.000000000 +0200
++++ mozilla/db/sqlite3/src/sqlite3file.h	2007-12-13 12:06:36.000000000 +0100
 @@ -199,11 +199,7 @@ struct sqlite3OsVtbl {
    /*
    ** Files other than os.c just reference the global virtual function table. 
@@ -92,37 +92,27 @@ diff -up mozilla/db/sqlite3/src/sqlite3file.h.old mozilla/db/sqlite3/src/sqlite3
  #endif /* _SQLITE_OS_C_ */
  
  } // extern "C"
-diff -up mozilla/db/sqlite3/src/Makefile.in.old mozilla/db/sqlite3/src/Makefile.in
---- mozilla/db/sqlite3/src/Makefile.in.old	2007-09-16 03:47:04.000000000 +0200
-+++ mozilla/db/sqlite3/src/Makefile.in	2007-11-14 09:20:17.000000000 +0100
-@@ -45,15 +45,9 @@ VPATH		= @srcdir@
+diff -up mozilla/db/sqlite3/src/Makefile.in.sqlite mozilla/db/sqlite3/src/Makefile.in
+--- mozilla/db/sqlite3/src/Makefile.in.sqlite	2007-12-01 08:17:37.000000000 +0100
++++ mozilla/db/sqlite3/src/Makefile.in	2007-12-13 12:12:37.000000000 +0100
+@@ -45,10 +45,10 @@ VPATH		= @srcdir@
  include $(DEPTH)/config/autoconf.mk
  
  MODULE           = sqlite3
 -LIBRARY_NAME     = sqlite3
 -FORCE_SHARED_LIB = 1
 -VISIBILITY_FLAGS =
--
--ifeq (,$(filter-out WINNT WINCE,$(OS_ARCH)))
--ifndef GNU_CC
--DEFFILE = $(win_srcdir)/sqlite.def
--endif
--endif
+-LIB_IS_C_ONLY = 1
 +LIBRARY_NAME     = sqlite3_s
 +MODULE_NAME      = sqlite3
 +FORCE_STATIC_LIB = 1
++LIB_IS_C_ONLY    = 1
  
- ifdef GNU_CC
- MODULE_OPTIMIZE_FLAGS = -O3
-@@ -83,7 +77,15 @@ DEFINES += -DOS2_HIGH_MEMORY
- endif
+ ifeq (,$(filter-out WINNT WINCE,$(OS_ARCH)))
+ ifndef GNU_CC
+@@ -85,6 +85,9 @@ endif
  endif
  
-+ifdef ENABLE_TESTS
-+##LIBS = $(DIST)/lib/$(LIB_PREFIX)sqlite3_s.$(LIB_SUFFIX)
-+##SIMPLE_PROGRAMS = sqlite-shell
-+endif
-+
  include $(topsrcdir)/config/rules.mk
 +    
 +sqlite-shell.$(OBJ_SUFFIX): shell.c
