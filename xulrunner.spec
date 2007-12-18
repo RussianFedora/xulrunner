@@ -7,7 +7,6 @@
 
 %define official_branding 0
 
-
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
 Version:        1.9
@@ -150,7 +149,7 @@ cp mozilla-embedding.pc.in xulrunner-embedding.pc.in
 cp mozilla-gtkmozembed.pc.in xulrunner-gtkmozembed.pc.in
 popd
 
-%patch107 -p1 -b .pkg
+%patch107 -p1 -b .pk
 
 
 # For branding specific patches.
@@ -201,18 +200,23 @@ make -f client.mk build
 %{__rm} -rf $RPM_BUILD_ROOT
 
 INTERNAL_GECKO="1.9pre"
+
 INTERNAL_APP_NAME=%{name}-${INTERNAL_GECKO}
 MOZ_APP_DIR=%{_libdir}/${INTERNAL_APP_NAME}
+
+INTERNAL_APP_SDK_NAME=%{name}-sdk-${INTERNAL_GECKO}
+MOZ_APP_SDK_DIR=%{_libdir}/${INTERNAL_APP_SDK_NAME}
 
 DESTDIR=$RPM_BUILD_ROOT make install
 
 %{__mkdir_p} $RPM_BUILD_ROOT/${MOZ_APP_DIR} \
-             $RPM_BUILD_ROOT%{_datadir}/idl/${INTERNAL_APP_NAME} \
-             $RPM_BUILD_ROOT%{_includedir}/${INTERNAL_APP_NAME}             
-%{__install} -p -d dist/sdk/include $RPM_BUILD_ROOT%{_includedir}/${INTERNAL_APP_NAME}
-%{__install} -p -d dist/sdk/idl $RPM_BUILD_ROOT%{_datadir}/idl/${INTERNAL_APP_NAME}
-%{__install} -p dist/sdk/bin/* $RPM_BUILD_ROOT/$MOZ_APP_DIR
-%{__install} -p dist/sdk/lib/* $RPM_BUILD_ROOT/$MOZ_APP_DIR
+             $RPM_BUILD_ROOT%{_datadir}/idl/${INTERNAL_APP_SDK_NAME} \
+             $RPM_BUILD_ROOT%{_includedir}/${INTERNAL_APP_SDK_NAME}
+#%{__install} -p -d dist/sdk/include $RPM_BUILD_ROOT%{_includedir}/${INTERNAL_APP_SDK_NAME}
+#%{__install} -p -d dist/sdk/idl $RPM_BUILD_ROOT%{_datadir}/idl/${INTERNAL_APP_SDK_NAME}
+#%{__install} -p dist/sdk/bin/* $RPM_BUILD_ROOT/$MOZ_APP_DIR
+#%{__install} -p dist/sdk/lib/* $RPM_BUILD_ROOT/$MOZ_APP_SDK_DIR
+%{__install} -p dist/sdk/bin/regxpcom $RPM_BUILD_ROOT/$MOZ_APP_DIR
 
 %{__mkdir_p} $RPM_BUILD_ROOT{%{_libdir},%{_bindir},%{_datadir}/applications}
 
@@ -248,18 +252,44 @@ cd -
 
 # Prepare our devel package
 %if %{build_devel_package}
-%{__mkdir_p} $RPM_BUILD_ROOT/%{_includedir}/${INTERNAL_APP_NAME}
-%{__mkdir_p} $RPM_BUILD_ROOT/%{_datadir}/idl/${INTERNAL_APP_NAME}
+%{__mkdir_p} $RPM_BUILD_ROOT/%{_includedir}/${INTERNAL_APP_SDK_NAME}
+%{__mkdir_p} $RPM_BUILD_ROOT/%{_datadir}/idl/${INTERNAL_APP_SDK_NAME}
 %{__mkdir_p} $RPM_BUILD_ROOT/%{_libdir}/pkgconfig
+
 %{__cp} -rL dist/include/* \
-  $RPM_BUILD_ROOT/%{_includedir}/${INTERNAL_APP_NAME}
-%{__cp} -rL dist/idl/* \
-  $RPM_BUILD_ROOT/%{_datadir}/idl/${INTERNAL_APP_NAME}
+  $RPM_BUILD_ROOT/%{_includedir}/${INTERNAL_APP_SDK_NAME}
+#%{__cp} -rL dist/idl/* \
+#  $RPM_BUILD_ROOT/%{_datadir}/idl/${INTERNAL_APP_SDK_NAME}
+#%{__mv} $RPM_BUILD_ROOT/%{_includedir}/${INTERNAL_APP_NAME}/* \
+#  $RPM_BUILD_ROOT/%{_includedir}/${INTERNAL_APP_SDK_NAME}
+#%{__mv} $RPM_BUILD_ROOT/%{_datadir}/idl/${INTERNAL_APP_NAME}/* \
+#  $RPM_BUILD_ROOT/%{_datadir}/idl/${INTERNAL_APP_SDK_NAME}
+
 install -c -m 755 dist/bin/xpcshell \
   dist/bin/xpidl \
   dist/bin/xpt_dump \
   dist/bin/xpt_link \
   $RPM_BUILD_ROOT/${MOZ_APP_DIR}
+
+%{__rm} -rf $RPM_BUILD_ROOT/%{_includedir}/${INTERNAL_APP_NAME}
+%{__rm} -rf $RPM_BUILD_ROOT/%{_datadir}/idl/${INTERNAL_APP_NAME}
+
+%{__rm} -rf $RPM_BUILD_ROOT${MOZ_APP_SDK_DIR}/include
+ln -s  %{_includedir}/${INTERNAL_APP_SDK_NAME}/unstable $RPM_BUILD_ROOT${MOZ_APP_SDK_DIR}/include
+%{__rm} -rf $RPM_BUILD_ROOT${MOZ_APP_SDK_DIR}/idl
+ln -s  %{_datadir}/idl/${INTERNAL_APP_SDK_NAME}/unstable $RPM_BUILD_ROOT${MOZ_APP_SDK_DIR}/idl
+
+%{__rm} -rf $RPM_BUILD_ROOT${MOZ_APP_SDK_DIR}/sdk/include
+ln -s  %{_includedir}/${INTERNAL_APP_SDK_NAME}/stable $RPM_BUILD_ROOT${MOZ_APP_SDK_DIR}/sdk/include
+%{__rm} -rf $RPM_BUILD_ROOT${MOZ_APP_SDK_DIR}/sdk/idl
+ln -s  %{_datadir}/idl/${INTERNAL_APP_SDK_NAME}/stable $RPM_BUILD_ROOT${MOZ_APP_SDK_DIR}/sdk/idl
+
+%{__rm} -rf $RPM_BUILD_ROOT${MOZ_APP_SDK_DIR}/sdk/lib/*.so
+pushd $RPM_BUILD_ROOT${MOZ_APP_DIR}
+for i in *.so; do
+    ln -s ${MOZ_APP_DIR}/$i $RPM_BUILD_ROOT${MOZ_APP_SDK_DIR}/sdk/lib/$i
+done
+popd
 %endif
 
 # GRE stuff
@@ -277,8 +307,14 @@ GRE_PATH=${MOZ_APP_DIR}
 EOF
 
 # Library path
+%ifarch x86_64 ia64 ppc64 s390x
+%define ld_conf_file xulrunner-64.conf
+%else
+%define ld_conf_file xulrunner-32.conf
+%endif
+
 %{__mkdir_p} $RPM_BUILD_ROOT/etc/ld.so.conf.d
-%{__cat} > $RPM_BUILD_ROOT/etc/ld.so.conf.d/xulrunner.conf << EOF
+%{__cat} > $RPM_BUILD_ROOT/etc/ld.so.conf.d/%{ld_conf_file} << EOF
 ${MOZ_APP_DIR}
 EOF
 
@@ -298,16 +334,6 @@ touch $RPM_BUILD_ROOT${MOZ_APP_DIR}/components/xpti.dat
 # remove unused files
 %{__rm} -rf $RPM_BUILD_ROOT${MOZ_APP_DIR}/crashreporter
 %{__rm} -rf $RPM_BUILD_ROOT${MOZ_APP_DIR}/crashreporter.ini
-
-#rm -rf $RPM_BUILD_ROOT${MOZ_APP_DIR}/*.a
-
-%{__rm} -rf $RPM_BUILD_ROOT${MOZ_APP_DIR}/bin
-%{__rm} -rf $RPM_BUILD_ROOT${MOZ_APP_DIR}/lib
-%{__rm} -rf $RPM_BUILD_ROOT${MOZ_APP_DIR}/include
-%{__rm} -rf $RPM_BUILD_ROOT${MOZ_APP_DIR}/idl
-
-%{__rm} -rf $RPM_BUILD_ROOT${MOZ_APP_DIR}/sdk/lib
-ln -s ${MOZ_APP_DIR} $RPM_BUILD_ROOT${MOZ_APP_DIR}/sdk/lib
 
 #---------------------------------------------------------------------
 
@@ -333,12 +359,12 @@ fi
 %files
 %defattr(-,root,root,-)
 %{_bindir}/xulrunner
-#%exclude %{_bindir}/xulrunner-config
 %{_mandir}/man1/*
 %{_libdir}/mozilla
 %dir /etc/gre.d
 /etc/gre.d/%{gre_conf_file}
 %dir %{_libdir}/%{name}-*
+%exclude %dir %{_libdir}/%{name}-sdk-*
 %{_libdir}/%{name}-*/LICENSE
 %{_libdir}/%{name}-*/README.txt
 %{_libdir}/%{name}-*/chrome
@@ -362,7 +388,7 @@ fi
 %{_libdir}/%{name}-*/xulrunner-stub
 %{_libdir}/%{name}-*/platform.ini
 %{_libdir}/%{name}-*/dependentlibs.list
-%{_sysconfdir}/ld.so.conf.d/xulrunner.conf
+%{_sysconfdir}/ld.so.conf.d/xulrunner*.conf
 
 # XXX See if these are needed still
 %{_libdir}/%{name}-*/updater*
@@ -378,9 +404,7 @@ fi
 %{_libdir}/%{name}-*/xpidl
 %{_libdir}/%{name}-*/xpt_dump
 %{_libdir}/%{name}-*/xpt_link
-%{_libdir}/%{name}-*/xpcom-config.h
-%{_libdir}/%{name}-*/sdk/*
-%{_libdir}/%{name}-*/*.a
+%{_libdir}/%{name}-sdk-*/*
 %{_libdir}/pkgconfig/*.pc
 %endif
 
@@ -389,6 +413,7 @@ fi
 %changelog
 * Wed Dec 12 2007 Martin Stransky <stransky@redhat.com> 1.9-0.beta2.1
 - updated to Beta 2.
+- moved SDK to xulrunner-sdk
 
 * Thu Dec 06 2007 Martin Stransky <stransky@redhat.com> 1.9-0.beta1.4
 - fixed mozilla-plugin.pc (#412971)
