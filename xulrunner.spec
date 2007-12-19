@@ -2,10 +2,11 @@
 %define nspr_version 4.6.99
 %define nss_version 3.11.99
 %define cairo_version 0.5
-%define builddir %{_builddir}/mozilla
 %define build_devel_package 1
 
 %define official_branding 0
+
+%define version_internal  1.9pre
 
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
@@ -173,7 +174,7 @@ popd
 #---------------------------------------------------------------------
 
 %build
-INTERNAL_GECKO="1.9pre"
+INTERNAL_GECKO=%{version_internal}
 MOZ_APP_DIR=%{_libdir}/%{name}-${INTERNAL_GECKO}
 
 # Build with -Os as it helps the browser; also, don't override mozilla's warning
@@ -199,7 +200,7 @@ make -f client.mk build
 %install
 %{__rm} -rf $RPM_BUILD_ROOT
 
-INTERNAL_GECKO="1.9pre"
+INTERNAL_GECKO=%{version_internal}
 
 INTERNAL_APP_NAME=%{name}-${INTERNAL_GECKO}
 MOZ_APP_DIR=%{_libdir}/${INTERNAL_APP_NAME}
@@ -275,14 +276,18 @@ install -c -m 755 dist/bin/xpcshell \
 %{__rm} -rf $RPM_BUILD_ROOT/%{_datadir}/idl/${INTERNAL_APP_NAME}
 
 %{__rm} -rf $RPM_BUILD_ROOT${MOZ_APP_SDK_DIR}/include
-ln -s  %{_includedir}/${INTERNAL_APP_SDK_NAME}/unstable $RPM_BUILD_ROOT${MOZ_APP_SDK_DIR}/include
+ln -s  %{_includedir}/${INTERNAL_APP_SDK_NAME}/unstable \
+       $RPM_BUILD_ROOT${MOZ_APP_SDK_DIR}/include
 %{__rm} -rf $RPM_BUILD_ROOT${MOZ_APP_SDK_DIR}/idl
-ln -s  %{_datadir}/idl/${INTERNAL_APP_SDK_NAME}/unstable $RPM_BUILD_ROOT${MOZ_APP_SDK_DIR}/idl
+ln -s  %{_datadir}/idl/${INTERNAL_APP_SDK_NAME}/unstable \
+       $RPM_BUILD_ROOT${MOZ_APP_SDK_DIR}/idl
 
 %{__rm} -rf $RPM_BUILD_ROOT${MOZ_APP_SDK_DIR}/sdk/include
-ln -s  %{_includedir}/${INTERNAL_APP_SDK_NAME}/stable $RPM_BUILD_ROOT${MOZ_APP_SDK_DIR}/sdk/include
+ln -s  %{_includedir}/${INTERNAL_APP_SDK_NAME}/stable \
+       $RPM_BUILD_ROOT${MOZ_APP_SDK_DIR}/sdk/include
 %{__rm} -rf $RPM_BUILD_ROOT${MOZ_APP_SDK_DIR}/sdk/idl
-ln -s  %{_datadir}/idl/${INTERNAL_APP_SDK_NAME}/stable $RPM_BUILD_ROOT${MOZ_APP_SDK_DIR}/sdk/idl
+ln -s  %{_datadir}/idl/${INTERNAL_APP_SDK_NAME}/stable \
+       $RPM_BUILD_ROOT${MOZ_APP_SDK_DIR}/sdk/idl
 
 %{__rm} -rf $RPM_BUILD_ROOT${MOZ_APP_SDK_DIR}/sdk/lib/*.so
 pushd $RPM_BUILD_ROOT${MOZ_APP_DIR}
@@ -299,12 +304,10 @@ popd
 %define gre_conf_file gre.conf
 %endif
 
-%{__rm} -rf $RPM_BUILD_ROOT/etc/gre.d
-%{__mkdir_p} $RPM_BUILD_ROOT/etc/gre.d/
-%{__cat} > $RPM_BUILD_ROOT/etc/gre.d/%{gre_conf_file} << EOF
-[%{version}]
-GRE_PATH=${MOZ_APP_DIR}
-EOF
+MOZILLA_GECKO_VERSION=`./config/milestone.pl --topsrcdir=.`
+%{__mv} $RPM_BUILD_ROOT/etc/gre.d/$MOZILLA_GECKO_VERSION".system.conf" \
+        $RPM_BUILD_ROOT/etc/gre.d/%{gre_conf_file}
+chmod 644 $RPM_BUILD_ROOT/etc/gre.d/%{gre_conf_file}
 
 # Library path
 %ifarch x86_64 ia64 ppc64 s390x
@@ -318,7 +321,7 @@ EOF
 ${MOZ_APP_DIR}
 EOF
 
-GECKO_VERSION=="1.9pre"
+GECKO_VERSION=%{version_internal}
 %{__cat} %{SOURCE101} | %{__sed} -e "s/@GECKO_VERSION@/$GECKO_VERSION/g" > \
                         %{_builddir}/add-gecko-provides
 chmod 700 %{_builddir}/add-gecko-provides
