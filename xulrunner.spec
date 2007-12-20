@@ -11,7 +11,7 @@
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
 Version:        1.9
-Release:        0.beta2.1%{?dist}
+Release:        0.beta2.2%{?dist}
 URL:            http://www.mozilla.org/projects/xulrunner/
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
@@ -89,8 +89,8 @@ Requires:       nss >= %{nss_version}
 Requires:       desktop-file-utils >= %{desktop_file_utils_version}
 Requires:       system-bookmarks
 Obsoletes:      phoenix, mozilla-firebird, MozillaFirebird
-#Obsoletes:      mozilla <= 37:1.7.13
-#Obsoletes:      firefox < 2.1
+Obsoletes:      mozilla <= 37:1.7.13
+Obsoletes:      firefox < 2.1
 Provides:       webclient
 Provides:       gecko-libs = %{version}
 
@@ -109,8 +109,8 @@ XULRunner provides the XUL Runtime environment for Gecko applications.
 %package devel
 Summary: Development files for Gecko
 Group: Development/Libraries
-#Obsoletes: mozilla-devel
-#Obsoletes: firefox-devel < 2.1
+Obsoletes: mozilla-devel
+Obsoletes: firefox-devel < 2.1
 Requires: xulrunner = %{version}-%{release}
 Requires: nspr-devel >= %{nspr_version}
 Requires: nss-devel >= %{nss_version}
@@ -414,6 +414,9 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
+* Thu Dec 20 2007 Martin Stransky <stransky@redhat.com> 1.9-0.beta2.2
+- dependency fixes, obsoletes firefox < 3 and firefox-devel now
+
 * Wed Dec 12 2007 Martin Stransky <stransky@redhat.com> 1.9-0.beta2.1
 - updated to Beta 2.
 - moved SDK to xulrunner-sdk
