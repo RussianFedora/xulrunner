@@ -11,7 +11,7 @@
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
 Version:        1.9
-Release:        0.beta2.2%{?dist}
+Release:        0.beta2.3%{?dist}
 URL:            http://www.mozilla.org/projects/xulrunner/
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
@@ -414,6 +414,9 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
+* Thu Dec 21 2007 Martin Stransky <stransky@redhat.com> 1.9-0.beta2.3
+- added java and plugin subdirs to plugin includes
+
 * Thu Dec 20 2007 Martin Stransky <stransky@redhat.com> 1.9-0.beta2.2
 - dependency fixes, obsoletes firefox < 3 and firefox-devel now
 
