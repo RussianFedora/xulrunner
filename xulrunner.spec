@@ -11,7 +11,7 @@
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
 Version:        1.9
-Release:        0.beta1.7%{?dist}
+Release:        0.beta1.8%{?dist}
 URL:            http://www.mozilla.org/projects/xulrunner/
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
@@ -56,6 +56,7 @@ Patch202:       xulrunner-1.9a3pre-dpi.patch
 Patch203:       xulrunner-1.9a5pre-build.patch
 Patch204:       xulrunner-1.9a6-xds.patch
 Patch205:	xulrunner-pango-bofa.patch
+Patch206:	xulrunner-perms.patch
 
 %if %{official_branding}
 # Required by Mozilla Corporation
@@ -144,6 +145,7 @@ Gecko development files.
 %patch203 -p0 -b .build
 %patch204 -p0 -b .xds
 %patch205 -p0 -b .pango-bofa
+%patch206 -p0 -b .perms
 
 # Install missing *.pc files
 pushd xulrunner/installer
@@ -402,6 +404,9 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
+* Sat Dec 22 2007 Marco Pesenti Gritti <mpg@redhat.com> - 1.9-0.beta1.8
+- Add patch to relax permissions for rainbow
+
 * Thu Dec 13 2007 Simon Schampijer <simon@laptop.org> - 1.9-0.beta1.7
 - Pango error described in mozila(#404112, #406635) fixes our bug #5410
 - Another no native theme one, fixes #5397, #5398 and likely others
