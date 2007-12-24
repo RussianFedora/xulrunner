@@ -11,7 +11,7 @@
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
 Version:        1.9
-Release:        0.beta1.8%{?dist}
+Release:        0.beta1.9%{?dist}
 URL:            http://www.mozilla.org/projects/xulrunner/
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
@@ -404,6 +404,9 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
+* Mon Dec 24 2007 Marco Pesenti Gritti <mpg@redhat.com> - 1.9-0.beta1.9
+- Rebuild
+
 * Sat Dec 22 2007 Marco Pesenti Gritti <mpg@redhat.com> - 1.9-0.beta1.8
 - Add patch to relax permissions for rainbow
 
