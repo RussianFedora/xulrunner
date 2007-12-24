@@ -11,7 +11,7 @@
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
 Version:        1.9
-Release:        0.beta2.3%{?dist}
+Release:        0.beta2.4%{?dist}
 URL:            http://www.mozilla.org/projects/xulrunner/
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
@@ -88,10 +88,6 @@ Requires:       nspr >= %{nspr_version}
 Requires:       nss >= %{nss_version}
 Requires:       desktop-file-utils >= %{desktop_file_utils_version}
 Requires:       system-bookmarks
-Obsoletes:      phoenix, mozilla-firebird, MozillaFirebird
-Obsoletes:      mozilla <= 37:1.7.13
-Obsoletes:      firefox < 2.1
-Provides:       webclient
 Provides:       gecko-libs = %{version}
 
 %define _use_internal_dependency_generator 0
@@ -414,6 +410,11 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
+* Mon Dec 24 2007 Christopher Aillon <caillon@redhat.com> 1.9-0.beta2.4
+- Don't Provide webclient (xulrunner is not itself a webclient)
+- Don't Obsolete old firefox, only firefox-devel
+- Kill legacy obsoletes (phoenix, etc) that were never in rawhide
+
 * Thu Dec 21 2007 Martin Stransky <stransky@redhat.com> 1.9-0.beta2.3
 - added java and plugin subdirs to plugin includes
 
