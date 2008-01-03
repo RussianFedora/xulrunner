@@ -11,14 +11,14 @@
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
 Version:        1.9
-Release:        0.beta2.4%{?dist}
+Release:        0.beta2.5%{?dist}
 URL:            http://www.mozilla.org/projects/xulrunner/
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
 %if %{official_branding}
 %define tarball xulrunner-%{version}-source.tar.bz2
 %else
-%define tarball xulrunner-20071212.tar.bz2
+%define tarball xulrunner-20080103.tar.bz2
 %endif
 Source0:        %{tarball}
 Source10:       %{name}-mozconfig
@@ -410,6 +410,9 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
+* Thu Jan 3 2008 Martin Stransky <stransky@redhat.com> 1.9-0.beta2.5
+- updated to the latest trunk (2008-01-03)
+
 * Mon Dec 24 2007 Christopher Aillon <caillon@redhat.com> 1.9-0.beta2.4
 - Don't Provide webclient (xulrunner is not itself a webclient)
 - Don't Obsolete old firefox, only firefox-devel
