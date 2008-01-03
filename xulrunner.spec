@@ -11,7 +11,7 @@
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
 Version:        1.9
-Release:        0.beta2.5%{?dist}
+Release:        0.beta2.6%{?dist}
 URL:            http://www.mozilla.org/projects/xulrunner/
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
@@ -31,7 +31,6 @@ Source101:      add-gecko-provides.in
 
 # build patches
 Patch1:         firefox-2.0-link-layout.patch
-Patch2:         camellia256.patch
 Patch3:         xulrunner-compile.patch
 Patch4:         mozilla-build.patch
 Patch5:         xulrunner-path.patch
@@ -121,7 +120,6 @@ Gecko development files.
 %prep
 %setup -q -n mozilla
 %patch1   -p1 -b .link-layout
-%patch2   -R -p1 -b .camellia256
 %patch3   -p1
 %patch4   -p1
 %patch5   -p1
@@ -410,6 +408,9 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
+* Thu Jan 3 2008 Christopher Aillon <caillon@redhat.com> 1.9-0.beta2.6
+- Re-enable camellia256 support now that NSS supports it
+
 * Thu Jan 3 2008 Martin Stransky <stransky@redhat.com> 1.9-0.beta2.5
 - updated to the latest trunk (2008-01-03)
 
