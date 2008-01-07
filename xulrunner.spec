@@ -11,14 +11,14 @@
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
 Version:        1.9
-Release:        0.beta2.6%{?dist}
+Release:        0.beta2.7%{?dist}
 URL:            http://www.mozilla.org/projects/xulrunner/
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
 %if %{official_branding}
 %define tarball xulrunner-%{version}-source.tar.bz2
 %else
-%define tarball xulrunner-20080103.tar.bz2
+%define tarball xulrunner-20080107.tar.bz2
 %endif
 Source0:        %{tarball}
 Source10:       %{name}-mozconfig
@@ -30,8 +30,6 @@ Source100:      find-external-requires
 Source101:      add-gecko-provides.in
 
 # build patches
-Patch1:         firefox-2.0-link-layout.patch
-Patch3:         xulrunner-compile.patch
 Patch4:         mozilla-build.patch
 Patch5:         xulrunner-path.patch
 Patch6:         xulrunner-version.patch
@@ -46,7 +44,6 @@ Patch42:        firefox-1.1-uriloader.patch
 # font system fixes
 
 # Other
-Patch104:       mozilla-firefox-head.ppc64.patch
 Patch105:       mozilla-sqlite-build.patch
 Patch106:       mozilla-gtkmozembed.patch
 Patch107:       mozilla-pkgconfig.patch
@@ -119,31 +116,13 @@ Gecko development files.
 
 %prep
 %setup -q -n mozilla
-%patch1   -p1 -b .link-layout
-%patch3   -p1
 %patch4   -p1
 %patch5   -p1
 %patch6   -p1 -b .ver
 
-%patch104 -p1 -b .ppc64
 %patch105 -p1 -b .sqlite
-%patch106 -p1
 
-# Install missing *.pc files
-pushd xulrunner/installer
-
-# Copy as xpcom
-cp libxul.pc.in mozilla-xpcom.pc.in
-cp libxul-embedding.pc.in mozilla-embedding.pc.in
-
-# Copy to expected xulrunner-*.pc
-cp mozilla-js.pc.in xulrunner-js.pc.in
-cp mozilla-plugin.pc.in xulrunner-plugin.pc.in
-cp mozilla-xpcom.pc.in xulrunner-xpcom.pc.in
-cp mozilla-embedding.pc.in xulrunner-embedding.pc.in
-cp mozilla-gtkmozembed.pc.in xulrunner-gtkmozembed.pc.in
-popd
-
+%patch106 -p1 -b .gtk
 %patch107 -p1 -b .pk
 
 
@@ -328,10 +307,6 @@ install -c -m 644 LICENSE $RPM_BUILD_ROOT${MOZ_APP_DIR}
 touch $RPM_BUILD_ROOT${MOZ_APP_DIR}/components/compreg.dat
 touch $RPM_BUILD_ROOT${MOZ_APP_DIR}/components/xpti.dat
 
-# remove unused files
-%{__rm} -rf $RPM_BUILD_ROOT${MOZ_APP_DIR}/crashreporter
-%{__rm} -rf $RPM_BUILD_ROOT${MOZ_APP_DIR}/crashreporter.ini
-
 #---------------------------------------------------------------------
 
 %clean
@@ -408,6 +383,11 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
+* Mon Jan 7 2008 Martin Stransky <stransky@redhat.com> 1.9-0.beta2.7
+- removed fedora specific pkg-config files
+- updated to the latest trunk (2008-01-07)
+- removed unnecessary patches
+
 * Thu Jan 3 2008 Christopher Aillon <caillon@redhat.com> 1.9-0.beta2.6
 - Re-enable camellia256 support now that NSS supports it
 
