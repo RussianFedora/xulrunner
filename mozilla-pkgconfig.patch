@@ -1,6 +1,6 @@
 diff -up mozilla/config/autoconf.mk.in.pk mozilla/config/autoconf.mk.in
 --- mozilla/config/autoconf.mk.in.pk	2007-10-11 20:50:54.000000000 +0200
-+++ mozilla/config/autoconf.mk.in	2008-01-07 16:48:47.000000000 +0100
++++ mozilla/config/autoconf.mk.in	2008-01-08 10:24:14.000000000 +0100
 @@ -58,14 +58,14 @@ MOZ_PKG_SPECIAL = @MOZ_PKG_SPECIAL@
  prefix		= @prefix@
  exec_prefix	= @exec_prefix@
@@ -19,9 +19,33 @@ diff -up mozilla/config/autoconf.mk.in.pk mozilla/config/autoconf.mk.in
  
  DIST		= $(DEPTH)/dist
  LIBXUL_SDK      = @LIBXUL_SDK@
+diff -up mozilla/xulrunner/installer/libxul.pc.in.pk mozilla/xulrunner/installer/libxul.pc.in
+--- mozilla/xulrunner/installer/libxul.pc.in.pk	2007-08-03 16:46:28.000000000 +0200
++++ mozilla/xulrunner/installer/libxul.pc.in	2008-01-08 10:43:50.000000000 +0100
+@@ -1,7 +1,7 @@
+ prefix=%prefix%
+ sdkdir=%sdkdir%
+ includedir=%includedir%
+-idldir=%idldir%
++idldir=%idldir%/unstable
+ includetype=stable
+ 
+ # Note: the default pkg-config includes will only list include directories
+diff -up mozilla/xulrunner/installer/libxul-unstable.pc.in.pk mozilla/xulrunner/installer/libxul-unstable.pc.in
+--- mozilla/xulrunner/installer/libxul-unstable.pc.in.pk	2008-01-05 07:50:34.000000000 +0100
++++ mozilla/xulrunner/installer/libxul-unstable.pc.in	2008-01-08 10:43:55.000000000 +0100
+@@ -1,7 +1,7 @@
+ prefix=%prefix%
+ sdkdir=%sdkdir%
+ includedir=%includedir%
+-idldir=%idldir%
++idldir=%idldir%/unstable
+ includetype=unstable
+ 
+ Name: libxul
 diff -up mozilla/xulrunner/installer/mozilla-js.pc.in.pk mozilla/xulrunner/installer/mozilla-js.pc.in
 --- mozilla/xulrunner/installer/mozilla-js.pc.in.pk	2007-08-03 16:46:28.000000000 +0200
-+++ mozilla/xulrunner/installer/mozilla-js.pc.in	2008-01-07 17:32:07.000000000 +0100
++++ mozilla/xulrunner/installer/mozilla-js.pc.in	2008-01-08 10:24:14.000000000 +0100
 @@ -7,4 +7,4 @@ Description: The Mozilla JavaScript Libr
  Version: %MOZILLA_VERSION%
  Requires: %NSPR_NAME% >= %NSPR_VERSION%
@@ -30,7 +54,7 @@ diff -up mozilla/xulrunner/installer/mozilla-js.pc.in.pk mozilla/xulrunner/insta
 +Cflags: -I${includedir}/stable -I${includedir}/js -DXP_UNIX -DJS_THREADSAFE
 diff -up mozilla/xulrunner/installer/mozilla-plugin.pc.in.pk mozilla/xulrunner/installer/mozilla-plugin.pc.in
 --- mozilla/xulrunner/installer/mozilla-plugin.pc.in.pk	2007-08-03 16:46:28.000000000 +0200
-+++ mozilla/xulrunner/installer/mozilla-plugin.pc.in	2008-01-07 17:31:21.000000000 +0100
++++ mozilla/xulrunner/installer/mozilla-plugin.pc.in	2008-01-08 10:24:14.000000000 +0100
 @@ -6,4 +6,4 @@ Name: Mozilla Plug-In API
  Description: Mozilla Plug-In API
  Version: %MOZILLA_VERSION%

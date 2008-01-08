@@ -387,6 +387,7 @@ fi
 - removed fedora specific pkg-config files
 - updated to the latest trunk (2008-01-07)
 - removed unnecessary patches
+- fixed idl dir (#427965)
 
 * Thu Jan 3 2008 Christopher Aillon <caillon@redhat.com> 1.9-0.beta2.6
 - Re-enable camellia256 support now that NSS supports it
