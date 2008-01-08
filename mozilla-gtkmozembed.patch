@@ -1,8 +1,7 @@
-diff -up mozilla/xulrunner/installer/Makefile.in.gtk mozilla/xulrunner/installer/Makefile.in
---- mozilla/xulrunner/installer/Makefile.in.gtk	2008-01-07 12:39:22.000000000 +0100
-+++ mozilla/xulrunner/installer/Makefile.in	2008-01-07 15:02:39.000000000 +0100
-@@ -89,6 +89,8 @@ pkg_config_files = \
- 	libxul-embedding.pc \
+--- mozilla/xulrunner/installer/Makefile.in.gtk	2008-01-08 09:44:23.000000000 +0100
++++ mozilla/xulrunner/installer/Makefile.in	2008-01-08 09:44:23.000000000 +0100
+@@ -90,6 +90,8 @@ pkg_config_files = \
+ 	libxul-embedding-unstable.pc \
  	mozilla-js.pc \
  	mozilla-plugin.pc \
 +	mozilla-gtkmozembed.pc \
@@ -10,10 +9,9 @@ diff -up mozilla/xulrunner/installer/Makefile.in.gtk mozilla/xulrunner/installer
  	$(NULL)
  
  ifdef MOZ_NATIVE_NSPR
-diff -up /dev/null mozilla/xulrunner/installer/mozilla-gtkmozembed.pc.in
---- /dev/null	2008-01-07 10:29:08.111038229 +0100
-+++ mozilla/xulrunner/installer/mozilla-gtkmozembed.pc.in	2008-01-07 15:08:56.000000000 +0100
-@@ -0,0 +1,9 @@
+--- /dev/null	2008-01-08 09:03:16.107043921 +0100
++++ mozilla/xulrunner/installer/mozilla-gtkmozembed.pc.in	2008-01-08 09:45:01.000000000 +0100
+@@ -0,0 +1,8 @@
 +prefix=%prefix%
 +sdkdir=%sdkdir%
 +includedir=%includedir%
@@ -21,12 +19,10 @@ diff -up /dev/null mozilla/xulrunner/installer/mozilla-gtkmozembed.pc.in
 +Name: mozilla-gtkembedmoz
 +Description: Mozilla Embedding Widget for Gtk+
 +Version: %MOZILLA_VERSION%
-+Requires: libxul = %MOZILLA_VERSION%
-+Cflags: -I${includedir}/gtkembedmoz
-diff -up mozilla/xulrunner/installer/mozilla-gtkmozembed-embedding.pc.in.gtk mozilla/xulrunner/installer/mozilla-gtkmozembed-embedding.pc.in
---- mozilla/xulrunner/installer/mozilla-gtkmozembed-embedding.pc.in.gtk	2008-01-07 14:59:25.000000000 +0100
-+++ mozilla/xulrunner/installer/mozilla-gtkmozembed-embedding.pc.in	2008-01-07 15:08:47.000000000 +0100
-@@ -0,0 +1,9 @@
++Requires: libxul-unstable = %MOZILLA_VERSION%
+--- /dev/null	2008-01-08 09:03:16.107043921 +0100
++++ mozilla/xulrunner/installer/mozilla-gtkmozembed-embedding.pc.in	2008-01-08 09:44:56.000000000 +0100
+@@ -0,0 +1,8 @@
 +prefix=%prefix%
 +sdkdir=%sdkdir%
 +includedir=%includedir%
@@ -34,5 +30,4 @@ diff -up mozilla/xulrunner/installer/mozilla-gtkmozembed-embedding.pc.in.gtk moz
 +Name: mozilla-gtkembedmoz
 +Description: Static version-independent Mozilla Embedding Widget for Gtk+
 +Version: %MOZILLA_VERSION%
-+Requires: libxul-embedding = %MOZILLA_VERSION%
-+Cflags: -I${includedir}/gtkembedmoz
++Requires: libxul-embedding-unstable = %MOZILLA_VERSION%
