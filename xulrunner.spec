@@ -371,16 +371,15 @@ fi
 %{_includedir}/%{name}*%{version_internal}
 %exclude %{_includedir}/%{name}*%{version_internal}/unstable
 %dir %{_libdir}/%{name}-*
+%dir %{_libdir}/%{name}-sdk-*
+%dir %{_libdir}/%{name}-sdk-*/sdk
 %{_libdir}/%{name}-*/xpcshell
 %{_libdir}/%{name}-*/xpicleanup
 %{_libdir}/%{name}-*/xpidl
 %{_libdir}/%{name}-*/xpt_dump
 %{_libdir}/%{name}-*/xpt_link
-%{_libdir}/%{name}-sdk-*/bin
-%{_libdir}/%{name}-sdk-*/sdk/include
-%{_libdir}/%{name}-sdk-*/sdk/lib
-%{_libdir}/%{name}-sdk-*/sdk/idl
 %{_libdir}/%{name}-sdk-*/*.h
+%{_libdir}/%{name}-sdk-*/sdk/*
 %exclude %{_libdir}/pkgconfig/*unstable*.pc
 %exclude %{_libdir}/pkgconfig/*gtkmozembed*.pc
 %{_libdir}/pkgconfig/*.pc
@@ -389,10 +388,10 @@ fi
 %defattr(-,root,root)
 %{_datadir}/idl/%{name}*%{version_internal}/unstable
 %{_includedir}/%{name}*%{version_internal}/unstable
-%exclude %{_libdir}/%{name}-sdk-*/sdk/*
-%{_libdir}/%{name}-sdk-*/include
-%{_libdir}/%{name}-sdk-*/lib
-%{_libdir}/%{name}-sdk-*/idl
+%dir %{_libdir}/%{name}-sdk-*
+%{_libdir}/%{name}-sdk-*/*
+%exclude %{_libdir}/%{name}-sdk-*/*.h
+%exclude %{_libdir}/%{name}-sdk-*/sdk
 %{_libdir}/pkgconfig/*unstable*.pc
 %{_libdir}/pkgconfig/*gtkmozembed*.pc
 
