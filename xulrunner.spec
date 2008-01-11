@@ -45,7 +45,6 @@ Patch42:        firefox-1.1-uriloader.patch
 # font system fixes
 
 # Other
-Patch104:       mozilla-firefox-head.ppc64.patch
 Patch105:       mozilla-sqlite-build.patch
 Patch106:       mozilla-gtkmozembed.patch
 Patch107:       mozilla-xulrunner-pkgconfig.patch
@@ -406,6 +405,7 @@ fi
 %changelog
 * Fri Jan 11 2008 Marco Pesenti Gritti <mpg@redhat.com> - 1.9-0.beta2.1
 - Update to beta2
+- Remove obsolete patches
 
 * Mon Dec 24 2007 Marco Pesenti Gritti <mpg@redhat.com> - 1.9-0.beta1.9
 - Rebuild
