@@ -2,7 +2,6 @@
 %define nspr_version 4.6.99
 %define nss_version 3.11.99
 %define cairo_version 0.5
-%define build_devel_package 1
 
 %define official_branding 0
 
@@ -11,7 +10,7 @@
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
 Version:        1.9
-Release:        0.beta2.7%{?dist}
+Release:        0.beta2.8%{?dist}
 URL:            http://www.mozilla.org/projects/xulrunner/
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
@@ -86,18 +85,12 @@ Requires:       desktop-file-utils >= %{desktop_file_utils_version}
 Requires:       system-bookmarks
 Provides:       gecko-libs = %{version}
 
-%define _use_internal_dependency_generator 0
-
-%if %{build_devel_package}
-%define __find_provides %{_builddir}/add-gecko-provides
-%else
-%define __find_requires %{SOURCE100}
-%endif
+#define _use_internal_dependency_generator 0
+#define __find_requires %{SOURCE100}
 
 %description
 XULRunner provides the XUL Runtime environment for Gecko applications.
 
-%if %{build_devel_package}
 %package devel
 Summary: Development files for Gecko
 Group: Development/Libraries
@@ -110,7 +103,15 @@ Provides: gecko-devel = %{version}
 
 %description devel
 Gecko development files.
-%endif
+
+%package devel-unstable
+Summary: Development files for Gecko, which are not considered stable
+Group: Development/Libraries
+Requires: xulrunner-devel = %{version}-%{release}
+
+%description devel-unstable
+Unstable files for use with development of Gecko applications.  These headers
+are not frozen and APIs can change at any time, so should not be relied on.
 
 #---------------------------------------------------------------------
 
@@ -225,7 +226,6 @@ cd -
 %{__mkdir_p} $RPM_BUILD_ROOT%{_libdir}/mozilla/plugins
 
 # Prepare our devel package
-%if %{build_devel_package}
 %{__mkdir_p} $RPM_BUILD_ROOT/%{_includedir}/${INTERNAL_APP_SDK_NAME}
 %{__mkdir_p} $RPM_BUILD_ROOT/%{_datadir}/idl/${INTERNAL_APP_SDK_NAME}
 %{__mkdir_p} $RPM_BUILD_ROOT/%{_libdir}/pkgconfig
@@ -268,7 +268,6 @@ for i in *.so; do
     ln -s ${MOZ_APP_DIR}/$i $RPM_BUILD_ROOT${MOZ_APP_SDK_DIR}/sdk/lib/$i
 done
 popd
-%endif
 
 # GRE stuff
 %ifarch x86_64 ia64 ppc64 s390x
@@ -365,24 +364,44 @@ fi
 # XXX See if these are needed still
 %{_libdir}/%{name}-*/updater*
 
-%if %{build_devel_package}
 %files devel
 %defattr(-,root,root)
-%{_datadir}/idl/%{name}-*
-%{_includedir}/%{name}-*
+%dir %{_datadir}/idl/%{name}*%{version_internal}
+%{_datadir}/idl/%{name}*%{version_internal}/stable
+%{_includedir}/%{name}*%{version_internal}
+%exclude %{_includedir}/%{name}*%{version_internal}/unstable
 %dir %{_libdir}/%{name}-*
 %{_libdir}/%{name}-*/xpcshell
 %{_libdir}/%{name}-*/xpicleanup
 %{_libdir}/%{name}-*/xpidl
 %{_libdir}/%{name}-*/xpt_dump
 %{_libdir}/%{name}-*/xpt_link
-%{_libdir}/%{name}-sdk-*/*
+%{_libdir}/%{name}-sdk-*/bin
+%{_libdir}/%{name}-sdk-*/sdk/include
+%{_libdir}/%{name}-sdk-*/sdk/lib
+%{_libdir}/%{name}-sdk-*/sdk/idl
+%{_libdir}/%{name}-sdk-*/*.h
+%exclude %{_libdir}/pkgconfig/*unstable*.pc
+%exclude %{_libdir}/pkgconfig/*gtkmozembed*.pc
 %{_libdir}/pkgconfig/*.pc
-%endif
+
+%files devel-unstable
+%defattr(-,root,root)
+%{_datadir}/idl/%{name}*%{version_internal}/unstable
+%{_includedir}/%{name}*%{version_internal}/unstable
+%exclude %{_libdir}/%{name}-sdk-*/sdk/*
+%{_libdir}/%{name}-sdk-*/include
+%{_libdir}/%{name}-sdk-*/lib
+%{_libdir}/%{name}-sdk-*/idl
+%{_libdir}/pkgconfig/*unstable*.pc
+%{_libdir}/pkgconfig/*gtkmozembed*.pc
 
 #---------------------------------------------------------------------
 
 %changelog
+* Wed Jan 9 2008 Martin Stransky <stransky@redhat.com> 1.9-0.beta2.8
+- divided devel package to devel and devel-unstable
+
 * Mon Jan 7 2008 Martin Stransky <stransky@redhat.com> 1.9-0.beta2.7
 - removed fedora specific pkg-config files
 - updated to the latest trunk (2008-01-07)
