@@ -1,3 +1,5 @@
+we need this patch until https://bugzilla.mozilla.org/show_bug.cgi?id=403891 is fixed
+
 diff -up mozilla/storage/build/Makefile.in.sqlite mozilla/storage/build/Makefile.in
 --- mozilla/storage/build/Makefile.in.sqlite	2007-08-10 18:19:57.000000000 +0200
 +++ mozilla/storage/build/Makefile.in	2007-12-13 12:06:36.000000000 +0100
