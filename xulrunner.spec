@@ -10,7 +10,7 @@
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
 Version:        1.9
-Release:        0.beta2.8%{?dist}
+Release:        0.beta2.9%{?dist}
 URL:            http://www.mozilla.org/projects/xulrunner/
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
@@ -108,6 +108,7 @@ Gecko development files.
 Summary: Development files for Gecko, which are not considered stable
 Group: Development/Libraries
 Requires: xulrunner-devel = %{version}-%{release}
+Provides: gecko-devel-unstable = %{version}
 
 %description devel-unstable
 Unstable files for use with development of Gecko applications.  These headers
@@ -398,6 +399,9 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
+* Sat Jan 12 2008 Christopher Aillon <caillon@redhat.com> 1.9-0.beta2.9
+- Provide gecko-devel-unstable as well
+
 * Wed Jan 9 2008 Martin Stransky <stransky@redhat.com> 1.9-0.beta2.8
 - divided devel package to devel and devel-unstable
 
