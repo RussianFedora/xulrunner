@@ -1,4 +1,3 @@
-%define desktop_file_utils_version 0.9
 %define nspr_version 4.6.99
 %define nss_version 3.11.99
 %define cairo_version 0.5
@@ -10,23 +9,21 @@
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
 Version:        1.9
-Release:        0.beta2.9%{?dist}
+Release:        0.beta2.10.nightly20080113%{?dist}
 URL:            http://www.mozilla.org/projects/xulrunner/
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
 %if %{official_branding}
 %define tarball xulrunner-%{version}-source.tar.bz2
 %else
-%define tarball xulrunner-20080107.tar.bz2
+%define tarball xulrunner-20080113.tar.bz2
 %endif
 Source0:        %{tarball}
 Source10:       %{name}-mozconfig
 Source12:       %{name}-redhat-default-prefs.js
-#Source20:       %{name}.desktop
 #Source21:       %{name}.sh.in
 Source23:       %{name}.1
 Source100:      find-external-requires
-Source101:      add-gecko-provides.in
 
 # build patches
 Patch4:         mozilla-build.patch
@@ -44,7 +41,6 @@ Patch42:        firefox-1.1-uriloader.patch
 
 # Other
 Patch105:       mozilla-sqlite-build.patch
-Patch106:       mozilla-gtkmozembed.patch
 Patch107:       mozilla-pkgconfig.patch
 
 %if %{official_branding}
@@ -66,7 +62,6 @@ BuildRequires:  cairo-devel >= %{cairo_version}
 BuildRequires:  libpng-devel, libjpeg-devel
 BuildRequires:  zlib-devel, zip
 BuildRequires:  libIDL-devel
-BuildRequires:  desktop-file-utils
 BuildRequires:  gtk2-devel
 BuildRequires:  gnome-vfs2-devel
 BuildRequires:  libgnome-devel
@@ -76,13 +71,10 @@ BuildRequires:  pango-devel
 BuildRequires:  freetype-devel >= 2.1.9
 BuildRequires:  libXt-devel
 BuildRequires:  libXrender-devel
-BuildRequires:  system-bookmarks
 BuildRequires:  curl-devel
 
 Requires:       nspr >= %{nspr_version}
 Requires:       nss >= %{nss_version}
-Requires:       desktop-file-utils >= %{desktop_file_utils_version}
-Requires:       system-bookmarks
 Provides:       gecko-libs = %{version}
 
 #define _use_internal_dependency_generator 0
@@ -123,8 +115,6 @@ are not frozen and APIs can change at any time, so should not be relied on.
 %patch6   -p1 -b .ver
 
 %patch105 -p1 -b .sqlite
-
-%patch106 -p1 -b .gtk
 %patch107 -p1 -b .pk
 
 
@@ -152,9 +142,9 @@ are not frozen and APIs can change at any time, so should not be relied on.
 INTERNAL_GECKO=%{version_internal}
 MOZ_APP_DIR=%{_libdir}/%{name}-${INTERNAL_GECKO}
 
-# Build with -Os as it helps the browser; also, don't override mozilla's warning
-# level; they use -Wall but disable a few warnings that show up _everywhere_
-MOZ_OPT_FLAGS=$(echo $RPM_OPT_FLAGS | %{__sed} -e 's/-O2/-Os/' -e 's/-Wall//')
+# Mozilla builds with -Wall with exception of a few warnings which show up
+# everywhere in the code; so, don't override that.
+MOZ_OPT_FLAGS=$(echo $RPM_OPT_FLAGS | %{__sed} -e 's/-Wall//')
 
 export RPM_OPT_FLAGS=$MOZ_OPT_FLAGS
 export PREFIX='%{_prefix}'
@@ -166,6 +156,7 @@ export LIBDIR='%{_libdir}'
 %define moz_make_flags %{?_smp_mflags}
 %endif
 
+export CFLAGS=$RPM_OPT_FLAGS
 export LDFLAGS="-Wl,-rpath,${MOZ_APP_DIR}"
 export MAKE="gmake %{moz_make_flags}"
 make -f client.mk build
@@ -195,12 +186,6 @@ DESTDIR=$RPM_BUILD_ROOT make install
 %{__install} -p dist/sdk/bin/regxpcom $RPM_BUILD_ROOT/$MOZ_APP_DIR
 
 %{__mkdir_p} $RPM_BUILD_ROOT{%{_libdir},%{_bindir},%{_datadir}/applications}
-
-#desktop-file-install --vendor mozilla \
-#  --dir $RPM_BUILD_ROOT%{_datadir}/applications \
-#  --add-category WebBrowser \
-#  --add-category Network \
-#  %{SOURCE20} 
 
 # set up our default preferences
 %{__cat} %{SOURCE12} | %{__sed} -e 's,RPM_VERREL,%{version}-%{release},g' > rh-default-prefs
@@ -293,11 +278,6 @@ chmod 644 $RPM_BUILD_ROOT/etc/gre.d/%{gre_conf_file}
 %{__cat} > $RPM_BUILD_ROOT/etc/ld.so.conf.d/%{ld_conf_file} << EOF
 ${MOZ_APP_DIR}
 EOF
-
-GECKO_VERSION=%{version_internal}
-%{__cat} %{SOURCE101} | %{__sed} -e "s/@GECKO_VERSION@/$GECKO_VERSION/g" > \
-                        %{_builddir}/add-gecko-provides
-chmod 700 %{_builddir}/add-gecko-provides
                         
 # Copy over the LICENSE
 install -c -m 644 LICENSE $RPM_BUILD_ROOT${MOZ_APP_DIR}
@@ -316,11 +296,9 @@ touch $RPM_BUILD_ROOT${MOZ_APP_DIR}/components/xpti.dat
 
 %post
 /sbin/ldconfig
-#update-desktop-database %{_datadir}/applications
 
 %postun
 /sbin/ldconfig
-#update-desktop-database %{_datadir}/applications
 
 %preun
 # is it a final removal?
@@ -399,6 +377,11 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
+* Sat Jan 13 2008 Christopher Aillon <caillon@redhat.com> 1.9-0.beta2.10
+- Update to latest trunk (2008-01-13)
+- Use CFLAGS instead of configure arguments
+- Random cleanups: BuildRequires, scriptlets, prefs, etc.
+
 * Sat Jan 12 2008 Christopher Aillon <caillon@redhat.com> 1.9-0.beta2.9
 - Provide gecko-devel-unstable as well
 

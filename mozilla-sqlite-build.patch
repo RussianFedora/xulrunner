@@ -70,48 +70,30 @@ diff -up mozilla/config/static-config.mk.sqlite mozilla/config/static-config.mk
 diff -up mozilla/config/system-headers.sqlite mozilla/config/system-headers
 --- mozilla/config/system-headers.sqlite	2007-10-12 14:34:46.000000000 +0200
 +++ mozilla/config/system-headers	2007-12-13 12:06:36.000000000 +0100
-@@ -617,8 +617,6 @@ SIOUX.h
+@@ -617,7 +617,6 @@ SIOUX.h
  size_t.h
  someincludefile.h
  Sound.h
 -sqlite3.h
--sqlite3file.h
  ssdef.h
  sslerr.h
  ssl.h
-diff -up mozilla/db/sqlite3/src/sqlite3file.h.sqlite mozilla/db/sqlite3/src/sqlite3file.h
---- mozilla/db/sqlite3/src/sqlite3file.h.sqlite	2007-07-25 04:18:54.000000000 +0200
-+++ mozilla/db/sqlite3/src/sqlite3file.h	2007-12-13 12:06:36.000000000 +0100
-@@ -199,11 +199,7 @@ struct sqlite3OsVtbl {
-   /*
-   ** Files other than os.c just reference the global virtual function table. 
-   */
--#ifdef XP_WIN
--  extern __declspec(dllimport) struct sqlite3OsVtbl sqlite3Os;
--#else
-   extern struct sqlite3OsVtbl sqlite3Os;
--#endif // windows symbol ifdef
- #endif /* _SQLITE_OS_C_ */
- 
- } // extern "C"
 diff -up mozilla/db/sqlite3/src/Makefile.in.sqlite mozilla/db/sqlite3/src/Makefile.in
 --- mozilla/db/sqlite3/src/Makefile.in.sqlite	2007-12-01 08:17:37.000000000 +0100
 +++ mozilla/db/sqlite3/src/Makefile.in	2007-12-13 12:12:37.000000000 +0100
-@@ -45,10 +45,10 @@ VPATH		= @srcdir@
+@@ -45,9 +45,9 @@ VPATH		= @srcdir@
  include $(DEPTH)/config/autoconf.mk
  
  MODULE           = sqlite3
 -LIBRARY_NAME     = sqlite3
 -FORCE_SHARED_LIB = 1
 -VISIBILITY_FLAGS =
--LIB_IS_C_ONLY = 1
 +LIBRARY_NAME     = sqlite3_s
 +MODULE_NAME      = sqlite3
 +FORCE_STATIC_LIB = 1
-+LIB_IS_C_ONLY    = 1
+ LIB_IS_C_ONLY    = 1
  
  ifeq (,$(filter-out WINNT WINCE,$(OS_ARCH)))
- ifndef GNU_CC
 @@ -85,6 +85,9 @@ endif
  endif
  

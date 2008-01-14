@@ -27,7 +27,7 @@ diff -up mozilla/xulrunner/installer/libxul.pc.in.pk mozilla/xulrunner/installer
  sdkdir=%sdkdir%
  includedir=%includedir%
 -idldir=%idldir%
-+idldir=%idldir%/unstable
++idldir=%idldir%/stable
  includetype=stable
  
  # Note: the default pkg-config includes will only list include directories
