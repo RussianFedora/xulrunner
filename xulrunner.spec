@@ -161,6 +161,7 @@ export LIBDIR='%{_libdir}'
 %endif
 
 export CFLAGS=$RPM_OPT_FLAGS
+export CXXFLAGS=$RPM_OPT_FLAGS
 export LDFLAGS="-Wl,-rpath,${MOZ_APP_DIR}"
 export MAKE="gmake %{moz_make_flags}"
 make -f client.mk build
