@@ -145,6 +145,10 @@ MOZ_APP_DIR=%{_libdir}/%{name}-${INTERNAL_GECKO}
 # Mozilla builds with -Wall with exception of a few warnings which show up
 # everywhere in the code; so, don't override that.
 MOZ_OPT_FLAGS=$(echo $RPM_OPT_FLAGS | %{__sed} -e 's/-Wall//')
+%ifarch ppc64
+# temporary workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=412220
+MOZ_OPT_FLAGS="$MOZ_OPT_FLAGS -mno-fp-in-toc -mno-sum-in-toc"
+%endif
 
 export RPM_OPT_FLAGS=$MOZ_OPT_FLAGS
 export PREFIX='%{_prefix}'
