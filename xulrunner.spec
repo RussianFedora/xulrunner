@@ -215,6 +215,7 @@ cd -
 
 
 # system extensions and plugins support
+%{__mkdir_p} $RPM_BUILD_ROOT%{_datadir}/mozilla/extensions
 %{__mkdir_p} $RPM_BUILD_ROOT%{_libdir}/mozilla/extensions
 %{__mkdir_p} $RPM_BUILD_ROOT%{_libdir}/mozilla/plugins
 %{__mkdir_p} $RPM_BUILD_ROOT%{_sysconfdir}/skel/.mozilla/extensions
@@ -321,6 +322,7 @@ fi
 %{_bindir}/xulrunner
 %{_mandir}/man1/*
 %{_libdir}/mozilla
+%{_datadir}/mozilla
 %dir /etc/gre.d
 /etc/gre.d/%{gre_conf_file}
 %dir %{_libdir}/%{name}-*
