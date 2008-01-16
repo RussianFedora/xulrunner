@@ -9,14 +9,14 @@
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
 Version:        1.9
-Release:        0.beta2.10.nightly20080113%{?dist}
+Release:        0.beta2.11.nightly20080115%{?dist}
 URL:            http://www.mozilla.org/projects/xulrunner/
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
 %if %{official_branding}
 %define tarball xulrunner-%{version}-source.tar.bz2
 %else
-%define tarball xulrunner-20080113.tar.bz2
+%define tarball mozilla-20080115.tar.bz2
 %endif
 Source0:        %{tarball}
 Source10:       %{name}-mozconfig
@@ -213,8 +213,13 @@ cd -
         $RPM_BUILD_ROOT${MOZ_APP_DIR}/icons/
 %endif
 
-# own mozilla plugin dir (#135050)
+
+# system extensions and plugins support
+%{__mkdir_p} $RPM_BUILD_ROOT%{_libdir}/mozilla/extensions
 %{__mkdir_p} $RPM_BUILD_ROOT%{_libdir}/mozilla/plugins
+%{__mkdir_p} $RPM_BUILD_ROOT%{_sysconfdir}/skel/.mozilla/extensions
+%{__mkdir_p} $RPM_BUILD_ROOT%{_sysconfdir}/skel/.mozilla/plugins
+
 
 # Prepare our devel package
 %{__mkdir_p} $RPM_BUILD_ROOT/%{_includedir}/${INTERNAL_APP_SDK_NAME}
@@ -344,6 +349,8 @@ fi
 %{_libdir}/%{name}-*/platform.ini
 %{_libdir}/%{name}-*/dependentlibs.list
 %{_sysconfdir}/ld.so.conf.d/xulrunner*.conf
+%{_sysconfdir}/skel/.mozilla
+
 
 # XXX See if these are needed still
 %{_libdir}/%{name}-*/updater*
@@ -382,6 +389,10 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
+* Tue Jan 15 2008 Christopher Aillon <caillon@redhat.com> 1.9-0.beta2.11
+- Update to latest trunk (2008-01-15)
+- Now with system extensions directory support
+
 * Sat Jan 13 2008 Christopher Aillon <caillon@redhat.com> 1.9-0.beta2.10
 - Update to latest trunk (2008-01-13)
 - Use CFLAGS instead of configure arguments
