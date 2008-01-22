@@ -16,7 +16,7 @@ Group:          Applications/Internet
 %if %{official_branding}
 %define tarball xulrunner-%{version}-source.tar.bz2
 %else
-%define tarball mozilla-20080115.tar.bz2
+%define tarball mozilla-20080121.tar.bz2
 %endif
 Source0:        %{tarball}
 Source10:       %{name}-mozconfig
@@ -160,8 +160,6 @@ export LIBDIR='%{_libdir}'
 %define moz_make_flags %{?_smp_mflags}
 %endif
 
-export CFLAGS=$RPM_OPT_FLAGS
-export CXXFLAGS=$RPM_OPT_FLAGS
 export LDFLAGS="-Wl,-rpath,${MOZ_APP_DIR}"
 export MAKE="gmake %{moz_make_flags}"
 make -f client.mk build
@@ -391,6 +389,9 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
+* Mon Jan 21 2008 Christopher Aillon <caillon@redhat.com> 1.9-0.beta2.12
+- Update to latest trunk (2008-01-21)
+
 * Tue Jan 15 2008 Christopher Aillon <caillon@redhat.com> 1.9-0.beta2.11
 - Update to latest trunk (2008-01-15)
 - Now with system extensions directory support
