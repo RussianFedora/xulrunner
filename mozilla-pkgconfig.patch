@@ -1,6 +1,6 @@
 diff -up mozilla/config/autoconf.mk.in.pk mozilla/config/autoconf.mk.in
---- mozilla/config/autoconf.mk.in.pk	2007-10-11 20:50:54.000000000 +0200
-+++ mozilla/config/autoconf.mk.in	2008-01-16 16:29:22.000000000 +0100
+--- mozilla/config/autoconf.mk.in.pk	2008-01-22 03:50:04.000000000 +0100
++++ mozilla/config/autoconf.mk.in	2008-01-23 15:34:19.000000000 +0100
 @@ -58,14 +58,14 @@ MOZ_PKG_SPECIAL = @MOZ_PKG_SPECIAL@
  prefix		= @prefix@
  exec_prefix	= @exec_prefix@
@@ -21,7 +21,7 @@ diff -up mozilla/config/autoconf.mk.in.pk mozilla/config/autoconf.mk.in
  LIBXUL_SDK      = @LIBXUL_SDK@
 diff -up mozilla/xulrunner/installer/libxul.pc.in.pk mozilla/xulrunner/installer/libxul.pc.in
 --- mozilla/xulrunner/installer/libxul.pc.in.pk	2007-08-03 16:46:28.000000000 +0200
-+++ mozilla/xulrunner/installer/libxul.pc.in	2008-01-16 16:40:56.000000000 +0100
++++ mozilla/xulrunner/installer/libxul.pc.in	2008-01-23 15:45:30.000000000 +0100
 @@ -1,7 +1,8 @@
  prefix=%prefix%
  sdkdir=%sdkdir%
@@ -32,9 +32,17 @@ diff -up mozilla/xulrunner/installer/libxul.pc.in.pk mozilla/xulrunner/installer
  includetype=stable
  
  # Note: the default pkg-config includes will only list include directories
+@@ -12,5 +13,5 @@ Name: libxul
+ Description: The Mozilla Runtime and Embedding Engine
+ Version: %MOZILLA_VERSION%
+ Requires: %NSPR_NAME% >= %NSPR_VERSION%
+-Libs: -L${sdkdir}/lib -lxpcomglue_s -lxul -lxpcom
++Libs: -L${sdkdir}/sdk/lib -lxpcomglue_s -lxul -lxpcom
+ Cflags: -I${includedir}/${includetype} -fshort-wchar
+\ No newline at end of file
 diff -up mozilla/xulrunner/installer/Makefile.in.pk mozilla/xulrunner/installer/Makefile.in
---- mozilla/xulrunner/installer/Makefile.in.pk	2008-01-16 16:29:22.000000000 +0100
-+++ mozilla/xulrunner/installer/Makefile.in	2008-01-16 16:42:57.000000000 +0100
+--- mozilla/xulrunner/installer/Makefile.in.pk	2008-01-23 15:34:19.000000000 +0100
++++ mozilla/xulrunner/installer/Makefile.in	2008-01-23 15:34:19.000000000 +0100
 @@ -117,6 +117,7 @@ endif
  	-e "s|%includedir%|$(includedir)|" \
  	-e "s|%idldir%|$(idldir)|" \
@@ -45,7 +53,7 @@ diff -up mozilla/xulrunner/installer/Makefile.in.pk mozilla/xulrunner/installer/
  	-e "s|%FULL_NSPR_LIBS%|$(FULL_NSPR_LIBS)|" \
 diff -up mozilla/xulrunner/installer/libxul-unstable.pc.in.pk mozilla/xulrunner/installer/libxul-unstable.pc.in
 --- mozilla/xulrunner/installer/libxul-unstable.pc.in.pk	2008-01-05 07:50:34.000000000 +0100
-+++ mozilla/xulrunner/installer/libxul-unstable.pc.in	2008-01-16 16:41:23.000000000 +0100
++++ mozilla/xulrunner/installer/libxul-unstable.pc.in	2008-01-23 15:34:19.000000000 +0100
 @@ -1,7 +1,8 @@
  prefix=%prefix%
  sdkdir=%sdkdir%
@@ -56,18 +64,30 @@ diff -up mozilla/xulrunner/installer/libxul-unstable.pc.in.pk mozilla/xulrunner/
  includetype=unstable
  
  Name: libxul
+diff -up mozilla/xulrunner/installer/libxul-embedding.pc.in.pk mozilla/xulrunner/installer/libxul-embedding.pc.in
+--- mozilla/xulrunner/installer/libxul-embedding.pc.in.pk	2008-01-23 15:45:43.000000000 +0100
++++ mozilla/xulrunner/installer/libxul-embedding.pc.in	2008-01-23 15:45:55.000000000 +0100
+@@ -11,5 +11,5 @@ includetype=stable
+ Name: libxul-embedding
+ Description: Static library for version-independent embedding of the Mozilla runtime
+ Version: %MOZILLA_VERSION%
+-Libs: -L${sdkdir}/lib -lxpcomglue
++Libs: -L${sdkdir}/sdk/lib -lxpcomglue
+ Cflags: -DXPCOM_GLUE -I${includedir}/${includetype} -fshort-wchar
 diff -up mozilla/xulrunner/installer/mozilla-js.pc.in.pk mozilla/xulrunner/installer/mozilla-js.pc.in
 --- mozilla/xulrunner/installer/mozilla-js.pc.in.pk	2007-08-03 16:46:28.000000000 +0200
-+++ mozilla/xulrunner/installer/mozilla-js.pc.in	2008-01-16 16:29:22.000000000 +0100
-@@ -7,4 +7,4 @@ Description: The Mozilla JavaScript Libr
++++ mozilla/xulrunner/installer/mozilla-js.pc.in	2008-01-23 15:46:18.000000000 +0100
+@@ -6,5 +6,5 @@ Name: JavaScript
+ Description: The Mozilla JavaScript Library
  Version: %MOZILLA_VERSION%
  Requires: %NSPR_NAME% >= %NSPR_VERSION%
- Libs: -L${sdkdir}/lib -lmozjs
+-Libs: -L${sdkdir}/lib -lmozjs
 -Cflags: -I${includedir}/stable -DXP_UNIX -DJS_THREADSAFE
++Libs: -L${sdkdir}/sdk/lib -lmozjs
 +Cflags: -I${includedir}/stable -I${includedir}/js -DXP_UNIX -DJS_THREADSAFE
 diff -up mozilla/xulrunner/installer/mozilla-plugin.pc.in.pk mozilla/xulrunner/installer/mozilla-plugin.pc.in
 --- mozilla/xulrunner/installer/mozilla-plugin.pc.in.pk	2007-08-03 16:46:28.000000000 +0200
-+++ mozilla/xulrunner/installer/mozilla-plugin.pc.in	2008-01-16 16:29:22.000000000 +0100
++++ mozilla/xulrunner/installer/mozilla-plugin.pc.in	2008-01-23 15:34:19.000000000 +0100
 @@ -6,4 +6,4 @@ Name: Mozilla Plug-In API
  Description: Mozilla Plug-In API
  Version: %MOZILLA_VERSION%
