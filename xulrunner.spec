@@ -40,7 +40,6 @@ Patch42:        firefox-1.1-uriloader.patch
 # font system fixes
 
 # Other
-Patch105:       mozilla-sqlite-build.patch
 Patch107:       mozilla-pkgconfig.patch
 
 %if %{official_branding}
@@ -114,7 +113,6 @@ are not frozen and APIs can change at any time, so should not be relied on.
 %patch5   -p1
 %patch6   -p1 -b .ver
 
-%patch105 -p1 -b .sqlite
 %patch107 -p1 -b .pk
 
 
