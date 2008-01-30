@@ -29,6 +29,7 @@ Source100:      find-external-requires
 Patch4:         mozilla-build.patch
 Patch5:         xulrunner-path.patch
 Patch6:         xulrunner-version.patch
+Patch7:         mozilla-system-jpeg.patch
 
 # customization patches
 Patch21:        firefox-0.7.3-psfonts.patch
@@ -112,6 +113,7 @@ are not frozen and APIs can change at any time, so should not be relied on.
 %patch4   -p1
 %patch5   -p1
 %patch6   -p1 -b .ver
+%patch7   -p1 -b .system-jpeg
 
 %patch107 -p1 -b .pk
 
