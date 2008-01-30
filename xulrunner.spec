@@ -34,6 +34,7 @@ Patch1:         firefox-2.0-link-layout.patch
 Patch2:         camellia256.patch
 Patch3:         xulrunner-compile.patch
 Patch4:         mozilla-build.patch
+Patch7:         mozilla-system-jpeg.patch
 
 # customization patches
 Patch21:        firefox-0.7.3-psfonts.patch
@@ -131,6 +132,7 @@ Gecko development files.
 %patch2   -R -p1 -b .camellia256
 %patch3   -p1
 %patch4   -p1
+%patch7   -p1 -b .system-jpeg
 
 #%patch105 -p1 -b .sqlite
 %patch106 -p1
