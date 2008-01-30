@@ -1,20 +1,3 @@
-Index: extensions/python/dom/src/Makefile.in
-===================================================================
-RCS file: /cvsroot/mozilla/extensions/python/dom/src/Makefile.in,v
-retrieving revision 1.3
-diff -u -r1.3 Makefile.in
---- extensions/python/dom/src/Makefile.in	5 Oct 2006 10:44:02 -0000	1.3
-+++ extensions/python/dom/src/Makefile.in	21 May 2007 00:23:40 -0000
-@@ -22,7 +22,7 @@
- # We always need the Python and pyxpcom includes and libs.
- LOCAL_INCLUDES = $(MOZ_PYTHON_INCLUDES)
- EXTRA_LIBS += $(MOZ_PYTHON_LIBS) \
--              $(DIST)/lib/$(LIB_PREFIX)pyxpcom.$(LIB_SUFFIX) \
-+              $(DIST)/lib/$(DLL_PREFIX)pyxpcom$(DLL_SUFFIX) \
-               $(NULL)
- 
- # In the shorter term we need JS too.
-? config/system_wrappers
 Index: config/rules.mk
 ===================================================================
 RCS file: /cvsroot/mozilla/config/rules.mk,v
@@ -63,19 +46,19 @@ diff -u -r3.554 rules.mk
  
  clobber::
  	rm -rf $(DIST)/bin/python/xpcom
-Index: extensions/python/dom/test/pyxultest/application.ini
+Index: extensions/python/xpcom/src/PyIInterfaceInfo.cpp
 ===================================================================
-RCS file: /cvsroot/mozilla/extensions/python/dom/test/pyxultest/application.ini,v
-retrieving revision 1.2
-diff -u -r1.2 application.ini
---- extensions/python/dom/test/pyxultest/application.ini	29 Apr 2006 01:56:36 -0000	1.2
-+++ extensions/python/dom/test/pyxultest/application.ini	21 Aug 2007 22:36:44 -0000
-@@ -15,7 +15,7 @@
+RCS file: /cvsroot/mozilla/extensions/python/xpcom/src/PyIInterfaceInfo.cpp,v
+retrieving revision 1.14
+diff -u -r1.14 PyIInterfaceInfo.cpp
+--- extensions/python/xpcom/src/PyIInterfaceInfo.cpp	12 Jan 2008 04:30:44 -0000	1.14
++++ extensions/python/xpcom/src/PyIInterfaceInfo.cpp	30 Jan 2008 13:58:59 -0000
+@@ -88,7 +88,7 @@
+ 	if (pI==NULL)
+ 		return NULL;
  
- ; This field specifies your application's build ID (timestamp).  This field is
- ; required.
--BuildID=@BUILD_ID@
-+BuildID=20070625
- 
- ; This field specifies a compact copyright notice for your application.  This
- ; field is optional.
+-	nsIID *iid_ret;
++	const nsIID *iid_ret;
+ 	nsresult r;
+ 	Py_BEGIN_ALLOW_THREADS;
+ 	r = pI->GetIIDShared(&iid_ret);

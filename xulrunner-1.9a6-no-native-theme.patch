@@ -1,6 +1,11 @@
---- /tmp/nsNativeThemeGTK.cpp	2008-01-09 10:51:55.000000000 +0100
-+++ widget/src/gtk2/nsNativeThemeGTK.cpp	2008-01-09 11:29:02.000000000 +0100
-@@ -1070,48 +1070,6 @@
+Index: widget/src/gtk2/nsNativeThemeGTK.cpp
+===================================================================
+RCS file: /cvsroot/mozilla/widget/src/gtk2/nsNativeThemeGTK.cpp,v
+retrieving revision 1.141
+diff -u -r1.141 nsNativeThemeGTK.cpp
+--- widget/src/gtk2/nsNativeThemeGTK.cpp	27 Jan 2008 05:11:15 -0000	1.141
++++ widget/src/gtk2/nsNativeThemeGTK.cpp	30 Jan 2008 14:13:05 -0000
+@@ -1181,92 +1181,6 @@
      return PR_FALSE;
  
    switch (aWidgetType) {
@@ -14,7 +19,7 @@
 -  case NS_THEME_TOOLBAR:
 -  case NS_THEME_TOOLBAR_BUTTON:
 -  case NS_THEME_TOOLBAR_DUAL_BUTTON: // so we can override the border with 0
--    // case NS_THEME_TOOLBAR_DUAL_BUTTON_DROPDOWN:
+-  case NS_THEME_TOOLBAR_BUTTON_DROPDOWN:
 -  case NS_THEME_TOOLBAR_SEPARATOR:
 -  case NS_THEME_TOOLBAR_GRIPPER:
 -  case NS_THEME_STATUSBAR:
@@ -37,22 +42,22 @@
 -    case NS_THEME_PROGRESSBAR_CHUNK_VERTICAL:
 -    case NS_THEME_TAB:
 -    // case NS_THEME_TAB_PANEL:
--    case NS_THEME_TAB_LEFT_EDGE:
--    case NS_THEME_TAB_RIGHT_EDGE:
 -    case NS_THEME_TAB_PANELS:
 -  case NS_THEME_TOOLTIP:
--    // case NS_THEME_SPINNER:
+-  case NS_THEME_SPINNER:
 -  case NS_THEME_SPINNER_UP_BUTTON:
 -  case NS_THEME_SPINNER_DOWN_BUTTON:
+-  case NS_THEME_SPINNER_TEXTFIELD:
 -    // case NS_THEME_SCROLLBAR:  (n/a for gtk)
 -    // case NS_THEME_SCROLLBAR_SMALL: (n/a for gtk)
-   case NS_THEME_SCROLLBAR_BUTTON_UP:
-   case NS_THEME_SCROLLBAR_BUTTON_DOWN:
-   case NS_THEME_SCROLLBAR_BUTTON_LEFT:
-@@ -1120,42 +1078,7 @@
-   case NS_THEME_SCROLLBAR_TRACK_VERTICAL:
-   case NS_THEME_SCROLLBAR_THUMB_HORIZONTAL:
-   case NS_THEME_SCROLLBAR_THUMB_VERTICAL:
+-  case NS_THEME_SCROLLBAR_BUTTON_UP:
+-  case NS_THEME_SCROLLBAR_BUTTON_DOWN:
+-  case NS_THEME_SCROLLBAR_BUTTON_LEFT:
+-  case NS_THEME_SCROLLBAR_BUTTON_RIGHT:
+-  case NS_THEME_SCROLLBAR_TRACK_HORIZONTAL:
+-  case NS_THEME_SCROLLBAR_TRACK_VERTICAL:
+-  case NS_THEME_SCROLLBAR_THUMB_HORIZONTAL:
+-  case NS_THEME_SCROLLBAR_THUMB_VERTICAL:
 -    // case NS_THEME_SCROLLBAR_GRIPPER_HORIZONTAL:  (n/a for gtk)
 -    // case NS_THEME_SCROLLBAR_GRIPPER_VERTICAL:  (n/a for gtk)
 -  case NS_THEME_TEXTFIELD:
@@ -77,11 +82,12 @@
 -  case NS_THEME_MENUSEPARATOR:
 -  case NS_THEME_CHECKMENUITEM:
 -  case NS_THEME_RADIOMENUITEM:
+-  case NS_THEME_SPLITTER:
 -  case NS_THEME_WINDOW:
 -  case NS_THEME_DIALOG:
 -  case NS_THEME_DROPDOWN:
 -  case NS_THEME_DROPDOWN_TEXT:
-     return !IsWidgetStyled(aPresContext, aFrame, aWidgetType);
+-    return !IsWidgetStyled(aPresContext, aFrame, aWidgetType);
 -
 -  case NS_THEME_DROPDOWN_BUTTON:
 -    // "Native" dropdown buttons cause padding and margin problems, but only
