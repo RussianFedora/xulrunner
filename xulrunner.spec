@@ -363,7 +363,6 @@ fi
 %dir %{_libdir}/%{name}-sdk-*
 %dir %{_libdir}/%{name}-sdk-*/sdk
 %{_libdir}/%{name}-*/xpcshell
-%{_libdir}/%{name}-*/xpicleanup
 %{_libdir}/%{name}-*/xpidl
 %{_libdir}/%{name}-*/xpt_dump
 %{_libdir}/%{name}-*/xpt_link
