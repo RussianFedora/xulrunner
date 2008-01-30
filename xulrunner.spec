@@ -32,7 +32,6 @@ Patch6:         xulrunner-version.patch
 Patch7:         mozilla-system-jpeg.patch
 
 # customization patches
-Patch21:        firefox-0.7.3-psfonts.patch
 
 # local bugfixes
 Patch41:        firefox-2.0.0.4-undo-uriloader.patch
