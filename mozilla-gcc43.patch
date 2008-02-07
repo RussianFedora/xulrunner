@@ -1,0 +1,18 @@
+https://bugzilla.mozilla.org/show_bug.cgi?id=411442
+
+Index: configure
+===================================================================
+RCS file: /cvsroot/mozilla/configure,v
+retrieving revision 1.1956
+diff -d -u -p -r1.1956 configure
+--- configure	6 Feb 2008 21:21:03 -0000	1.1956
++++ configure	7 Feb 2008 03:55:09 -0000
+@@ -5556,7 +5556,7 @@ if test "$GNU_CXX"; then
+     # FIXME: Let us build with strict aliasing. bug 414641.
+     CXXFLAGS="$CXXFLAGS -fno-strict-aliasing"
+     # Turn on GNU specific features
+-    _WARNINGS_CXXFLAGS="${_WARNINGS_CXXFLAGS} -Wall -Wconversion -Wpointer-arith -Woverloaded-virtual -Wsynth -Wno-ctor-dtor-privacy -Wno-non-virtual-dtor"
++    _WARNINGS_CXXFLAGS="${_WARNINGS_CXXFLAGS} -Wall -Wpointer-arith -Woverloaded-virtual -Wsynth -Wno-ctor-dtor-privacy -Wno-non-virtual-dtor"
+     if test "$CPU_ARCH" != "ia64"; then
+         # only use -Wcast-align for non-ia64, it's noisy on that platform
+         _WARNINGS_CXXFLAGS="${_WARNINGS_CXXFLAGS} -Wcast-align"
