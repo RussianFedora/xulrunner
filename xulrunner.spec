@@ -9,14 +9,14 @@
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
 Version:        1.9
-Release:        0.beta2.15.nightly20080130%{?dist}
+Release:        0.beta2.15.nightly20080206%{?dist}
 URL:            http://www.mozilla.org/projects/xulrunner/
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
 %if %{official_branding}
 %define tarball xulrunner-%{version}-source.tar.bz2
 %else
-%define tarball mozilla-20080130.tar.bz2
+%define tarball mozilla-20080206.tar.bz2
 %endif
 Source0:        %{tarball}
 Source10:       %{name}-mozconfig
@@ -29,7 +29,7 @@ Source100:      find-external-requires
 Patch4:         mozilla-build.patch
 Patch5:         xulrunner-path.patch
 Patch6:         xulrunner-version.patch
-Patch7:         mozilla-system-jpeg.patch
+Patch7:         mozilla-gcc43.patch
 
 # customization patches
 
@@ -112,7 +112,7 @@ are not frozen and APIs can change at any time, so should not be relied on.
 %patch4   -p1
 %patch5   -p1
 %patch6   -p1 -b .ver
-%patch7   -p1 -b .system-jpeg
+%patch7   -p0 -b .gcc43
 
 %patch107 -p1 -b .pk
 
@@ -387,6 +387,9 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
+* Wed Feb  6 2008 Christopher Aillon <caillon@redhat.com> 1.9-0.beta2.16
+- Update to latest trunk (2008-02-06)
+
 * Tue Jan 29 2008 Christopher Aillon <caillon@redhat.com> 1.9-0.beta2.15
 - Update to latest trunk (2008-01-30)
 
