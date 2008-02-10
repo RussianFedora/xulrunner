@@ -6,17 +6,22 @@
 
 %define version_internal  1.9pre
 
+%if ! %{official_branding}
+%define cvsdate 20080209
+%define nightly .nightly%{cvsdate}
+%endif
+
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
 Version:        1.9
-Release:        0.beta2.16.nightly20080206%{?dist}
+Release:        0.beta2.17%{?nightly}%{?dist}
 URL:            http://www.mozilla.org/projects/xulrunner/
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
 %if %{official_branding}
 %define tarball xulrunner-%{version}-source.tar.bz2
 %else
-%define tarball mozilla-20080206.tar.bz2
+%define tarball mozilla-%{cvsdate}.tar.bz2
 %endif
 Source0:        %{tarball}
 Source10:       %{name}-mozconfig
@@ -387,6 +392,9 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
+* Sat Feb  9 2008 Christopher Aillon <caillon@redhat.com> 1.9-0.beta2.17
+- Update to latest trunk (2008-02-09)
+
 * Wed Feb  6 2008 Christopher Aillon <caillon@redhat.com> 1.9-0.beta2.16
 - Update to latest trunk (2008-02-06)
 
