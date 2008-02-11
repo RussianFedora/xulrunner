@@ -14,7 +14,7 @@
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
 Version:        1.9
-Release:        0.beta2.18%{?nightly}%{?dist}
+Release:        0.beta2.19%{?nightly}%{?dist}
 URL:            http://www.mozilla.org/projects/xulrunner/
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
@@ -166,7 +166,7 @@ export LIBDIR='%{_libdir}'
 
 export LDFLAGS="-Wl,-rpath,${MOZ_APP_DIR}"
 export MAKE="gmake %{moz_make_flags}"
-make -f client.mk build
+make -f client.mk build STRIP="/bin/true"
 
 #---------------------------------------------------------------------
 
@@ -392,6 +392,10 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
+* Mon Feb 11 2008 Adam Jackson <ajax@redhat.com> 1.9-0.beta2.19
+- STRIP="/bin/true" on the %%make line so xulrunner-debuginfo contains,
+  you know, debuginfo.
+
 * Sun Feb 10 2008 Christopher Aillon <caillon@redhat.com> 1.9-0.beta2.18
 - Update to latest trunk (2008-02-10)
 
