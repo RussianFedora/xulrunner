@@ -7,7 +7,7 @@
 %define version_internal  1.9pre
 
 %if ! %{official_branding}
-%define cvsdate 20080210
+%define cvsdate 20080211
 %define nightly .nightly%{cvsdate}
 %endif
 
@@ -392,6 +392,9 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
+* Mon Feb 11 2008 Christopher Aillon <caillon@redhat.com> 1.9-0.beta2.19
+- Update to latest trunk (2008-02-10)
+
 * Mon Feb 11 2008 Adam Jackson <ajax@redhat.com> 1.9-0.beta2.19
 - STRIP="/bin/true" on the %%make line so xulrunner-debuginfo contains,
   you know, debuginfo.
