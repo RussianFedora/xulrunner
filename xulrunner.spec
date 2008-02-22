@@ -7,14 +7,14 @@
 %define version_internal  1.9pre
 
 %if ! %{official_branding}
-%define cvsdate 20080220
+%define cvsdate 20080221
 %define nightly .nightly%{cvsdate}
 %endif
 
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
 Version:        1.9
-Release:        0.beta3.24%{?nightly}%{?dist}
+Release:        0.beta3.25%{?nightly}%{?dist}
 URL:            http://www.mozilla.org/projects/xulrunner/
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
@@ -159,11 +159,13 @@ export RPM_OPT_FLAGS=$MOZ_OPT_FLAGS
 export PREFIX='%{_prefix}'
 export LIBDIR='%{_libdir}'
 
-%ifarch ppc ppc64 s390 s390x
-%define moz_make_flags -j1
-%else
-%define moz_make_flags %{?_smp_mflags}
+MOZ_SMP_FLAGS=-j1
+%ifnarch ppc ppc64 s390 s390x
+[ -z "$RPM_BUILD_NCPUS" ] && \
+     RPM_BUILD_NCPUS="`/usr/bin/getconf _NPROCESSORS_ONLN`"
+[ "$RPM_BUILD_NCPUS" -gt 1 ] && MOZ_SMP_FLAGS=-j2
 %endif
+%define moz_make_flags $MOZ_SMP_FLAGS
 
 export LDFLAGS="-Wl,-rpath,${MOZ_APP_DIR}"
 export MAKE="gmake %{moz_make_flags}"
@@ -397,6 +399,9 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
+* Thu Feb 21 2008 Christopher Aillon <caillon@redhat.com> 1.9-0.beta3.25
+- Update to latest trunk (2008-02-21)
+
 * Wed Feb 20 2008 Christopher Aillon <caillon@redhat.com> 1.9-0.beta3.24
 - Update to latest trunk (2008-02-20)
 
