@@ -1,18 +1,119 @@
-https://bugzilla.mozilla.org/show_bug.cgi?id=411442
+https://bugzilla.mozilla.org/show_bug.cgi?id=409384
 
-Index: configure
-===================================================================
-RCS file: /cvsroot/mozilla/configure,v
-retrieving revision 1.1956
-diff -d -u -p -r1.1956 configure
---- configure	6 Feb 2008 21:21:03 -0000	1.1956
-+++ configure	7 Feb 2008 03:55:09 -0000
-@@ -5556,7 +5556,7 @@ if test "$GNU_CXX"; then
-     # FIXME: Let us build with strict aliasing. bug 414641.
-     CXXFLAGS="$CXXFLAGS -fno-strict-aliasing"
-     # Turn on GNU specific features
--    _WARNINGS_CXXFLAGS="${_WARNINGS_CXXFLAGS} -Wall -Wconversion -Wpointer-arith -Woverloaded-virtual -Wsynth -Wno-ctor-dtor-privacy -Wno-non-virtual-dtor"
-+    _WARNINGS_CXXFLAGS="${_WARNINGS_CXXFLAGS} -Wall -Wpointer-arith -Woverloaded-virtual -Wsynth -Wno-ctor-dtor-privacy -Wno-non-virtual-dtor"
-     if test "$CPU_ARCH" != "ia64"; then
-         # only use -Wcast-align for non-ia64, it's noisy on that platform
-         _WARNINGS_CXXFLAGS="${_WARNINGS_CXXFLAGS} -Wcast-align"
+diff --git a/xpcom/glue/nsISupportsImpl.h b/xpcom/glue/nsISupportsImpl.h
+--- a/xpcom/glue/nsISupportsImpl.h
++++ b/xpcom/glue/nsISupportsImpl.h
+@@ -433,18 +433,18 @@ NS_IMETHODIMP _class::QueryInterface(REF
+ 
+ #define NS_INTERFACE_TABLE_ENTRY(_class, _interface)                          \
+   { &_interface::COMTypeInfo<int>::kIID,                                      \
+-    reinterpret_cast<char*>(                                                  \
++    PROffset32(reinterpret_cast<char*>(                                       \
+                         static_cast<_interface*>((_class*) 0x1000)) -         \
+-    reinterpret_cast<char*>((_class*) 0x1000)                                 \
++               reinterpret_cast<char*>((_class*) 0x1000))                     \
+   },
+ 
+ #define NS_INTERFACE_TABLE_ENTRY_AMBIGUOUS(_class, _interface, _implClass)    \
+   { &_interface::COMTypeInfo<int>::kIID,                                      \
+-    reinterpret_cast<char*>(                                                  \
++    PROffset32(reinterpret_cast<char*>(                                       \
+                         static_cast<_interface*>(                             \
+                                        static_cast<_implClass*>(              \
+                                                       (_class*) 0x1000))) -   \
+-    reinterpret_cast<char*>((_class*) 0x1000)                                 \
++               reinterpret_cast<char*>((_class*) 0x1000))                     \
+   },
+ 
+ #define NS_INTERFACE_TABLE_END_WITH_PTR(_ptr)                                 \
+diff --git a/xpcom/glue/nsVoidArray.h b/xpcom/glue/nsVoidArray.h
+--- a/xpcom/glue/nsVoidArray.h
++++ b/xpcom/glue/nsVoidArray.h
+@@ -406,7 +406,7 @@ private:
+ 
+   PRBool HasSingle() const
+   {
+-    return reinterpret_cast<PRWord>(mImpl) & 0x1;
++    return !!(reinterpret_cast<PRWord>(mImpl) & 0x1);
+   }
+   void* GetSingle() const
+   {
+diff --git a/xpcom/string/public/nsCharTraits.h b/xpcom/string/public/nsCharTraits.h
+--- a/xpcom/string/public/nsCharTraits.h
++++ b/xpcom/string/public/nsCharTraits.h
+@@ -671,7 +671,7 @@ struct nsCharSourceTraits
+     readable_distance( const InputIterator& first, const InputIterator& last )
+       {
+         // assumes single fragment
+-        return last.get() - first.get();
++        return PRUint32(last.get() - first.get());
+       }
+ 
+     static
+diff --git a/xpcom/string/public/nsTDependentString.h b/xpcom/string/public/nsTDependentString.h
+--- a/xpcom/string/public/nsTDependentString.h
++++ b/xpcom/string/public/nsTDependentString.h
+@@ -73,7 +73,7 @@ class nsTDependentString_CharT : public 
+          */
+ 
+       nsTDependentString_CharT( const char_type* start, const char_type* end )
+-        : string_type(const_cast<char_type*>(start), end - start, F_TERMINATED)
++        : string_type(const_cast<char_type*>(start), PRUint32(end - start), F_TERMINATED)
+         {
+           AssertValid();
+         }
+@@ -86,7 +86,7 @@ class nsTDependentString_CharT : public 
+ 
+       explicit
+       nsTDependentString_CharT( const char_type* data )
+-        : string_type(const_cast<char_type*>(data), char_traits::length(data), F_TERMINATED)
++        : string_type(const_cast<char_type*>(data), PRUint32(char_traits::length(data)), F_TERMINATED)
+         {
+           AssertValid();
+         }
+@@ -114,14 +114,14 @@ class nsTDependentString_CharT : public 
+ 
+       void Rebind( const char_type* data )
+         {
+-          Rebind(data, char_traits::length(data));
++          Rebind(data, PRUint32(char_traits::length(data)));
+         }
+ 
+       NS_COM void Rebind( const char_type* data, size_type length );
+ 
+       void Rebind( const char_type* start, const char_type* end )
+         {
+-          Rebind(start, end - start);
++          Rebind(start, PRUint32(end - start));
+         }
+ 
+     private:
+diff --git a/xpcom/string/public/nsTDependentSubstring.h b/xpcom/string/public/nsTDependentSubstring.h
+--- a/xpcom/string/public/nsTDependentSubstring.h
++++ b/xpcom/string/public/nsTDependentSubstring.h
+@@ -71,10 +71,10 @@ class nsTDependentSubstring_CharT : publ
+         }
+ 
+       nsTDependentSubstring_CharT( const char_type* start, const char_type* end )
+-        : substring_type(const_cast<char_type*>(start), end - start, F_NONE) {}
++        : substring_type(const_cast<char_type*>(start), PRUint32(end - start), F_NONE) {}
+ 
+       nsTDependentSubstring_CharT( const const_iterator& start, const const_iterator& end )
+-        : substring_type(const_cast<char_type*>(start.get()), end.get() - start.get(), F_NONE) {}
++        : substring_type(const_cast<char_type*>(start.get()), PRUint32(end.get() - start.get()), F_NONE) {}
+ 
+       // Create a nsTDependentSubstring to be bound later
+       nsTDependentSubstring_CharT()
+diff --git a/xpcom/string/public/nsTString.h b/xpcom/string/public/nsTString.h
+--- a/xpcom/string/public/nsTString.h
++++ b/xpcom/string/public/nsTString.h
+@@ -449,7 +449,7 @@ class nsTFixedString_CharT : public nsTS
+          */
+ 
+       nsTFixedString_CharT( char_type* data, size_type storageSize )
+-        : string_type(data, char_traits::length(data), F_TERMINATED | F_FIXED | F_CLASS_FIXED)
++        : string_type(data, PRUint32(char_traits::length(data)), F_TERMINATED | F_FIXED | F_CLASS_FIXED)
+         , mFixedCapacity(storageSize - 1)
+         , mFixedBuf(data)
+         {}
+

@@ -119,7 +119,7 @@ are not frozen and APIs can change at any time, so should not be relied on.
 %patch4   -p1
 %patch5   -p1
 %patch6   -p1 -b .ver
-%patch7   -p0 -b .gcc43
+%patch7   -p1 -b .gcc43
 
 %patch107 -p1 -b .pk
 
