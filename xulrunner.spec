@@ -7,14 +7,14 @@
 %define version_internal  1.9pre
 
 %if ! %{official_branding}
-%define cvsdate 20080304
+%define cvsdate 20080306
 %define nightly .nightly%{cvsdate}
 %endif
 
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
 Version:        1.9
-Release:        0.beta4.34%{?nightly}%{?dist}
+Release:        0.beta4.35%{?nightly}%{?dist}
 URL:            http://www.mozilla.org/projects/xulrunner/
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
@@ -34,7 +34,6 @@ Source100:      find-external-requires
 Patch4:         mozilla-build.patch
 Patch5:         xulrunner-path.patch
 Patch6:         xulrunner-version.patch
-Patch7:         mozilla-gcc43.patch
 
 # customization patches
 
@@ -119,7 +118,6 @@ are not frozen and APIs can change at any time, so should not be relied on.
 %patch4   -p1
 %patch5   -p1
 %patch6   -p1 -b .ver
-%patch7   -p1 -b .gcc43
 
 %patch107 -p1 -b .pk
 
@@ -400,6 +398,9 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
+* Thu Mar  6 2008 Christopher Aillon <caillon@redhat.com> 1.9-0.beta4.35
+- Update to latest trunk (2008-03-06)
+
 * Tue Mar  4 2008 Christopher Aillon <caillon@redhat.com> 1.9-0.beta4.34
 - Update to latest trunk (2008-03-04)
 
