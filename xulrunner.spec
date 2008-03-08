@@ -31,6 +31,7 @@ Source23:       %{name}.1
 Source100:      find-external-requires
 
 # build patches
+Patch1:         crashreporter-gcc43.patch
 Patch4:         mozilla-build.patch
 Patch5:         xulrunner-path.patch
 Patch6:         xulrunner-version.patch
@@ -115,6 +116,7 @@ are not frozen and APIs can change at any time, so should not be relied on.
 
 %prep
 %setup -q -n mozilla
+%patch1   -p0 -b .crashreporter
 %patch4   -p1
 %patch5   -p1
 %patch6   -p1 -b .ver
