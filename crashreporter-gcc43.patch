@@ -9,7 +9,7 @@ diff -d -u -p -r1.16 crashreporter_linux.cpp
  
  #include <algorithm>
  #include <cctype>
-+#include <climits>
++#include <cstring>
  
  #include <signal.h>
  
