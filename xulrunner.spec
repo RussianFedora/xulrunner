@@ -63,8 +63,11 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires:  nspr-devel >= %{nspr_version}
 BuildRequires:  nss-devel >= %{nss_version}
 BuildRequires:  cairo-devel >= %{cairo_version}
-BuildRequires:  libpng-devel, libjpeg-devel
-BuildRequires:  zlib-devel, zip
+BuildRequires:  libpng-devel
+BuildRequires:  libjpeg-devel
+BuildRequires:  bzip2-devel
+BuildRequires:  zlib-devel
+BuildRequires:  lcms-devel
 BuildRequires:  libIDL-devel
 BuildRequires:  gtk2-devel
 BuildRequires:  gnome-vfs2-devel
