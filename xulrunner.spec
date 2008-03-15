@@ -14,7 +14,7 @@
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
 Version:        1.9
-Release:        0.40%{?nightly}%{?dist}
+Release:        0.41%{?nightly}%{?dist}
 URL:            http://www.mozilla.org/projects/xulrunner/
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
@@ -118,7 +118,8 @@ are not frozen and APIs can change at any time, so should not be relied on.
 #---------------------------------------------------------------------
 
 %prep
-%setup -q -n mozilla
+%setup -q -c
+cd mozilla
 %patch1   -p0 -b .crashreporter
 %patch4   -p1
 %patch5   -p1
@@ -148,6 +149,8 @@ are not frozen and APIs can change at any time, so should not be relied on.
 #---------------------------------------------------------------------
 
 %build
+cd mozilla
+
 INTERNAL_GECKO=%{version_internal}
 MOZ_APP_DIR=%{_libdir}/%{name}-${INTERNAL_GECKO}
 
@@ -178,6 +181,7 @@ make -f client.mk build STRIP="/bin/true"
 #---------------------------------------------------------------------
 
 %install
+cd mozilla
 %{__rm} -rf $RPM_BUILD_ROOT
 
 INTERNAL_GECKO=%{version_internal}
@@ -403,6 +407,9 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
+* Sat Mar 15 2008 Christopher Aillon <caillon@redhat.com> 1.9-0.41
+- Avoid conflicts between gecko debuginfo packages
+
 * Wed Mar 12 2008 Christopher Aillon <caillon@redhat.com> 1.9-0.40
 - Update to latest trunk (2008-03-12)
 
