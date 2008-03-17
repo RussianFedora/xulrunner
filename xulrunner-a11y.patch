@@ -1,13 +1,14 @@
-a11y perf patch from https://bugzilla.mozilla.org/show_bug.cgi?id=418845
+Fix performance when a11y is enabled.
+https://bugzilla.redhat.com/431162
+https://bugzilla.mozilla.org/show_bug.cgi?id=418845
 
-
-Index: accessible/src/base/nsAccessibilityUtils.cpp
+Index: mozilla/accessible/src/base/nsAccessibilityUtils.cpp
 ===================================================================
-RCS file: /cvsroot/mozilla/accessible/accessible/src/base/nsAccessibilityUtils.cpp,v
-retrieving revision 1.27
-diff -u -p -8 -r1.27 nsAccessibilityUtils.cpp
---- accessible/src/base/nsAccessibilityUtils.cpp	20 Feb 2008 07:50:45 -0000	1.27
-+++ accessible/src/base/nsAccessibilityUtils.cpp	13 Mar 2008 02:36:00 -0000
+RCS file: /cvsroot/mozilla/accessible/src/base/nsAccessibilityUtils.cpp,v
+retrieving revision 1.29
+diff -u -p -8 -r1.29 nsAccessibilityUtils.cpp
+--- mozilla/accessible/src/base/nsAccessibilityUtils.cpp	14 Mar 2008 20:49:38 -0000	1.29
++++ mozilla/accessible/src/base/nsAccessibilityUtils.cpp	17 Mar 2008 08:09:39 -0000
 @@ -314,31 +314,45 @@ nsAccUtils::FireAccEvent(PRUint32 aEvent
  
    return pAccessible->FireAccessibleEvent(event);
@@ -56,13 +57,13 @@ diff -u -p -8 -r1.27 nsAccessibilityUtils.cpp
           testRoleAccessible) {
      PRUint32 testRole;
      testRoleAccessible->GetFinalRole(&testRole);
-Index: accessible/src/base/nsAccessibilityUtils.h
+Index: mozilla/accessible/src/base/nsAccessibilityUtils.h
 ===================================================================
-RCS file: /cvsroot/mozilla/accessible/accessible/src/base/nsAccessibilityUtils.h,v
-retrieving revision 1.21
-diff -u -p -8 -r1.21 nsAccessibilityUtils.h
---- accessible/src/base/nsAccessibilityUtils.h	12 Feb 2008 07:24:05 -0000	1.21
-+++ accessible/src/base/nsAccessibilityUtils.h	13 Mar 2008 02:36:00 -0000
+RCS file: /cvsroot/mozilla/accessible/src/base/nsAccessibilityUtils.h,v
+retrieving revision 1.23
+diff -u -p -8 -r1.23 nsAccessibilityUtils.h
+--- mozilla/accessible/src/base/nsAccessibilityUtils.h	14 Mar 2008 20:49:38 -0000	1.23
++++ mozilla/accessible/src/base/nsAccessibilityUtils.h	17 Mar 2008 08:09:39 -0000
 @@ -144,16 +144,23 @@ public:
     * @param aPossibleAncestorNode -- node to test for ancestor-ness of aPossibleDescendantNode
     * @param aPossibleDescendantNode -- node to test for descendant-ness of aPossibleAncestorNode
@@ -76,7 +77,7 @@ diff -u -p -8 -r1.21 nsAccessibilityUtils.h
 +   * @return PR_TRUE if aDOMNode1 and aDOMNode2 have same parent
 +   */
 +   static PRBool AreSiblings(nsIDOMNode *aDOMNode1,
-+                            nsIDOMNode *aDOMNode2);
++                             nsIDOMNode *aDOMNode2);
 +
 +  /**
      * If an ancestor in this document exists with the given role, return it
@@ -87,14 +88,14 @@ diff -u -p -8 -r1.21 nsAccessibilityUtils.h
     static already_AddRefed<nsIAccessible>
       GetAncestorWithRole(nsIAccessible *aDescendant, PRUint32 aRole);
  
-Index: accessible/src/base/nsAccessibleEventData.cpp
+Index: mozilla/accessible/src/base/nsAccessibleEventData.cpp
 ===================================================================
-RCS file: /cvsroot/mozilla/accessible/accessible/src/base/nsAccessibleEventData.cpp,v
+RCS file: /cvsroot/mozilla/accessible/src/base/nsAccessibleEventData.cpp,v
 retrieving revision 1.28
 diff -u -p -8 -r1.28 nsAccessibleEventData.cpp
---- accessible/src/base/nsAccessibleEventData.cpp	19 Feb 2008 11:22:01 -0000	1.28
-+++ accessible/src/base/nsAccessibleEventData.cpp	13 Mar 2008 02:36:00 -0000
-@@ -52,28 +52,35 @@
+--- mozilla/accessible/src/base/nsAccessibleEventData.cpp	19 Feb 2008 11:22:01 -0000	1.28
++++ mozilla/accessible/src/base/nsAccessibleEventData.cpp	17 Mar 2008 08:09:39 -0000
+@@ -52,28 +52,28 @@
  #include "nsIAccessibleText.h"
  #include "nsIContent.h"
  #include "nsIPresShell.h"
@@ -104,14 +105,7 @@ diff -u -p -8 -r1.28 nsAccessibleEventData.cpp
  nsIDOMNode* nsAccEvent::gLastEventNodeWeak = 0;
  
 -NS_IMPL_ISUPPORTS1(nsAccEvent, nsIAccessibleEvent)
-+NS_IMPL_QUERY_HEAD(nsAccEvent)
-+NS_IMPL_QUERY_BODY(nsAccEvent)
-+NS_IMPL_QUERY_BODY(nsISupports)
-+NS_IMPL_QUERY_BODY(nsIAccessibleEvent)
-+NS_IMPL_QUERY_TAIL_GUTS
-+
-+NS_IMPL_ADDREF(nsAccEvent)
-+NS_IMPL_RELEASE(nsAccEvent)
++NS_IMPL_ISUPPORTS2(nsAccEvent, nsAccEvent, nsIAccessibleEvent)
  
  nsAccEvent::nsAccEvent(PRUint32 aEventType, nsIAccessible *aAccessible,
 -                       PRBool aIsAsynch):
@@ -135,7 +129,7 @@ diff -u -p -8 -r1.28 nsAccessibleEventData.cpp
                                          nsIPersistentProperties *aAttributes)
  {
    if (aNode == gLastEventNodeWeak) {
-@@ -277,16 +284,102 @@ nsAccEvent::GetAccessibleByNode()
+@@ -277,16 +277,104 @@ nsAccEvent::GetAccessibleByNode()
        }
      }
    }
@@ -191,6 +185,8 @@ diff -u -p -8 -r1.28 nsAccessibleEventData.cpp
 +        } // for (index)
 +
 +        if (tailEvent->mEventRule != nsAccEvent::eDoNotEmit) {
++          // Not in another event node's subtree, and no other event is in
++          // this event node's subtree.
 +          // This event should be emitted
 +          // Apply this result to sibling nodes of tailDOMNode
 +          ApplyToSiblings(aEventsToFire, 0, tail, tailEvent->mEventType,
@@ -238,13 +234,13 @@ diff -u -p -8 -r1.28 nsAccessibleEventData.cpp
  nsAccStateChangeEvent::
    nsAccStateChangeEvent(nsIAccessible *aAccessible,
                          PRUint32 aState, PRBool aIsExtraState,
-Index: accessible/src/base/nsAccessibleEventData.h
+Index: mozilla/accessible/src/base/nsAccessibleEventData.h
 ===================================================================
-RCS file: /cvsroot/mozilla/accessible/accessible/src/base/nsAccessibleEventData.h,v
+RCS file: /cvsroot/mozilla/accessible/src/base/nsAccessibleEventData.h,v
 retrieving revision 1.31
 diff -u -p -8 -r1.31 nsAccessibleEventData.h
---- accessible/src/base/nsAccessibleEventData.h	19 Feb 2008 11:22:01 -0000	1.31
-+++ accessible/src/base/nsAccessibleEventData.h	13 Mar 2008 02:36:00 -0000
+--- mozilla/accessible/src/base/nsAccessibleEventData.h	19 Feb 2008 11:22:01 -0000	1.31
++++ mozilla/accessible/src/base/nsAccessibleEventData.h	17 Mar 2008 08:09:39 -0000
 @@ -36,56 +36,106 @@
   * the provisions above, a recipient may use your version of this file under
   * the terms of any one of the MPL, the GPL or the LGPL.
@@ -406,13 +402,13 @@ diff -u -p -8 -r1.31 nsAccessibleEventData.h
                          PRUint32 aState, PRBool aIsExtraState,
                          PRBool aIsEnabled);
  
-Index: accessible/src/base/nsCaretAccessible.cpp
+Index: mozilla/accessible/src/base/nsCaretAccessible.cpp
 ===================================================================
-RCS file: /cvsroot/mozilla/accessible/accessible/src/base/nsCaretAccessible.cpp,v
+RCS file: /cvsroot/mozilla/accessible/src/base/nsCaretAccessible.cpp,v
 retrieving revision 1.64
 diff -u -p -8 -r1.64 nsCaretAccessible.cpp
---- accessible/src/base/nsCaretAccessible.cpp	26 Feb 2008 08:51:11 -0000	1.64
-+++ accessible/src/base/nsCaretAccessible.cpp	13 Mar 2008 02:36:00 -0000
+--- mozilla/accessible/src/base/nsCaretAccessible.cpp	26 Feb 2008 08:51:11 -0000	1.64
++++ mozilla/accessible/src/base/nsCaretAccessible.cpp	17 Mar 2008 08:09:39 -0000
 @@ -239,17 +239,17 @@ NS_IMETHODIMP nsCaretAccessible::NotifyS
    }
    mLastCaretOffset = caretOffset;
@@ -432,14 +428,14 @@ diff -u -p -8 -r1.64 nsCaretAccessible.cpp
    nsRect caretRect;
    NS_ENSURE_TRUE(aOutWidget, caretRect);
    *aOutWidget = nsnull;
-Index: accessible/src/base/nsDocAccessible.cpp
+Index: mozilla/accessible/src/base/nsDocAccessible.cpp
 ===================================================================
-RCS file: /cvsroot/mozilla/accessible/accessible/src/base/nsDocAccessible.cpp,v
-retrieving revision 1.234
-diff -u -p -8 -r1.234 nsDocAccessible.cpp
---- accessible/src/base/nsDocAccessible.cpp	29 Feb 2008 15:38:35 -0000	1.234
-+++ accessible/src/base/nsDocAccessible.cpp	13 Mar 2008 02:36:01 -0000
-@@ -1021,17 +1021,17 @@ nsDocAccessible::AttributeChangedImpl(ns
+RCS file: /cvsroot/mozilla/accessible/src/base/nsDocAccessible.cpp,v
+retrieving revision 1.235
+diff -u -p -8 -r1.235 nsDocAccessible.cpp
+--- mozilla/accessible/src/base/nsDocAccessible.cpp	14 Mar 2008 20:49:38 -0000	1.235
++++ mozilla/accessible/src/base/nsDocAccessible.cpp	17 Mar 2008 08:09:40 -0000
+@@ -1059,17 +1059,17 @@ nsDocAccessible::AttributeChangedImpl(ns
      // in the wrong namespace or an element that doesn't support it
      InvalidateCacheSubtree(aContent, nsIAccessibleEvent::EVENT_DOM_SIGNIFICANT_CHANGE);
      return;
@@ -458,7 +454,7 @@ diff -u -p -8 -r1.234 nsDocAccessible.cpp
      // ARIA or XUL selection
      nsCOMPtr<nsIAccessible> multiSelect = GetMultiSelectFor(targetNode);
      // Multi selects use selection_add and selection_remove
-@@ -1043,17 +1043,18 @@ nsDocAccessible::AttributeChangedImpl(ns
+@@ -1081,17 +1081,18 @@ nsDocAccessible::AttributeChangedImpl(ns
        // Need to find the right event to use here, SELECTION_WITHIN would
        // seem right but we had started using it for something else
        nsCOMPtr<nsIAccessNode> multiSelectAccessNode =
@@ -478,7 +474,7 @@ diff -u -p -8 -r1.234 nsDocAccessible.cpp
          FireDelayedToolkitEvent(nsIAccessibleEvent::EVENT_SELECTION_REMOVE,
                                  targetNode);
          return;
-@@ -1394,103 +1395,39 @@ nsDocAccessible::CreateTextChangeEventFo
+@@ -1432,103 +1433,39 @@ nsDocAccessible::CreateTextChangeEventFo
      new nsAccTextChangeEvent(aContainerAccessible, offset, length, aIsInserting, aIsAsynch);
    NS_IF_ADDREF(event);
  
@@ -587,7 +583,7 @@ diff -u -p -8 -r1.234 nsDocAccessible.cpp
                                            0, nsITimer::TYPE_ONE_SHOT);
    }
  
-@@ -1499,30 +1436,32 @@ nsDocAccessible::FireDelayedAccessibleEv
+@@ -1537,30 +1474,32 @@ nsDocAccessible::FireDelayedAccessibleEv
  
  NS_IMETHODIMP nsDocAccessible::FlushPendingEvents()
  {
@@ -627,7 +623,7 @@ diff -u -p -8 -r1.234 nsDocAccessible.cpp
        // However, we only keep track of the old frame type for the focus, where it's very
        // important not to destroy and recreate the accessible for minor style changes,
        // such as a:focus { overflow: scroll; }
-@@ -1935,33 +1874,35 @@ NS_IMETHODIMP nsDocAccessible::Invalidat
+@@ -1973,33 +1912,35 @@ NS_IMETHODIMP nsDocAccessible::Invalidat
      // Fire EVENT_SHOW, EVENT_MENUPOPUP_START for newly visible content.
      // Fire after a short timer, because we want to make sure the view has been
      // updated to make this accessible content visible. If we don't wait,
@@ -666,7 +662,7 @@ diff -u -p -8 -r1.234 nsDocAccessible.cpp
          break;
        }
        roleMapEntry = nsAccUtils::GetRoleMapEntry(ancestorNode);
-@@ -1969,19 +1910,20 @@ NS_IMETHODIMP nsDocAccessible::Invalidat
+@@ -2007,19 +1948,20 @@ NS_IMETHODIMP nsDocAccessible::Invalidat
    }
  
    if (!isShowing) {
@@ -689,7 +685,7 @@ diff -u -p -8 -r1.234 nsDocAccessible.cpp
  
  NS_IMETHODIMP
  nsDocAccessible::GetAccessibleInParentChain(nsIDOMNode *aNode,
-@@ -2047,23 +1989,24 @@ nsDocAccessible::FireShowHideEvents(nsID
+@@ -2085,23 +2027,24 @@ nsDocAccessible::FireShowHideEvents(nsID
  
    if (accessible) {
      // Found an accessible, so fire the show/hide on it and don't
@@ -716,14 +712,14 @@ diff -u -p -8 -r1.234 nsDocAccessible.cpp
    // accessible descendants in this subtree
    nsCOMPtr<nsIContent> content(do_QueryInterface(aDOMNode));
    PRUint32 count = content->GetChildCount();
-Index: accessible/src/base/nsDocAccessible.h
+Index: mozilla/accessible/src/base/nsDocAccessible.h
 ===================================================================
-RCS file: /cvsroot/mozilla/accessible/accessible/src/base/nsDocAccessible.h,v
-retrieving revision 1.76
-diff -u -p -8 -r1.76 nsDocAccessible.h
---- accessible/src/base/nsDocAccessible.h	26 Feb 2008 14:19:52 -0000	1.76
-+++ accessible/src/base/nsDocAccessible.h	13 Mar 2008 02:36:01 -0000
-@@ -96,46 +96,40 @@ class nsDocAccessible : public nsHyperTe
+RCS file: /cvsroot/mozilla/accessible/src/base/nsDocAccessible.h,v
+retrieving revision 1.77
+diff -u -p -8 -r1.77 nsDocAccessible.h
+--- mozilla/accessible/src/base/nsDocAccessible.h	14 Mar 2008 20:49:38 -0000	1.77
++++ mozilla/accessible/src/base/nsDocAccessible.h	17 Mar 2008 08:09:40 -0000
+@@ -98,46 +98,40 @@ class nsDocAccessible : public nsHyperTe
      NS_IMETHOD Init();
  
      // nsPIAccessNode
@@ -772,13 +768,13 @@ diff -u -p -8 -r1.76 nsDocAccessible.h
      virtual nsresult AddEventListeners();
      virtual nsresult RemoveEventListeners();
      void AddScrollListener();
-Index: accessible/src/base/nsRootAccessible.cpp
+Index: mozilla/accessible/src/base/nsRootAccessible.cpp
 ===================================================================
-RCS file: /cvsroot/mozilla/accessible/accessible/src/base/nsRootAccessible.cpp,v
-retrieving revision 1.261
-diff -u -p -8 -r1.261 nsRootAccessible.cpp
---- accessible/src/base/nsRootAccessible.cpp	6 Mar 2008 03:43:51 -0000	1.261
-+++ accessible/src/base/nsRootAccessible.cpp	13 Mar 2008 02:36:02 -0000
+RCS file: /cvsroot/mozilla/accessible/src/base/nsRootAccessible.cpp,v
+retrieving revision 1.262
+diff -u -p -8 -r1.262 nsRootAccessible.cpp
+--- mozilla/accessible/src/base/nsRootAccessible.cpp	14 Mar 2008 20:49:38 -0000	1.262
++++ mozilla/accessible/src/base/nsRootAccessible.cpp	17 Mar 2008 08:09:41 -0000
 @@ -403,18 +403,17 @@ void nsRootAccessible::TryFireEarlyLoadE
        return;
      }
@@ -799,7 +795,7 @@ diff -u -p -8 -r1.261 nsRootAccessible.cpp
                                                    nsIDOMEvent *aFocusEvent,
                                                    PRBool aForceEvent,
                                                    PRBool aIsAsynch)
-@@ -498,19 +497,20 @@ PRBool nsRootAccessible::FireAccessibleF
+@@ -501,19 +500,20 @@ PRBool nsRootAccessible::FireAccessibleF
              nsAccUtils::FireAccEvent(nsIAccessibleEvent::EVENT_MENU_START, menuBarAccessible);
            }
          }
@@ -822,7 +818,7 @@ diff -u -p -8 -r1.261 nsRootAccessible.cpp
    gLastFocusedNode = finalFocusNode;
    NS_IF_ADDREF(gLastFocusedNode);
  
-@@ -531,17 +531,18 @@ PRBool nsRootAccessible::FireAccessibleF
+@@ -534,17 +534,18 @@ PRBool nsRootAccessible::FireAccessibleF
        // and that's what we care about
        // Make sure we never fire focus for the nsRootAccessible (mDOMNode)
        
@@ -842,4 +838,31 @@ diff -u -p -8 -r1.261 nsRootAccessible.cpp
  {
    nsCOMPtr<nsIDOMNode> focusedNode = GetCurrentFocus();
    if (!focusedNode) {
-
+Index: src/html/nsHTMLSelectAccessible.cpp
+===================================================================
+RCS file: /cvsroot/mozilla/accessible/src/html/nsHTMLSelectAccessible.cpp,v
+retrieving revision 1.94
+diff -u -p -8 -r1.94 nsHTMLSelectAccessible.cpp
+--- src/html/nsHTMLSelectAccessible.cpp	12 Dec 2007 02:10:27 -0000	1.94
++++ src/html/nsHTMLSelectAccessible.cpp	17 Mar 2008 08:09:41 -0000
+@@ -453,16 +453,20 @@ void nsHTMLSelectListAccessible::CacheCh
+ 
+   nsCOMPtr<nsIContent> selectContent(do_QueryInterface(mDOMNode));
+   nsCOMPtr<nsIAccessibilityService> accService(do_GetService("@mozilla.org/accessibilityService;1"));
+   if (!selectContent || !accService) {
+     mAccChildCount = eChildCountUninitialized;
+     return;
+   }
+ 
++  if (mAccChildCount != eChildCountUninitialized) {
++    return;
++  }
++
+   mAccChildCount = 0; // Avoid reentry
+   PRInt32 childCount = 0;
+   nsCOMPtr<nsIAccessible> lastGoodAccessible =
+     CacheOptSiblings(accService, selectContent, nsnull, &childCount);
+   mAccChildCount = childCount;
+ }
+ 
+ /** ----- nsHTMLSelectOptionAccessible ----- */
