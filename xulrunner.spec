@@ -7,14 +7,14 @@
 %define version_internal  1.9pre
 
 %if ! %{official_branding}
-%define cvsdate 20080315
+%define cvsdate 20080316
 %define nightly .cvs%{cvsdate}
 %endif
 
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
 Version:        1.9
-Release:        0.42%{?nightly}%{?dist}
+Release:        0.43%{?nightly}%{?dist}
 URL:            http://www.mozilla.org/projects/xulrunner/
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
@@ -41,6 +41,7 @@ Patch6:         xulrunner-version.patch
 # local bugfixes
 Patch41:        firefox-2.0.0.4-undo-uriloader.patch
 Patch42:        firefox-1.1-uriloader.patch
+Patch43:        xulrunner-a11y.patch
 
 # font system fixes
 
@@ -124,6 +125,8 @@ cd mozilla
 %patch4   -p1
 %patch5   -p1
 %patch6   -p1 -b .ver
+
+%patch43 -p0 -b .a11y
 
 %patch107 -p1 -b .pk
 
@@ -407,6 +410,10 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
+* Sat Mar 16 2008 Christopher Aillon <caillon@redhat.com> 1.9-0.43
+- Update to latest trunk (2008-03-16)
+- Add patch to negate a11y slowdown on some pages (#431162)
+
 * Sat Mar 15 2008 Christopher Aillon <caillon@redhat.com> 1.9-0.42
 - Update to latest trunk (2008-03-15)
 
