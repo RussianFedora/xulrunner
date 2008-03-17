@@ -1,5 +1,5 @@
 %define nspr_version 4.6.99
-%define nss_version 3.11.99
+%define nss_version 3.11.99.5
 %define cairo_version 0.5
 
 %define official_branding 0
@@ -7,14 +7,14 @@
 %define version_internal  1.9pre
 
 %if ! %{official_branding}
-%define cvsdate 20080315
+%define cvsdate 20080317
 %define nightly .cvs%{cvsdate}
 %endif
 
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
 Version:        1.9
-Release:        0.44%{?nightly}%{?dist}
+Release:        0.45%{?nightly}%{?dist}
 URL:            http://www.mozilla.org/projects/xulrunner/
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
@@ -38,7 +38,6 @@ Patch6:         xulrunner-version.patch
 # customization patches
 
 # local bugfixes
-Patch43:        xulrunner-a11y.patch
 
 # font system fixes
 
@@ -121,8 +120,6 @@ cd mozilla
 %patch4   -p1
 %patch5   -p1
 %patch6   -p1 -b .ver
-
-%patch43 -p1 -b .a11y
 
 %patch107 -p1 -b .pk
 
@@ -406,6 +403,9 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
+* Mon Mar 17 2008 Christopher Aillon <caillon@redhat.com> 1.9-0.45
+- Update to latest trunk (2008-03-17)
+
 * Mon Mar 17 2008 Christopher Aillon <caillon@redhat.com> 1.9-0.44
 - Revert to trunk from the 15th to fix crashes on HTTPS sites
 
