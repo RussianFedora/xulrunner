@@ -7,14 +7,14 @@
 %define version_internal  1.9pre
 
 %if ! %{official_branding}
-%define cvsdate 20080316
+%define cvsdate 20080315
 %define nightly .cvs%{cvsdate}
 %endif
 
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
 Version:        1.9
-Release:        0.43%{?nightly}%{?dist}
+Release:        0.44%{?nightly}%{?dist}
 URL:            http://www.mozilla.org/projects/xulrunner/
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
@@ -31,7 +31,6 @@ Source23:       %{name}.1
 Source100:      find-external-requires
 
 # build patches
-Patch1:         crashreporter-gcc43.patch
 Patch4:         mozilla-build.patch
 Patch5:         xulrunner-path.patch
 Patch6:         xulrunner-version.patch
@@ -39,8 +38,6 @@ Patch6:         xulrunner-version.patch
 # customization patches
 
 # local bugfixes
-Patch41:        firefox-2.0.0.4-undo-uriloader.patch
-Patch42:        firefox-1.1-uriloader.patch
 Patch43:        xulrunner-a11y.patch
 
 # font system fixes
@@ -121,12 +118,11 @@ are not frozen and APIs can change at any time, so should not be relied on.
 %prep
 %setup -q -c
 cd mozilla
-%patch1   -p0 -b .crashreporter
 %patch4   -p1
 %patch5   -p1
 %patch6   -p1 -b .ver
 
-%patch43 -p0 -b .a11y
+%patch43 -p1 -b .a11y
 
 %patch107 -p1 -b .pk
 
@@ -410,6 +406,9 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
+* Mon Mar 17 2008 Christopher Aillon <caillon@redhat.com> 1.9-0.44
+- Revert to trunk from the 15th to fix crashes on HTTPS sites
+
 * Sun Mar 16 2008 Christopher Aillon <caillon@redhat.com> 1.9-0.43
 - Update to latest trunk (2008-03-16)
 - Add patch to negate a11y slowdown on some pages (#431162)
