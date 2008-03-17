@@ -410,7 +410,7 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
-* Sat Mar 16 2008 Christopher Aillon <caillon@redhat.com> 1.9-0.43
+* Sun Mar 16 2008 Christopher Aillon <caillon@redhat.com> 1.9-0.43
 - Update to latest trunk (2008-03-16)
 - Add patch to negate a11y slowdown on some pages (#431162)
 
