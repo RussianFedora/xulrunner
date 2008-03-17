@@ -838,13 +838,13 @@ diff -u -p -8 -r1.262 nsRootAccessible.cpp
  {
    nsCOMPtr<nsIDOMNode> focusedNode = GetCurrentFocus();
    if (!focusedNode) {
-Index: src/html/nsHTMLSelectAccessible.cpp
+Index: mozilla/accessible/src/html/nsHTMLSelectAccessible.cpp
 ===================================================================
 RCS file: /cvsroot/mozilla/accessible/src/html/nsHTMLSelectAccessible.cpp,v
 retrieving revision 1.94
 diff -u -p -8 -r1.94 nsHTMLSelectAccessible.cpp
---- src/html/nsHTMLSelectAccessible.cpp	12 Dec 2007 02:10:27 -0000	1.94
-+++ src/html/nsHTMLSelectAccessible.cpp	17 Mar 2008 08:09:41 -0000
+--- mozilla/accessible/src/html/nsHTMLSelectAccessible.cpp	12 Dec 2007 02:10:27 -0000	1.94
++++ mozilla/accessible/src/html/nsHTMLSelectAccessible.cpp	17 Mar 2008 08:09:41 -0000
 @@ -453,16 +453,20 @@ void nsHTMLSelectListAccessible::CacheCh
  
    nsCOMPtr<nsIContent> selectContent(do_QueryInterface(mDOMNode));
