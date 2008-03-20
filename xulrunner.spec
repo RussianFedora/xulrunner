@@ -398,7 +398,7 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
-* Mon Mar 20 2008 Christopher Aillon <caillon@redhat.com> 1.9-0.46
+* Thu Mar 20 2008 Christopher Aillon <caillon@redhat.com> 1.9-0.46
 - Update to latest trunk (2008-03-20)
 
 * Mon Mar 17 2008 Christopher Aillon <caillon@redhat.com> 1.9-0.45
