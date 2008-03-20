@@ -7,14 +7,14 @@
 %define version_internal  1.9pre
 
 %if ! %{official_branding}
-%define cvsdate 20080317
+%define cvsdate 20080320
 %define nightly .cvs%{cvsdate}
 %endif
 
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
 Version:        1.9
-Release:        0.45%{?nightly}%{?dist}
+Release:        0.46%{?nightly}%{?dist}
 URL:            http://www.mozilla.org/projects/xulrunner/
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
@@ -153,12 +153,9 @@ MOZ_APP_DIR=%{_libdir}/%{name}-${INTERNAL_GECKO}
 # Mozilla builds with -Wall with exception of a few warnings which show up
 # everywhere in the code; so, don't override that.
 MOZ_OPT_FLAGS=$(echo $RPM_OPT_FLAGS | %{__sed} -e 's/-Wall//')
-%ifarch ppc64
-# temporary workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=412220
-MOZ_OPT_FLAGS="$MOZ_OPT_FLAGS -mno-fp-in-toc -mno-sum-in-toc"
-%endif
+export CFLAGS=$MOZ_OPT_FLAGS
+export CXXFLAGS=$MOZ_OPT_FLAGS
 
-export RPM_OPT_FLAGS=$MOZ_OPT_FLAGS
 export PREFIX='%{_prefix}'
 export LIBDIR='%{_libdir}'
 
@@ -168,11 +165,9 @@ MOZ_SMP_FLAGS=-j1
      RPM_BUILD_NCPUS="`/usr/bin/getconf _NPROCESSORS_ONLN`"
 [ "$RPM_BUILD_NCPUS" -gt 1 ] && MOZ_SMP_FLAGS=-j2
 %endif
-%define moz_make_flags $MOZ_SMP_FLAGS
 
 export LDFLAGS="-Wl,-rpath,${MOZ_APP_DIR}"
-export MAKE="gmake %{moz_make_flags}"
-make -f client.mk build STRIP="/bin/true"
+make -f client.mk build STRIP="/bin/true" MOZ_MAKE_FLAGS="$MOZ_SMP_FLAGS"
 
 #---------------------------------------------------------------------
 
@@ -403,6 +398,9 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
+* Mon Mar 20 2008 Christopher Aillon <caillon@redhat.com> 1.9-0.46
+- Update to latest trunk (2008-03-20)
+
 * Mon Mar 17 2008 Christopher Aillon <caillon@redhat.com> 1.9-0.45
 - Update to latest trunk (2008-03-17)
 
