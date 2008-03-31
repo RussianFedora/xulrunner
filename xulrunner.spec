@@ -141,7 +141,7 @@ cd mozilla
 %{__rm} -f .mozconfig
 %{__cp} %{SOURCE10} .mozconfig
 %if %{official_branding}
-%{__cat} %{SOURCE11} >> .mozconfig
+#%{__cat} %{SOURCE11} >> .mozconfig
 %endif
 
 #---------------------------------------------------------------------
