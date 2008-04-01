@@ -2,30 +2,18 @@
 %define nss_version 3.11.99.5
 %define cairo_version 0.5
 
-%define official_branding 1
-
 %define version_internal  1.9pre
 
-%if ! %{official_branding}
-%define cvsdate 20080327
-%define nightly .cvs%{cvsdate}
-%else
 %define version_pre .beta5rc2
-%endif
 
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
 Version:        1.9
-Release:        0.51%{?version_pre}%{?nightly}%{?dist}
+Release:        0.51%{?version_pre}%{?dist}
 URL:            http://www.mozilla.org/projects/xulrunner/
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
-%if %{official_branding}
-%define tarball xulrunner-1.9b5-source.tar.bz2
-%else
-%define tarball mozilla-%{cvsdate}.tar.bz2
-%endif
-Source0:        %{tarball}
+Source0:        xulrunner-1.9b5-source.tar.bz2
 Source10:       %{name}-mozconfig
 Source12:       %{name}-redhat-default-prefs.js
 #Source21:       %{name}.sh.in
@@ -46,15 +34,7 @@ Patch6:         xulrunner-version.patch
 # Other
 Patch107:       mozilla-pkgconfig.patch
 
-%if %{official_branding}
-# Required by Mozilla Corporation
 
-
-%else
-# Not yet approved by Mozillla Corporation
-
-
-%endif
 
 # ---------------------------------------------------
 
@@ -125,24 +105,8 @@ cd mozilla
 
 %patch107 -p1 -b .pk
 
-
-# For branding specific patches.
-
-%if %{official_branding}
-# Required by Mozilla Corporation
-
-
-%else
-# Not yet approved by Mozilla Corporation
-
-
-%endif
-
 %{__rm} -f .mozconfig
 %{__cp} %{SOURCE10} .mozconfig
-%if %{official_branding}
-#%{__cat} %{SOURCE11} >> .mozconfig
-%endif
 
 #---------------------------------------------------------------------
 
@@ -210,15 +174,6 @@ DESTDIR=$RPM_BUILD_ROOT make install
 cd $RPM_BUILD_ROOT${MOZ_APP_DIR}/chrome
 find . -name "*" -type d -maxdepth 1 -exec %{__rm} -rf {} \;
 cd -
-
-%if %{official_branding}
-%{__mkdir_p} $RPM_BUILD_ROOT${MOZ_APP_DIR}/chrome/icons/default/
-%{__cp} other-licenses/branding/%{name}/default.xpm \
-        $RPM_BUILD_ROOT${MOZ_APP_DIR}/chrome/icons/default/ 
-%{__cp} other-licenses/branding/%{name}/default.xpm \
-        $RPM_BUILD_ROOT${MOZ_APP_DIR}/icons/
-%endif
-
 
 # system extensions and plugins support
 %{__mkdir_p} $RPM_BUILD_ROOT%{_datadir}/mozilla/extensions
