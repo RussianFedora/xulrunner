@@ -65,7 +65,6 @@ BuildRequires:  pango-devel
 BuildRequires:  freetype-devel >= 2.1.9
 BuildRequires:  libXt-devel
 BuildRequires:  libXrender-devel
-BuildRequires:  curl-devel
 BuildRequires:  hunspell-devel
 BuildRequires:  sqlite-devel >= 3.5
 
