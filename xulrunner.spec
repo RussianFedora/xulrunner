@@ -4,12 +4,12 @@
 
 %define version_internal  1.9pre
 
-%define version_pre .beta5rc2
+%define version_pre .beta5
 
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
 Version:        1.9
-Release:        0.51%{?version_pre}%{?dist}
+Release:        0.52%{?version_pre}%{?dist}
 URL:            http://www.mozilla.org/projects/xulrunner/
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
@@ -354,6 +354,9 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
+* Wed Apr  2 2008 Christopher Aillon <caillon@redhat.com> 1.9-0.52
+- Beta 5
+
 * Mon Mar 31 2008 Christopher Aillon <caillon@redhat.com> 1.9-0.51
 - Beta 5 RC2
 
