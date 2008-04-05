@@ -7,14 +7,14 @@
 %define version_internal  1.9pre
 
 %if ! %{official_branding}
-%define cvsdate 20080403
+%define cvsdate 20080404
 %define nightly .cvs%{cvsdate}
 %endif
 
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
 Version:        1.9
-Release:        0.54%{?nightly}%{?dist}
+Release:        0.55%{?nightly}%{?dist}
 URL:            http://www.mozilla.org/projects/xulrunner/
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
@@ -362,6 +362,9 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
+* Fri Apr  4 2008 Christopher Aillon <caillon@redhat.com> 1.9-0.55
+- Update to latest trunk (2008-04-04)
+
 * Thu Apr  3 2008 Christopher Aillon <caillon@redhat.com> 1.9-0.54
 - Update to latest trunk (2008-04-03)
 
