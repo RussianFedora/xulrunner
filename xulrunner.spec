@@ -26,9 +26,7 @@ Group:          Applications/Internet
 Source0:        %{tarball}
 Source10:       %{name}-mozconfig
 Source12:       %{name}-redhat-default-prefs.js
-#Source21:       %{name}.sh.in
 Source23:       %{name}.1
-Source100:      find-external-requires
 
 # build patches
 Patch4:         mozilla-build.patch
@@ -71,9 +69,6 @@ BuildRequires:  sqlite-devel >= 3.5
 Requires:       nspr >= %{nspr_version}
 Requires:       nss >= %{nss_version}
 Provides:       gecko-libs = %{version}
-
-#define _use_internal_dependency_generator 0
-#define __find_requires %{SOURCE100}
 
 %description
 XULRunner provides the XUL Runtime environment for Gecko applications.
@@ -161,10 +156,6 @@ DESTDIR=$RPM_BUILD_ROOT make install
 %{__mkdir_p} $RPM_BUILD_ROOT/${MOZ_APP_DIR} \
              $RPM_BUILD_ROOT%{_datadir}/idl/${INTERNAL_APP_SDK_NAME} \
              $RPM_BUILD_ROOT%{_includedir}/${INTERNAL_APP_SDK_NAME}
-#%{__install} -p -d dist/sdk/include $RPM_BUILD_ROOT%{_includedir}/${INTERNAL_APP_SDK_NAME}
-#%{__install} -p -d dist/sdk/idl $RPM_BUILD_ROOT%{_datadir}/idl/${INTERNAL_APP_SDK_NAME}
-#%{__install} -p dist/sdk/bin/* $RPM_BUILD_ROOT/$MOZ_APP_DIR
-#%{__install} -p dist/sdk/lib/* $RPM_BUILD_ROOT/$MOZ_APP_SDK_DIR
 %{__install} -p dist/sdk/bin/regxpcom $RPM_BUILD_ROOT/$MOZ_APP_DIR
 
 %{__mkdir_p} $RPM_BUILD_ROOT{%{_libdir},%{_bindir},%{_datadir}/applications}
@@ -197,14 +188,8 @@ cd -
 
 %{__cp} -rL dist/include/* \
   $RPM_BUILD_ROOT/%{_includedir}/${INTERNAL_APP_SDK_NAME}
-#%{__cp} -rL dist/idl/* \
-#  $RPM_BUILD_ROOT/%{_datadir}/idl/${INTERNAL_APP_SDK_NAME}
-#%{__mv} $RPM_BUILD_ROOT/%{_includedir}/${INTERNAL_APP_NAME}/* \
-#  $RPM_BUILD_ROOT/%{_includedir}/${INTERNAL_APP_SDK_NAME}
-#%{__mv} $RPM_BUILD_ROOT/%{_datadir}/idl/${INTERNAL_APP_NAME}/* \
-#  $RPM_BUILD_ROOT/%{_datadir}/idl/${INTERNAL_APP_SDK_NAME}
 
-install -c -m 755 dist/bin/xpcshell \
+%{__install} -p -c -m 755 dist/bin/xpcshell \
   dist/bin/xpidl \
   dist/bin/xpt_dump \
   dist/bin/xpt_link \
@@ -259,7 +244,7 @@ ${MOZ_APP_DIR}
 EOF
                         
 # Copy over the LICENSE
-install -c -m 644 LICENSE $RPM_BUILD_ROOT${MOZ_APP_DIR}
+%{__install} -p -c -m 644 LICENSE $RPM_BUILD_ROOT${MOZ_APP_DIR}
 
 # Use the system hunspell dictionaries
 %{__rm} -rf ${RPM_BUILD_ROOT}${MOZ_APP_DIR}/dictionaries
