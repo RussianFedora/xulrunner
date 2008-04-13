@@ -9,7 +9,7 @@
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
 Version:        1.9
-Release:        0.53%{?version_pre}%{?dist}
+Release:        0.54%{?version_pre}%{?dist}
 URL:            http://www.mozilla.org/projects/xulrunner/
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
@@ -19,19 +19,17 @@ Source12:       %{name}-redhat-default-prefs.js
 Source23:       %{name}.1
 
 # build patches
-Patch4:         mozilla-build.patch
-Patch5:         xulrunner-path.patch
-Patch6:         xulrunner-version.patch
+Patch1:         mozilla-build.patch
+Patch2:         xulrunner-path.patch
+Patch3:         xulrunner-version.patch
 
-# customization patches
+# Fedora specific patches
+Patch10:        mozilla-pkgconfig.patch
 
-# local bugfixes
-
-# font system fixes
-
-# Other
-Patch107:       mozilla-pkgconfig.patch
-
+# Upstream patches
+Patch20:        mozilla-dpi.patch
+Patch21:        mozilla-wtfbuttons.patch
+Patch22:        mozilla-keys.patch
 
 
 # ---------------------------------------------------
@@ -93,11 +91,15 @@ are not frozen and APIs can change at any time, so should not be relied on.
 %prep
 %setup -q -c
 cd mozilla
-%patch4   -p1
-%patch5   -p1
-%patch6   -p1 -b .ver
+%patch1  -p1
+%patch2  -p1
+%patch3  -p1 -b .ver
 
-%patch107 -p1 -b .pk
+%patch10 -p1 -b .pk
+
+%patch20 -p1 -b .dpi
+%patch21 -p1 -b .wtfbuttons
+%patch22 -p1 -b .keys
 
 %{__rm} -f .mozconfig
 %{__cp} %{SOURCE10} .mozconfig
@@ -339,6 +341,10 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
+* Sat Apr 12 2008 Christopher Aillon <caillon@redhat.com> 1.9-0.54
+- Add upstream patches for dpi, toolbar buttons, and invalid keys
+- Re-enable system cairo
+
 * Mon Apr  7 2008 Christopher Aillon <caillon@redhat.com> 1.9-0.53
 - Spec cleanups
 
