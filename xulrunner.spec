@@ -9,13 +9,14 @@
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
 Version:        1.9
-Release:        0.54%{?version_pre}%{?dist}
+Release:        0.55%{?version_pre}%{?dist}
 URL:            http://www.mozilla.org/projects/xulrunner/
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
 Source0:        xulrunner-1.9b5-source.tar.bz2
 Source10:       %{name}-mozconfig
 Source12:       %{name}-redhat-default-prefs.js
+Source21:       %{name}.sh.in
 Source23:       %{name}.1
 
 # build patches
@@ -159,6 +160,13 @@ DESTDIR=$RPM_BUILD_ROOT make install
 %{__install} -p -D -m 644 rh-default-prefs $RPM_BUILD_ROOT/${MOZ_APP_DIR}/defaults/pref/all-redhat.js
 %{__rm} rh-default-prefs
 
+# Start script install
+%{__rm} -rf $RPM_BUILD_ROOT%{_bindir}/%{name}
+%{__cat} %{SOURCE21} | %{__sed} -e 's,XULRUNNER_VERSION,%{version_internal},g' > \
+  $RPM_BUILD_ROOT%{_bindir}/%{name}
+%{__chmod} 755 $RPM_BUILD_ROOT%{_bindir}/%{name}
+
+# Man page install
 %{__install} -p -D -m 644 %{SOURCE23} $RPM_BUILD_ROOT%{_mandir}/man1/%{name}.1
 
 %{__rm} -f $RPM_BUILD_ROOT${MOZ_APP_DIR}/%{name}-config
@@ -182,6 +190,42 @@ cd -
 
 %{__cp} -rL dist/include/* \
   $RPM_BUILD_ROOT/%{_includedir}/${INTERNAL_APP_SDK_NAME}
+
+# Fix multilib devel conflicts...
+%ifarch x86_64 ia64 s390x ppc64
+%define mozbits 64
+%else
+%define mozbits 32
+%endif
+
+function install_file() {
+genheader=$*
+mv ${genheader}.h ${genheader}%{mozbits}.h
+cat > ${genheader}.h << EOF
+// This file exists to fix multilib conflicts
+#if defined(__x86_64__) || defined(__ia64__) || defined(__s390x__) || defined(__ppc64__)
+#include "${genheader}64.h"
+#else
+#include "${genheader}32.h"
+#endif
+EOF
+}
+
+pushd $RPM_BUILD_ROOT/%{_includedir}/${INTERNAL_APP_SDK_NAME}
+install_file "mozilla-config"
+popd
+
+pushd $RPM_BUILD_ROOT/%{_includedir}/${INTERNAL_APP_SDK_NAME}/unstable
+install_file "mozilla-config"
+popd
+
+pushd $RPM_BUILD_ROOT/%{_includedir}/${INTERNAL_APP_SDK_NAME}/js
+install_file "jsautocfg"
+popd
+
+pushd $RPM_BUILD_ROOT/%{_includedir}/${INTERNAL_APP_SDK_NAME}/unstable
+install_file "jsautocfg"
+popd
 
 %{__install} -p -c -m 755 dist/bin/xpcshell \
   dist/bin/xpidl \
@@ -341,6 +385,10 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
+* Fri Apr 18 2008 Martin Stransky <stransky@redhat.com> 1.9-0.55
+- Fixed multilib issues, added starting script instead of a symlink
+  to binary (#436393)
+
 * Sat Apr 12 2008 Christopher Aillon <caillon@redhat.com> 1.9-0.54
 - Add upstream patches for dpi, toolbar buttons, and invalid keys
 - Re-enable system cairo
