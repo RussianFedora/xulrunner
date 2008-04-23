@@ -9,7 +9,7 @@
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
 Version:        1.9
-Release:        0.55%{?version_pre}%{?dist}
+Release:        0.56%{?version_pre}%{?dist}
 URL:            http://www.mozilla.org/projects/xulrunner/
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
@@ -203,7 +203,7 @@ genheader=$*
 mv ${genheader}.h ${genheader}%{mozbits}.h
 cat > ${genheader}.h << EOF
 // This file exists to fix multilib conflicts
-#if defined(__x86_64__) || defined(__ia64__) || defined(__s390x__) || defined(__ppc64__)
+#if defined(__x86_64__) || defined(__ia64__) || defined(__s390x__) || defined(__powerpc64__)
 #include "${genheader}64.h"
 #else
 #include "${genheader}32.h"
@@ -385,6 +385,10 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
+* Wed Apr 23 2008 Martin Stransky <stransky@redhat.com> 1.9-0.56
+- Changed "__ppc64__" to "__powerpc64__", 
+  "__ppc64__" doesn't work anymore
+
 * Fri Apr 18 2008 Martin Stransky <stransky@redhat.com> 1.9-0.55
 - Fixed multilib issues, added starting script instead of a symlink
   to binary (#436393)
