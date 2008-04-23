@@ -1,0 +1,43 @@
+diff -NprU8 mozilla.eded8fd350ce/dom/src/base/nsDOMClassInfo.cpp mozilla/dom/src/base/nsDOMClassInfo.cpp
+--- mozilla.eded8fd350ce/dom/src/base/nsDOMClassInfo.cpp	2008-04-22 16:58:15.000000000 -0700
++++ mozilla/dom/src/base/nsDOMClassInfo.cpp	2008-04-22 16:58:15.000000000 -0700
+@@ -8933,17 +8933,17 @@ nsHTMLPluginObjElementSH::SetupProtoChai
+   // Set 'this.__proto__' to pi
+   if (!::JS_SetPrototype(cx, obj, pi_obj)) {
+     return NS_ERROR_UNEXPECTED;
+   }
+ 
+   if (pi_proto && JS_GET_CLASS(cx, pi_proto) != sObjectClass) {
+     // The plugin wrapper has a proto that's not Object.prototype, set
+     // 'pi.__proto__.__proto__' to the original 'this.__proto__'
+-    if (!::JS_SetPrototype(cx, pi_proto, my_proto)) {
++    if (pi_proto != my_proto && !::JS_SetPrototype(cx, pi_proto, my_proto)) {
+       return NS_ERROR_UNEXPECTED;
+     }
+   } else {
+     // 'pi' didn't have a prototype, or pi's proto was 'Object.prototype'
+     // (i.e. pi is an LiveConnect wrapped Java applet), set
+     // 'pi.__proto__' to the original 'this.__proto__'
+     if (!::JS_SetPrototype(cx, pi_obj, my_proto)) {
+       return NS_ERROR_UNEXPECTED;
+diff -NprU8 mozilla.eded8fd350ce/js/src/jsapi.c mozilla/js/src/jsapi.c
+--- mozilla.eded8fd350ce/js/src/jsapi.c	2008-04-22 16:58:15.000000000 -0700
++++ mozilla/js/src/jsapi.c	2008-04-22 16:58:15.000000000 -0700
+@@ -2908,16 +2908,17 @@ JS_GetPrototype(JSContext *cx, JSObject 
+     /* Beware ref to dead object (we may be called from obj's finalizer). */
+     return proto && proto->map ? proto : NULL;
+ }
+ 
+ JS_PUBLIC_API(JSBool)
+ JS_SetPrototype(JSContext *cx, JSObject *obj, JSObject *proto)
+ {
+     CHECK_REQUEST(cx);
++    JS_ASSERT(obj != proto);
+ #ifdef DEBUG
+     /*
+      * FIXME: bug 408416. The cycle-detection required for script-writeable
+      * __proto__ lives in js_SetProtoOrParent over in jsobj.c, also known as
+      * js_ObjectOps.setProto. This hook must detect cycles, to prevent scripts
+      * from ilooping SpiderMonkey trivially. But the overhead of detecting
+      * cycles is high enough, and the threat from JS-API-calling C++ code is
+      * low enough, that it's not worth burdening the non-DEBUG callers. Same
