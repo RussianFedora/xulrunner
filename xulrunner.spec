@@ -31,6 +31,7 @@ Patch10:        mozilla-pkgconfig.patch
 Patch20:        mozilla-dpi.patch
 Patch21:        mozilla-wtfbuttons.patch
 Patch22:        mozilla-keys.patch
+Patch23:        xulrunner-hang.patch
 
 
 # ---------------------------------------------------
@@ -101,6 +102,7 @@ cd mozilla
 %patch20 -p1 -b .dpi
 %patch21 -p1 -b .wtfbuttons
 %patch22 -p1 -b .keys
+%patch23 -p1 -b .hang
 
 %{__rm} -f .mozconfig
 %{__cp} %{SOURCE10} .mozconfig
@@ -388,6 +390,8 @@ fi
 * Wed Apr 23 2008 Martin Stransky <stransky@redhat.com> 1.9-0.56
 - Changed "__ppc64__" to "__powerpc64__", 
   "__ppc64__" doesn't work anymore
+- Added fix for #443725 - Critical hanging bug with fix 
+  available upstream (mozbz#429903)
 
 * Fri Apr 18 2008 Martin Stransky <stransky@redhat.com> 1.9-0.55
 - Fixed multilib issues, added starting script instead of a symlink
