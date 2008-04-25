@@ -9,7 +9,7 @@
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
 Version:        1.9
-Release:        0.56%{?version_pre}%{?dist}
+Release:        0.57%{?version_pre}%{?dist}
 URL:            http://www.mozilla.org/projects/xulrunner/
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
@@ -387,6 +387,9 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
+* Fri Apr 25 2008 Martin Stransky <stransky@redhat.com> 1.9-0.57
+- Enabled phishing protection (#443403)
+
 * Wed Apr 23 2008 Martin Stransky <stransky@redhat.com> 1.9-0.56
 - Changed "__ppc64__" to "__powerpc64__", 
   "__ppc64__" doesn't work anymore
