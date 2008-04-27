@@ -1,3 +1,5 @@
+https://bugzilla.mozilla.org/show_bug.cgi?id=429903
+
 diff -NprU8 mozilla.eded8fd350ce/dom/src/base/nsDOMClassInfo.cpp mozilla/dom/src/base/nsDOMClassInfo.cpp
 --- mozilla.eded8fd350ce/dom/src/base/nsDOMClassInfo.cpp	2008-04-22 16:58:15.000000000 -0700
 +++ mozilla/dom/src/base/nsDOMClassInfo.cpp	2008-04-22 16:58:15.000000000 -0700
@@ -41,3 +43,21 @@ diff -NprU8 mozilla.eded8fd350ce/js/src/jsapi.c mozilla/js/src/jsapi.c
       * from ilooping SpiderMonkey trivially. But the overhead of detecting
       * cycles is high enough, and the threat from JS-API-calling C++ code is
       * low enough, that it's not worth burdening the non-DEBUG callers. Same
+@@ -2951,16 +2952,17 @@ JS_GetParent(JSContext *cx, JSObject *ob
+     /* Beware ref to dead object (we may be called from obj's finalizer). */
+     return parent && parent->map ? parent : NULL;
+ }
+ 
+ JS_PUBLIC_API(JSBool)
+ JS_SetParent(JSContext *cx, JSObject *obj, JSObject *parent)
+ {
+     CHECK_REQUEST(cx);
++    JS_ASSERT(obj != parent);
+ #ifdef DEBUG
+     /* FIXME: bug 408416, see JS_SetPrototype just above. */
+     if (obj->map->ops->setParent)
+         return obj->map->ops->setParent(cx, obj, JSSLOT_PARENT, parent);
+ #endif
+     OBJ_SET_PARENT(cx, obj, parent);
+     return JS_TRUE;
+ }
