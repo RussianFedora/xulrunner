@@ -9,7 +9,7 @@
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
 Version:        1.9
-Release:        0.57%{?version_pre}%{?dist}
+Release:        0.58%{?version_pre}%{?dist}
 URL:            http://www.mozilla.org/projects/xulrunner/
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
@@ -32,6 +32,7 @@ Patch20:        mozilla-dpi.patch
 Patch21:        mozilla-wtfbuttons.patch
 Patch22:        mozilla-keys.patch
 Patch23:        xulrunner-hang.patch
+Patch24:        mozilla-resolution.patch
 
 
 # ---------------------------------------------------
@@ -103,6 +104,7 @@ cd mozilla
 %patch21 -p1 -b .wtfbuttons
 %patch22 -p1 -b .keys
 %patch23 -p1 -b .hang
+%patch24 -p1 -b .resolution
 
 %{__rm} -f .mozconfig
 %{__cp} %{SOURCE10} .mozconfig
@@ -387,6 +389,9 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
+* Sat Apr 26 2008 Christopher Aillon <caillon@redhat.com> 1.9-0.58
+- Fix font scaling
+
 * Fri Apr 25 2008 Martin Stransky <stransky@redhat.com> 1.9-0.57
 - Enabled phishing protection (#443403)
 
