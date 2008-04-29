@@ -3,6 +3,7 @@
 %define cairo_version 0.5
 
 %define version_internal  1.9pre
+%define mozappdir         %{_libdir}/%{name}-%{version_internal}
 
 %define version_pre .beta5
 
@@ -69,7 +70,7 @@ XULRunner provides the XUL Runtime environment for Gecko applications.
 %package devel
 Summary: Development files for Gecko
 Group: Development/Libraries
-Obsoletes: mozilla-devel
+Obsoletes: mozilla-devel < 1.9
 Obsoletes: firefox-devel < 2.1
 Requires: xulrunner = %{version}-%{release}
 Requires: nspr-devel >= %{nspr_version}
@@ -254,6 +255,9 @@ ln -s  %{_includedir}/${INTERNAL_APP_SDK_NAME}/stable \
 ln -s  %{_datadir}/idl/${INTERNAL_APP_SDK_NAME}/stable \
        $RPM_BUILD_ROOT${MOZ_APP_SDK_DIR}/sdk/idl
 
+find $RPM_BUILD_ROOT/%{_includedir} -type f -name "*.h" | xargs chmod 644
+find $RPM_BUILD_ROOT/%{_datadir}/idl -type f -name "*.idl" | xargs chmod 644
+
 %{__rm} -rf $RPM_BUILD_ROOT${MOZ_APP_SDK_DIR}/sdk/lib/*.so
 pushd $RPM_BUILD_ROOT${MOZ_APP_DIR}
 for i in *.so; do
@@ -324,51 +328,52 @@ fi
 %{_datadir}/mozilla
 %dir /etc/gre.d
 /etc/gre.d/%{gre_conf_file}
-%dir %{_libdir}/%{name}-*
-%exclude %dir %{_libdir}/%{name}-sdk-*
-%{_libdir}/%{name}-*/LICENSE
-%{_libdir}/%{name}-*/README.txt
-%{_libdir}/%{name}-*/chrome
-%{_libdir}/%{name}-*/dictionaries
-%dir %{_libdir}/%{name}-*/components
-%ghost %{_libdir}/%{name}-*/components/compreg.dat
-%ghost %{_libdir}/%{name}-*/components/xpti.dat
-%{_libdir}/%{name}-*/components/*
-%{_libdir}/%{name}-*/defaults
-%{_libdir}/%{name}-*/greprefs
-%{_libdir}/%{name}-*/icons
-%{_libdir}/%{name}-*/modules
-%{_libdir}/%{name}-*/plugins
-%{_libdir}/%{name}-*/res
-%{_libdir}/%{name}-*/*.so
-%{_libdir}/%{name}-*/mozilla-xremote-client
-%{_libdir}/%{name}-*/run-mozilla.sh
-%{_libdir}/%{name}-*/regxpcom
-%{_libdir}/%{name}-*/xulrunner
-%{_libdir}/%{name}-*/xulrunner-bin
-%{_libdir}/%{name}-*/xulrunner-stub
-%{_libdir}/%{name}-*/platform.ini
-%{_libdir}/%{name}-*/dependentlibs.list
+%dir %{mozappdir}
+%doc %attr(644, root, root) %{mozappdir}/LICENSE
+%doc %attr(644, root, root) %{mozappdir}/README.txt
+%{mozappdir}/chrome
+%{mozappdir}/dictionaries
+%dir %{mozappdir}/components
+%ghost %{mozappdir}/components/compreg.dat
+%ghost %{mozappdir}/components/xpti.dat
+%{mozappdir}/components/*.so
+%{mozappdir}/components/*.xpt
+%attr(644, root, root) %{mozappdir}/components/*.js
+%{mozappdir}/defaults
+%{mozappdir}/greprefs
+%dir %{mozappdir}/icons
+%attr(644, root, root) %{mozappdir}/icons/*
+%{mozappdir}/modules
+%{mozappdir}/plugins
+%{mozappdir}/res
+%{mozappdir}/*.so
+%{mozappdir}/mozilla-xremote-client
+%{mozappdir}/run-mozilla.sh
+%{mozappdir}/regxpcom
+%{mozappdir}/xulrunner
+%{mozappdir}/xulrunner-bin
+%{mozappdir}/xulrunner-stub
+%{mozappdir}/platform.ini
+%{mozappdir}/dependentlibs.list
 %{_sysconfdir}/ld.so.conf.d/xulrunner*.conf
 %{_sysconfdir}/skel/.mozilla
 
 
 # XXX See if these are needed still
-%{_libdir}/%{name}-*/updater*
+%{mozappdir}/updater*
 
 %files devel
-%defattr(-,root,root)
+%defattr(-,root,root,-)
 %dir %{_datadir}/idl/%{name}*%{version_internal}
 %{_datadir}/idl/%{name}*%{version_internal}/stable
 %{_includedir}/%{name}*%{version_internal}
 %exclude %{_includedir}/%{name}*%{version_internal}/unstable
-%dir %{_libdir}/%{name}-*
 %dir %{_libdir}/%{name}-sdk-*
 %dir %{_libdir}/%{name}-sdk-*/sdk
-%{_libdir}/%{name}-*/xpcshell
-%{_libdir}/%{name}-*/xpidl
-%{_libdir}/%{name}-*/xpt_dump
-%{_libdir}/%{name}-*/xpt_link
+%{mozappdir}/xpcshell
+%{mozappdir}/xpidl
+%{mozappdir}/xpt_dump
+%{mozappdir}/xpt_link
 %{_libdir}/%{name}-sdk-*/*.h
 %{_libdir}/%{name}-sdk-*/sdk/*
 %exclude %{_libdir}/pkgconfig/*unstable*.pc
@@ -376,7 +381,7 @@ fi
 %{_libdir}/pkgconfig/*.pc
 
 %files devel-unstable
-%defattr(-,root,root)
+%defattr(-,root,root,-)
 %{_datadir}/idl/%{name}*%{version_internal}/unstable
 %{_includedir}/%{name}*%{version_internal}/unstable
 %dir %{_libdir}/%{name}-sdk-*
@@ -389,6 +394,9 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
+* Mon Apr 28 2008 Christopher Aillon <caillon@redhat.com> 1.9-0.59
+- Clean up the %%files list and get rid of the executable bit on some files
+
 * Sat Apr 26 2008 Christopher Aillon <caillon@redhat.com> 1.9-0.58
 - Fix font scaling
 
