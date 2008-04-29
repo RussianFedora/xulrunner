@@ -171,9 +171,6 @@ DESTDIR=$RPM_BUILD_ROOT make install
   $RPM_BUILD_ROOT%{_bindir}/%{name}
 %{__chmod} 755 $RPM_BUILD_ROOT%{_bindir}/%{name}
 
-# Man page install
-%{__install} -p -D -m 644 %{SOURCE23} $RPM_BUILD_ROOT%{_mandir}/man1/%{name}.1
-
 %{__rm} -f $RPM_BUILD_ROOT${MOZ_APP_DIR}/%{name}-config
 
 cd $RPM_BUILD_ROOT${MOZ_APP_DIR}/chrome
@@ -323,7 +320,6 @@ fi
 %files
 %defattr(-,root,root,-)
 %{_bindir}/xulrunner
-%{_mandir}/man1/*
 %{_libdir}/mozilla
 %{_datadir}/mozilla
 %dir /etc/gre.d
