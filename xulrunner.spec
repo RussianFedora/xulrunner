@@ -10,7 +10,7 @@
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
 Version:        1.9
-Release:        0.59%{?version_pre}%{?dist}
+Release:        0.60%{?version_pre}%{?dist}
 URL:            http://www.mozilla.org/projects/xulrunner/
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
@@ -60,6 +60,7 @@ BuildRequires:  libXrender-devel
 BuildRequires:  hunspell-devel
 BuildRequires:  sqlite-devel >= 3.5
 
+Requires:       mozilla-filesystem
 Requires:       nspr >= %{nspr_version}
 Requires:       nss >= %{nss_version}
 Provides:       gecko-libs = %{version}
@@ -176,14 +177,6 @@ DESTDIR=$RPM_BUILD_ROOT make install
 cd $RPM_BUILD_ROOT${MOZ_APP_DIR}/chrome
 find . -name "*" -type d -maxdepth 1 -exec %{__rm} -rf {} \;
 cd -
-
-# system extensions and plugins support
-%{__mkdir_p} $RPM_BUILD_ROOT%{_datadir}/mozilla/extensions
-%{__mkdir_p} $RPM_BUILD_ROOT%{_libdir}/mozilla/extensions
-%{__mkdir_p} $RPM_BUILD_ROOT%{_libdir}/mozilla/plugins
-%{__mkdir_p} $RPM_BUILD_ROOT%{_sysconfdir}/skel/.mozilla/extensions
-%{__mkdir_p} $RPM_BUILD_ROOT%{_sysconfdir}/skel/.mozilla/plugins
-
 
 # Prepare our devel package
 %{__mkdir_p} $RPM_BUILD_ROOT/%{_includedir}/${INTERNAL_APP_SDK_NAME}
@@ -320,8 +313,6 @@ fi
 %files
 %defattr(-,root,root,-)
 %{_bindir}/xulrunner
-%{_libdir}/mozilla
-%{_datadir}/mozilla
 %dir /etc/gre.d
 /etc/gre.d/%{gre_conf_file}
 %dir %{mozappdir}
@@ -352,8 +343,6 @@ fi
 %{mozappdir}/platform.ini
 %{mozappdir}/dependentlibs.list
 %{_sysconfdir}/ld.so.conf.d/xulrunner*.conf
-%{_sysconfdir}/skel/.mozilla
-
 
 # XXX See if these are needed still
 %{mozappdir}/updater*
@@ -390,6 +379,9 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
+* Wed Apr 30 2008 Christopher Aillon <caillon@redhat.com> 1.0-0.60
+- Some files moved to mozilla-filesystem; kill them and add the Req
+
 * Mon Apr 28 2008 Christopher Aillon <caillon@redhat.com> 1.9-0.59
 - Clean up the %%files list and get rid of the executable bit on some files
 
