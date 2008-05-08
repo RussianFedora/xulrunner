@@ -382,6 +382,7 @@ fi
 %changelog
 * Thu May 08 2008 Colin Walters <walters@redhat.com> 1.0-0.61
 - Ensure we enable startup notification; add BR and modify config
+  (bug #445543)
 
 * Wed Apr 30 2008 Christopher Aillon <caillon@redhat.com> 1.0-0.60
 - Some files moved to mozilla-filesystem; kill them and add the Req
