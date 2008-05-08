@@ -10,7 +10,7 @@
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
 Version:        1.9
-Release:        0.60%{?version_pre}%{?dist}
+Release:        0.61%{?version_pre}%{?dist}
 URL:            http://www.mozilla.org/projects/xulrunner/
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
@@ -59,6 +59,7 @@ BuildRequires:  libXt-devel
 BuildRequires:  libXrender-devel
 BuildRequires:  hunspell-devel
 BuildRequires:  sqlite-devel >= 3.5
+BuildRequires:  startup-notification-devel
 
 Requires:       mozilla-filesystem
 Requires:       nspr >= %{nspr_version}
@@ -379,6 +380,9 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
+* Thu May 08 2008 Colin Walters <walters@redhat.com> 1.0-0.61
+- Ensure we enable startup notification; add BR and modify config
+
 * Wed Apr 30 2008 Christopher Aillon <caillon@redhat.com> 1.0-0.60
 - Some files moved to mozilla-filesystem; kill them and add the Req
 
