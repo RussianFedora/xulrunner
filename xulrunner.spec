@@ -33,7 +33,6 @@ Source23:       %{name}.1
 Patch4:         mozilla-build.patch
 Patch5:         xulrunner-path.patch
 Patch6:         xulrunner-version.patch
-Patch7:         xulrunner-sqlite.patch
 
 # customization patches
 
@@ -66,7 +65,7 @@ BuildRequires:  freetype-devel >= 2.1.9
 BuildRequires:  libXt-devel
 BuildRequires:  libXrender-devel
 BuildRequires:  hunspell-devel
-BuildRequires:  sqlite-devel >= 3.5
+BuildRequires:  sqlite-devel >= 3.5.7
 
 Requires:       nspr >= %{nspr_version}
 Requires:       nss >= %{nss_version}
@@ -106,7 +105,6 @@ cd mozilla
 %patch4   -p1
 %patch5   -p1
 %patch6   -p1 -b .ver
-%patch7   -p1
 
 %patch107 -p1 -b .pk
 
@@ -395,7 +393,6 @@ fi
 * Fri Apr 18 2008 Martin Stransky <stransky@redhat.com> 1.9-0.62
 - Fixed multilib issues, added starting script instead of a symlink
   to binary (#436393)
-- added temporary workaround for sqlite check
 
 * Wed Apr 16 2008 Christopher Aillon <caillon@redhat.com> 1.9-0.61
 - Update to latest trunk (2008-04-16)
