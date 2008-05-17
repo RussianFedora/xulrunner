@@ -7,14 +7,14 @@
 %define version_internal  1.9pre
 
 %if ! %{official_branding}
-%define cvsdate 20080416
+%define cvsdate 20080516
 %define nightly .cvs%{cvsdate}
 %endif
 
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
 Version:        1.9
-Release:        0.62%{?nightly}%{?dist}
+Release:        0.63%{?nightly}%{?dist}
 URL:            http://www.mozilla.org/projects/xulrunner/
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
@@ -30,6 +30,7 @@ Source21:       %{name}.sh.in
 Source23:       %{name}.1
 
 # build patches
+Patch1:         mozilla-sqlite.patch
 Patch4:         mozilla-build.patch
 Patch5:         xulrunner-path.patch
 Patch6:         xulrunner-version.patch
@@ -102,6 +103,7 @@ are not frozen and APIs can change at any time, so should not be relied on.
 %prep
 %setup -q -c
 cd mozilla
+%patch1   -p1 -b .sqlite
 %patch4   -p1
 %patch5   -p1
 %patch6   -p1 -b .ver
@@ -115,6 +117,7 @@ cd mozilla
 
 %build
 cd mozilla
+autoconf-2.13
 
 INTERNAL_GECKO=%{version_internal}
 MOZ_APP_DIR=%{_libdir}/%{name}-${INTERNAL_GECKO}
@@ -390,6 +393,9 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
+* Thu May 16 2008 Christopher Aillon <caillon@redhat.com> 1.9-0.63
+- Update to latest trunk (2008-05-16)
+
 * Fri Apr 18 2008 Martin Stransky <stransky@redhat.com> 1.9-0.62
 - Fixed multilib issues, added starting script instead of a symlink
   to binary (#436393)
