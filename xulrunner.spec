@@ -67,6 +67,7 @@ BuildRequires:  libXt-devel
 BuildRequires:  libXrender-devel
 BuildRequires:  hunspell-devel
 BuildRequires:  sqlite-devel >= 3.5.7
+BuildRequires:  autoconf213
 
 Requires:       nspr >= %{nspr_version}
 Requires:       nss >= %{nss_version}
