@@ -7,7 +7,7 @@ retrieving revision 1.1992
 diff -d -u -p -r1.1992 configure.in
 --- mozilla/configure.in	5 May 2008 21:08:14 -0000	1.1992
 +++ mozilla/configure.in	17 May 2008 02:26:32 -0000
-@@ -5958,7 +5958,19 @@ then
+@@ -5958,7 +5958,21 @@ then
      SQLITE_CFLAGS=
      SQLITE_LIBS='$(call EXPAND_LIBNAME_PATH,sqlite3,$(DIST)/lib)'
  else
@@ -25,6 +25,8 @@ diff -d -u -p -r1.1992 configure.in
 +    fi
 +    SQLITE_CFLAGS=`$PKG_CONFIG --cflags sqlite3`
 +    SQLITE_LIBS=`$PKG_CONFIG --libs sqlite3`
++    AC_SUBST(SQLITE_CFLAGS)
++    AC_SUBST(SQLITE_LIBS)
  fi
  
  AC_SUBST(MOZ_NATIVE_SQLITE)
