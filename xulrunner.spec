@@ -14,7 +14,7 @@
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
 Version:        1.9
-Release:        0.63%{?nightly}%{?dist}
+Release:        0.64%{?nightly}%{?dist}
 URL:            http://www.mozilla.org/projects/xulrunner/
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
@@ -42,6 +42,7 @@ Patch6:         xulrunner-version.patch
 # font system fixes
 
 # Other
+Patch100:       mozilla-fsync.patch
 Patch107:       mozilla-pkgconfig.patch
 
 # ---------------------------------------------------
@@ -108,7 +109,7 @@ cd mozilla
 %patch4   -p1
 %patch5   -p1
 %patch6   -p1 -b .ver
-
+%patch100 -p1 -b .fsync
 %patch107 -p1 -b .pk
 
 %{__rm} -f .mozconfig
@@ -394,6 +395,9 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
+* Mon May 19 2008 Christopher Aillon <caillon@redhat.com> 1.0-0.64
+- Upstream patch to fsync() less
+
 * Thu May 16 2008 Christopher Aillon <caillon@redhat.com> 1.9-0.63
 - Update to latest trunk (2008-05-16)
 
