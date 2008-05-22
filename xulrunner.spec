@@ -7,14 +7,14 @@
 %define version_internal  1.9pre
 
 %if ! %{official_branding}
-%define cvsdate 20080516
+%define cvsdate 20080416
 %define nightly .cvs%{cvsdate}
 %endif
 
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
 Version:        1.9
-Release:        0.64%{?nightly}%{?dist}
+Release:        0.65%{?nightly}%{?dist}
 URL:            http://www.mozilla.org/projects/xulrunner/
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
@@ -395,6 +395,11 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
+* Thu May 22 2008 Christopher Aillon <caillon@redhat.com> 1.0-0.65
+- Revert to 2008-04-16 trunk
+- Use in-tree sqlite for now due to severe performance problems in
+  sqlite 3.5.8
+
 * Mon May 19 2008 Christopher Aillon <caillon@redhat.com> 1.0-0.64
 - Upstream patch to fsync() less
 
