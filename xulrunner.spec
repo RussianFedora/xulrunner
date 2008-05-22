@@ -10,7 +10,7 @@
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
 Version:        1.9
-Release:        0.61%{?version_pre}%{?dist}
+Release:        0.62%{?version_pre}%{?dist}
 URL:            http://www.mozilla.org/projects/xulrunner/
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
@@ -34,6 +34,7 @@ Patch21:        mozilla-wtfbuttons.patch
 Patch22:        mozilla-keys.patch
 Patch23:        xulrunner-hang.patch
 Patch24:        mozilla-resolution.patch
+Patch25:        mozilla-fsync.patch
 
 
 # ---------------------------------------------------
@@ -108,6 +109,7 @@ cd mozilla
 %patch22 -p1 -b .keys
 %patch23 -p1 -b .hang
 %patch24 -p1 -b .resolution
+%patch25 -p1 -b .fsync
 
 %{__rm} -f .mozconfig
 %{__cp} %{SOURCE10} .mozconfig
@@ -380,6 +382,9 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
+* Thu May 22 2008 Christopher Aillon <caillon@redhat.com> 1.0-0.62
+- Upstream patch to fsync() less
+
 * Thu May 08 2008 Colin Walters <walters@redhat.com> 1.0-0.61
 - Ensure we enable startup notification; add BR and modify config
   (bug #445543)
