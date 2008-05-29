@@ -10,7 +10,7 @@
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
 Version:        1.9
-Release:        0.62%{?version_pre}%{?dist}
+Release:        0.63%{?version_pre}%{?dist}
 URL:            http://www.mozilla.org/projects/xulrunner/
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
@@ -35,6 +35,7 @@ Patch22:        mozilla-keys.patch
 Patch23:        xulrunner-hang.patch
 Patch24:        mozilla-resolution.patch
 Patch25:        mozilla-fsync.patch
+Patch26:        mozilla-ps-pdf-simplify-operators.patch
 
 
 # ---------------------------------------------------
@@ -110,6 +111,7 @@ cd mozilla
 %patch23 -p1 -b .hang
 %patch24 -p1 -b .resolution
 %patch25 -p1 -b .fsync
+%patch26 -p1 -b .ps-pdf-simplify-operators
 
 %{__rm} -f .mozconfig
 %{__cp} %{SOURCE10} .mozconfig
@@ -382,6 +384,9 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
+* Thu May 29 2008 Christopher Aillon <caillon@redhat.com> 1.0-0.63
+- Simplify PS/PDF operators
+
 * Thu May 22 2008 Christopher Aillon <caillon@redhat.com> 1.0-0.62
 - Upstream patch to fsync() less
 
