@@ -10,7 +10,7 @@
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
 Version:        1.9
-Release:        0.63%{?version_pre}%{?dist}
+Release:        0.61%{?version_pre}%{?dist}
 URL:            http://www.mozilla.org/projects/xulrunner/
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
@@ -34,8 +34,6 @@ Patch21:        mozilla-wtfbuttons.patch
 Patch22:        mozilla-keys.patch
 Patch23:        xulrunner-hang.patch
 Patch24:        mozilla-resolution.patch
-Patch25:        mozilla-fsync.patch
-Patch26:        mozilla-ps-pdf-simplify-operators.patch
 
 
 # ---------------------------------------------------
@@ -61,7 +59,6 @@ BuildRequires:  libXt-devel
 BuildRequires:  libXrender-devel
 BuildRequires:  hunspell-devel
 BuildRequires:  sqlite-devel >= 3.5
-BuildRequires:  startup-notification-devel
 
 Requires:       mozilla-filesystem
 Requires:       nspr >= %{nspr_version}
@@ -94,6 +91,16 @@ Provides: gecko-devel-unstable = %{version}
 Unstable files for use with development of Gecko applications.  These headers
 are not frozen and APIs can change at any time, so should not be relied on.
 
+%package pyxpcom
+Summary: PyXPCOM bindings.
+Group: Development/Libraries
+BuildRequires:  python-devel
+
+%description pyxpcom
+PyXPCOM allows for bidirectional communication between Python and XPCOM which
+permits both extension of XPCOM components from Python and embedding of XPCOM
+components into Python applications.
+
 #---------------------------------------------------------------------
 
 %prep
@@ -110,8 +117,6 @@ cd mozilla
 %patch22 -p1 -b .keys
 %patch23 -p1 -b .hang
 %patch24 -p1 -b .resolution
-%patch25 -p1 -b .fsync
-%patch26 -p1 -b .ps-pdf-simplify-operators
 
 %{__rm} -f .mozconfig
 %{__cp} %{SOURCE10} .mozconfig
@@ -339,6 +344,7 @@ fi
 %{mozappdir}/plugins
 %{mozappdir}/res
 %{mozappdir}/*.so
+%exclude %{mozappdir}/libpyxpcom.so
 %{mozappdir}/mozilla-xremote-client
 %{mozappdir}/run-mozilla.sh
 %{mozappdir}/regxpcom
@@ -381,18 +387,22 @@ fi
 %{_libdir}/pkgconfig/*unstable*.pc
 %{_libdir}/pkgconfig/*gtkmozembed*.pc
 
+%files pyxpcom
+%defattr(-,root,root,-)
+# %dir %{mozappdir}/python/xpcom   -- We actually only want python/xpcom, since
+# python/dom might be a pydom subpackage itself; however, somebody has to own
+# python/ and that's us for the moment.
+%dir %{mozappdir}/python
+%{mozappdir}/python/*
+%{mozappdir}/components/py*
+%{mozappdir}/libpyxpcom.so
+
+
 #---------------------------------------------------------------------
 
 %changelog
-* Thu May 29 2008 Christopher Aillon <caillon@redhat.com> 1.0-0.63
-- Simplify PS/PDF operators
-
-* Thu May 22 2008 Christopher Aillon <caillon@redhat.com> 1.0-0.62
-- Upstream patch to fsync() less
-
-* Thu May 08 2008 Colin Walters <walters@redhat.com> 1.0-0.61
-- Ensure we enable startup notification; add BR and modify config
-  (bug #445543)
+* Mon May 05 2008 Michael Stone <michael@laptop.org> 1.0-0.61
+- Enable PyXPCOM and include it in a -pyxpcom subpackage.
 
 * Wed Apr 30 2008 Christopher Aillon <caillon@redhat.com> 1.0-0.60
 - Some files moved to mozilla-filesystem; kill them and add the Req
