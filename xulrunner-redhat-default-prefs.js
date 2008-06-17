@@ -6,3 +6,4 @@ pref("general.smoothScroll",                true);
 pref("general.useragent.vendor", "Fedora");
 pref("general.useragent.vendorSub", "RPM_VERREL");
 pref("intl.locale.matchOS", true);
+pref("toolkit.storage.synchronous", 0);
