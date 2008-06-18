@@ -12,7 +12,7 @@ diff -d -u -p -r1.1992 configure.in
      SQLITE_LIBS='$(call EXPAND_LIBNAME_PATH,sqlite3,$(DIST)/lib)'
  else
 -    PKG_CHECK_MODULES(SQLITE, sqlite3 >= $SQLITE_VERSION)
-+    SQLITE_VERSION_NUMBER=3005007
++    SQLITE_VERSION_NUMBER=3005004
 +    AC_MSG_CHECKING(sqlite version >= $SQLITE_VERSION)
 +    AC_TRY_COMPILE([#include <sqlite3.h>], [
 +#                   if SQLITE_VERSION_NUMBER < $SQLITE_VERSION_NUMBER

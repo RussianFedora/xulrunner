@@ -2,48 +2,35 @@
 %define nss_version 3.11.99.5
 %define cairo_version 0.5
 
-%define official_branding 0
-
-%define version_internal  1.9pre
-
-%if ! %{official_branding}
-%define cvsdate 20080416
-%define nightly .cvs%{cvsdate}
-%endif
+%define version_internal  1.9
+%define mozappdir         %{_libdir}/%{name}-%{version_internal}
 
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
 Version:        1.9
-Release:        0.65%{?nightly}%{?dist}
+Release:        1%{?dist}
 URL:            http://www.mozilla.org/projects/xulrunner/
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
-%if %{official_branding}
-%define tarball xulrunner-%{version}-source.tar.bz2
-%else
-%define tarball mozilla-%{cvsdate}.tar.bz2
-%endif
-Source0:        %{tarball}
+Source0:        xulrunner-1.9-source.tar.bz2
 Source10:       %{name}-mozconfig
 Source12:       %{name}-redhat-default-prefs.js
 Source21:       %{name}.sh.in
 Source23:       %{name}.1
 
 # build patches
-Patch1:         mozilla-sqlite.patch
-Patch4:         mozilla-build.patch
-Patch5:         xulrunner-path.patch
-Patch6:         xulrunner-version.patch
+Patch1:         mozilla-build.patch
+Patch2:         xulrunner-path.patch
+Patch4:         mozilla-sqlite.patch
+Patch5:         mozilla-mochitest.patch
 
-# customization patches
+# Fedora specific patches
+Patch10:        mozilla-pkgconfig.patch
 
-# local bugfixes
+# Upstream patches
+Patch26:        mozilla-ps-pdf-simplify-operators.patch
+Patch27:        mozilla-ssl-exception.patch
 
-# font system fixes
-
-# Other
-Patch100:       mozilla-fsync.patch
-Patch107:       mozilla-pkgconfig.patch
 
 # ---------------------------------------------------
 
@@ -67,9 +54,12 @@ BuildRequires:  freetype-devel >= 2.1.9
 BuildRequires:  libXt-devel
 BuildRequires:  libXrender-devel
 BuildRequires:  hunspell-devel
-BuildRequires:  sqlite-devel >= 3.5.7
+BuildRequires:  sqlite-devel >= 3.5
+BuildRequires:  startup-notification-devel
+# For -sqlite.patch
 BuildRequires:  autoconf213
 
+Requires:       mozilla-filesystem
 Requires:       nspr >= %{nspr_version}
 Requires:       nss >= %{nss_version}
 Provides:       gecko-libs = %{version}
@@ -80,7 +70,7 @@ XULRunner provides the XUL Runtime environment for Gecko applications.
 %package devel
 Summary: Development files for Gecko
 Group: Development/Libraries
-Obsoletes: mozilla-devel
+Obsoletes: mozilla-devel < 1.9
 Obsoletes: firefox-devel < 2.1
 Requires: xulrunner = %{version}-%{release}
 Requires: nspr-devel >= %{nspr_version}
@@ -105,12 +95,16 @@ are not frozen and APIs can change at any time, so should not be relied on.
 %prep
 %setup -q -c
 cd mozilla
-%patch1   -p1 -b .sqlite
-%patch4   -p1
-%patch5   -p1
-%patch6   -p1 -b .ver
-%patch100 -p1 -b .fsync
-%patch107 -p1 -b .pk
+%patch1  -p1 -b .build
+%patch2  -p1 -b .path
+%patch4  -p1 -b .sqlite
+autoconf-2.13
+%patch5  -p1 -b .mochitest
+
+%patch10 -p1 -b .pk
+
+%patch26 -p1 -b .ps-pdf-simplify-operators
+%patch27 -p1 -b .ssl-exception
 
 %{__rm} -f .mozconfig
 %{__cp} %{SOURCE10} .mozconfig
@@ -119,7 +113,6 @@ cd mozilla
 
 %build
 cd mozilla
-autoconf-2.13
 
 INTERNAL_GECKO=%{version_internal}
 MOZ_APP_DIR=%{_libdir}/%{name}-${INTERNAL_GECKO}
@@ -177,21 +170,11 @@ DESTDIR=$RPM_BUILD_ROOT make install
   $RPM_BUILD_ROOT%{_bindir}/%{name}
 %{__chmod} 755 $RPM_BUILD_ROOT%{_bindir}/%{name}
 
-%{__install} -p -D -m 644 %{SOURCE23} $RPM_BUILD_ROOT%{_mandir}/man1/%{name}.1
-
 %{__rm} -f $RPM_BUILD_ROOT${MOZ_APP_DIR}/%{name}-config
 
 cd $RPM_BUILD_ROOT${MOZ_APP_DIR}/chrome
 find . -name "*" -type d -maxdepth 1 -exec %{__rm} -rf {} \;
 cd -
-
-# system extensions and plugins support
-%{__mkdir_p} $RPM_BUILD_ROOT%{_datadir}/mozilla/extensions
-%{__mkdir_p} $RPM_BUILD_ROOT%{_libdir}/mozilla/extensions
-%{__mkdir_p} $RPM_BUILD_ROOT%{_libdir}/mozilla/plugins
-%{__mkdir_p} $RPM_BUILD_ROOT%{_sysconfdir}/skel/.mozilla/extensions
-%{__mkdir_p} $RPM_BUILD_ROOT%{_sysconfdir}/skel/.mozilla/plugins
-
 
 # Prepare our devel package
 %{__mkdir_p} $RPM_BUILD_ROOT/%{_includedir}/${INTERNAL_APP_SDK_NAME}
@@ -260,6 +243,9 @@ ln -s  %{_includedir}/${INTERNAL_APP_SDK_NAME}/stable \
 ln -s  %{_datadir}/idl/${INTERNAL_APP_SDK_NAME}/stable \
        $RPM_BUILD_ROOT${MOZ_APP_SDK_DIR}/sdk/idl
 
+find $RPM_BUILD_ROOT/%{_includedir} -type f -name "*.h" | xargs chmod 644
+find $RPM_BUILD_ROOT/%{_datadir}/idl -type f -name "*.idl" | xargs chmod 644
+
 %{__rm} -rf $RPM_BUILD_ROOT${MOZ_APP_SDK_DIR}/sdk/lib/*.so
 pushd $RPM_BUILD_ROOT${MOZ_APP_DIR}
 for i in *.so; do
@@ -325,56 +311,52 @@ fi
 %files
 %defattr(-,root,root,-)
 %{_bindir}/xulrunner
-%{_mandir}/man1/*
-%{_libdir}/mozilla
-%{_datadir}/mozilla
 %dir /etc/gre.d
 /etc/gre.d/%{gre_conf_file}
-%dir %{_libdir}/%{name}-*
-%exclude %dir %{_libdir}/%{name}-sdk-*
-%{_libdir}/%{name}-*/LICENSE
-%{_libdir}/%{name}-*/README.txt
-%{_libdir}/%{name}-*/chrome
-%{_libdir}/%{name}-*/dictionaries
-%dir %{_libdir}/%{name}-*/components
-%ghost %{_libdir}/%{name}-*/components/compreg.dat
-%ghost %{_libdir}/%{name}-*/components/xpti.dat
-%{_libdir}/%{name}-*/components/*
-%{_libdir}/%{name}-*/defaults
-%{_libdir}/%{name}-*/greprefs
-%{_libdir}/%{name}-*/icons
-%{_libdir}/%{name}-*/modules
-%{_libdir}/%{name}-*/plugins
-%{_libdir}/%{name}-*/res
-%{_libdir}/%{name}-*/*.so
-%{_libdir}/%{name}-*/mozilla-xremote-client
-%{_libdir}/%{name}-*/run-mozilla.sh
-%{_libdir}/%{name}-*/regxpcom
-%{_libdir}/%{name}-*/xulrunner
-%{_libdir}/%{name}-*/xulrunner-bin
-%{_libdir}/%{name}-*/xulrunner-stub
-%{_libdir}/%{name}-*/platform.ini
-%{_libdir}/%{name}-*/dependentlibs.list
+%dir %{mozappdir}
+%doc %attr(644, root, root) %{mozappdir}/LICENSE
+%doc %attr(644, root, root) %{mozappdir}/README.txt
+%{mozappdir}/chrome
+%{mozappdir}/dictionaries
+%dir %{mozappdir}/components
+%ghost %{mozappdir}/components/compreg.dat
+%ghost %{mozappdir}/components/xpti.dat
+%{mozappdir}/components/*.so
+%{mozappdir}/components/*.xpt
+%attr(644, root, root) %{mozappdir}/components/*.js
+%{mozappdir}/defaults
+%{mozappdir}/greprefs
+%dir %{mozappdir}/icons
+%attr(644, root, root) %{mozappdir}/icons/*
+%{mozappdir}/modules
+%{mozappdir}/plugins
+%{mozappdir}/res
+%{mozappdir}/*.so
+%{mozappdir}/mozilla-xremote-client
+%{mozappdir}/run-mozilla.sh
+%{mozappdir}/regxpcom
+%{mozappdir}/xulrunner
+%{mozappdir}/xulrunner-bin
+%{mozappdir}/xulrunner-stub
+%{mozappdir}/platform.ini
+%{mozappdir}/dependentlibs.list
 %{_sysconfdir}/ld.so.conf.d/xulrunner*.conf
-%{_sysconfdir}/skel/.mozilla
-
 
 # XXX See if these are needed still
-%{_libdir}/%{name}-*/updater*
+%{mozappdir}/updater*
 
 %files devel
-%defattr(-,root,root)
+%defattr(-,root,root,-)
 %dir %{_datadir}/idl/%{name}*%{version_internal}
 %{_datadir}/idl/%{name}*%{version_internal}/stable
 %{_includedir}/%{name}*%{version_internal}
 %exclude %{_includedir}/%{name}*%{version_internal}/unstable
-%dir %{_libdir}/%{name}-*
 %dir %{_libdir}/%{name}-sdk-*
 %dir %{_libdir}/%{name}-sdk-*/sdk
-%{_libdir}/%{name}-*/xpcshell
-%{_libdir}/%{name}-*/xpidl
-%{_libdir}/%{name}-*/xpt_dump
-%{_libdir}/%{name}-*/xpt_link
+%{mozappdir}/xpcshell
+%{mozappdir}/xpidl
+%{mozappdir}/xpt_dump
+%{mozappdir}/xpt_link
 %{_libdir}/%{name}-sdk-*/*.h
 %{_libdir}/%{name}-sdk-*/sdk/*
 %exclude %{_libdir}/pkgconfig/*unstable*.pc
@@ -382,7 +364,7 @@ fi
 %{_libdir}/pkgconfig/*.pc
 
 %files devel-unstable
-%defattr(-,root,root)
+%defattr(-,root,root,-)
 %{_datadir}/idl/%{name}*%{version_internal}/unstable
 %{_includedir}/%{name}*%{version_internal}/unstable
 %dir %{_libdir}/%{name}-sdk-*
@@ -395,53 +377,53 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
-* Thu May 22 2008 Christopher Aillon <caillon@redhat.com> 1.0-0.65
-- Revert to 2008-04-16 trunk
-- Use in-tree sqlite for now due to severe performance problems in
-  sqlite 3.5.8
+* Tue Jun 17 2008 Christopher Aillon <caillon@redhat.com> 1.9-1
+- Update to 1.9 final
 
-* Mon May 19 2008 Christopher Aillon <caillon@redhat.com> 1.0-0.64
+* Thu May 29 2008 Christopher Aillon <caillon@redhat.com> 1.9-0.63
+- Simplify PS/PDF operators
+
+* Thu May 22 2008 Christopher Aillon <caillon@redhat.com> 1.9-0.62
 - Upstream patch to fsync() less
 
-* Thu May 16 2008 Christopher Aillon <caillon@redhat.com> 1.9-0.63
-- Update to latest trunk (2008-05-16)
+* Thu May 08 2008 Colin Walters <walters@redhat.com> 1.9-0.61
+- Ensure we enable startup notification; add BR and modify config
+  (bug #445543)
 
-* Fri Apr 18 2008 Martin Stransky <stransky@redhat.com> 1.9-0.62
+* Wed Apr 30 2008 Christopher Aillon <caillon@redhat.com> 1.9-0.60
+- Some files moved to mozilla-filesystem; kill them and add the Req
+
+* Mon Apr 28 2008 Christopher Aillon <caillon@redhat.com> 1.9-0.59
+- Clean up the %%files list and get rid of the executable bit on some files
+
+* Sat Apr 26 2008 Christopher Aillon <caillon@redhat.com> 1.9-0.58
+- Fix font scaling
+
+* Fri Apr 25 2008 Martin Stransky <stransky@redhat.com> 1.9-0.57
+- Enabled phishing protection (#443403)
+
+* Wed Apr 23 2008 Martin Stransky <stransky@redhat.com> 1.9-0.56
+- Changed "__ppc64__" to "__powerpc64__", 
+  "__ppc64__" doesn't work anymore
+- Added fix for #443725 - Critical hanging bug with fix 
+  available upstream (mozbz#429903)
+
+* Fri Apr 18 2008 Martin Stransky <stransky@redhat.com> 1.9-0.55
 - Fixed multilib issues, added starting script instead of a symlink
   to binary (#436393)
 
-* Wed Apr 16 2008 Christopher Aillon <caillon@redhat.com> 1.9-0.61
-- Update to latest trunk (2008-04-16)
+* Sat Apr 12 2008 Christopher Aillon <caillon@redhat.com> 1.9-0.54
+- Add upstream patches for dpi, toolbar buttons, and invalid keys
+- Re-enable system cairo
 
-* Mon Apr 14 2008 Christopher Aillon <caillon@redhat.com> 1.9-0.60
-- Update to latest trunk (2008-04-14)
+* Mon Apr  7 2008 Christopher Aillon <caillon@redhat.com> 1.9-0.53
+- Spec cleanups
 
-* Tue Apr  8 2008 Christopher Aillon <caillon@redhat.com> 1.9-0.59
-- Update to latest trunk (2008-04-08)
-
-* Mon Apr  7 2008 Christopher Aillon <caillon@redhat.com> 1.9-0.58
-- Update to latest trunk (2008-04-07)
-
-* Sun Apr  6 2008 Christopher Aillon <caillon@redhat.com> 1.9-0.57
-- Update to latest trunk (2008-04-06)
-
-* Sat Apr  5 2008 Christopher Aillon <caillon@redhat.com> 1.9-0.56
-- Update to latest trunk (2008-04-05)
-
-* Fri Apr  4 2008 Christopher Aillon <caillon@redhat.com> 1.9-0.55
-- Update to latest trunk (2008-04-04)
-
-* Thu Apr  3 2008 Christopher Aillon <caillon@redhat.com> 1.9-0.54
-- Update to latest trunk (2008-04-03)
-
-* Wed Apr  2 2008 Christopher Aillon <caillon@redhat.com> 1.9-0.53
-- Update to latest trunk (2008-04-02)
-
-* Tue Apr  1 2008 Christopher Aillon <caillon@redhat.com> 1.9-0.52
-- Update to latest trunk (2008-04-01)
+* Wed Apr  2 2008 Christopher Aillon <caillon@redhat.com> 1.9-0.52
+- Beta 5
 
 * Mon Mar 31 2008 Christopher Aillon <caillon@redhat.com> 1.9-0.51
-- Update to latest trunk (2008-03-31)
+- Beta 5 RC2
 
 * Thu Mar 27 2008 Christopher Aillon <caillon@redhat.com> 1.9-0.50
 - Update to latest trunk (2008-03-27)
