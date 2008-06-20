@@ -2,19 +2,17 @@
 %define nss_version 3.11.99.5
 %define cairo_version 0.5
 
-%define version_internal  1.9pre
+%define version_internal  1.9
 %define mozappdir         %{_libdir}/%{name}-%{version_internal}
-
-%define version_pre .beta5
 
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
 Version:        1.9
-Release:        0.61%{?version_pre}%{?dist}
+Release:        1%{?dist}
 URL:            http://www.mozilla.org/projects/xulrunner/
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
-Source0:        xulrunner-1.9b5-source.tar.bz2
+Source0:        xulrunner-1.9-source.tar.bz2
 Source10:       %{name}-mozconfig
 Source12:       %{name}-redhat-default-prefs.js
 Source21:       %{name}.sh.in
@@ -23,17 +21,15 @@ Source23:       %{name}.1
 # build patches
 Patch1:         mozilla-build.patch
 Patch2:         xulrunner-path.patch
-Patch3:         xulrunner-version.patch
+Patch4:         mozilla-sqlite.patch
+Patch5:         mozilla-mochitest.patch
 
 # Fedora specific patches
 Patch10:        mozilla-pkgconfig.patch
 
 # Upstream patches
-Patch20:        mozilla-dpi.patch
-Patch21:        mozilla-wtfbuttons.patch
-Patch22:        mozilla-keys.patch
-Patch23:        xulrunner-hang.patch
-Patch24:        mozilla-resolution.patch
+Patch26:        mozilla-ps-pdf-simplify-operators.patch
+Patch27:        mozilla-ssl-exception.patch
 
 
 # ---------------------------------------------------
@@ -59,6 +55,9 @@ BuildRequires:  libXt-devel
 BuildRequires:  libXrender-devel
 BuildRequires:  hunspell-devel
 BuildRequires:  sqlite-devel >= 3.5
+BuildRequires:  startup-notification-devel
+# For -sqlite.patch
+BuildRequires:  autoconf213
 
 Requires:       mozilla-filesystem
 Requires:       nspr >= %{nspr_version}
@@ -91,32 +90,39 @@ Provides: gecko-devel-unstable = %{version}
 Unstable files for use with development of Gecko applications.  These headers
 are not frozen and APIs can change at any time, so should not be relied on.
 
-%package pyxpcom
+%package -n python-xulrunner
 Summary: PyXPCOM bindings.
 Group: Development/Libraries
-BuildRequires:  python-devel
+BuildRequires: python-devel
 
-%description pyxpcom
+%description -n python-xulrunner
 PyXPCOM allows for bidirectional communication between Python and XPCOM which
 permits both extension of XPCOM components from Python and embedding of XPCOM
 components into Python applications.
+
+%package -n python-xulrunner-devel
+Summary: Development files for PyXPCOM.
+Group: Development/Libraries
+Requires: xulrunner-devel
+
+%description -n python-xulrunner-devel
+PyXPCOM development files.
 
 #---------------------------------------------------------------------
 
 %prep
 %setup -q -c
 cd mozilla
-%patch1  -p1
-%patch2  -p1
-%patch3  -p1 -b .ver
+%patch1  -p1 -b .build
+%patch2  -p1 -b .path
+%patch4  -p1 -b .sqlite
+autoconf-2.13
+%patch5  -p1 -b .mochitest
 
 %patch10 -p1 -b .pk
 
-%patch20 -p1 -b .dpi
-%patch21 -p1 -b .wtfbuttons
-%patch22 -p1 -b .keys
-%patch23 -p1 -b .hang
-%patch24 -p1 -b .resolution
+%patch26 -p1 -b .ps-pdf-simplify-operators
+%patch27 -p1 -b .ssl-exception
 
 %{__rm} -f .mozconfig
 %{__cp} %{SOURCE10} .mozconfig
@@ -344,7 +350,6 @@ fi
 %{mozappdir}/plugins
 %{mozappdir}/res
 %{mozappdir}/*.so
-%exclude %{mozappdir}/libpyxpcom.so
 %{mozappdir}/mozilla-xremote-client
 %{mozappdir}/run-mozilla.sh
 %{mozappdir}/regxpcom
@@ -363,6 +368,7 @@ fi
 %dir %{_datadir}/idl/%{name}*%{version_internal}
 %{_datadir}/idl/%{name}*%{version_internal}/stable
 %{_includedir}/%{name}*%{version_internal}
+%exclude %{_includedir}/%{name}*%{version_internal}/pyxpcom
 %exclude %{_includedir}/%{name}*%{version_internal}/unstable
 %dir %{_libdir}/%{name}-sdk-*
 %dir %{_libdir}/%{name}-sdk-*/sdk
@@ -387,24 +393,37 @@ fi
 %{_libdir}/pkgconfig/*unstable*.pc
 %{_libdir}/pkgconfig/*gtkmozembed*.pc
 
-%files pyxpcom
+%files -n python-xulrunner
 %defattr(-,root,root,-)
-# %dir %{mozappdir}/python/xpcom   -- We actually only want python/xpcom, since
-# python/dom might be a pydom subpackage itself; however, somebody has to own
-# python/ and that's us for the moment.
 %dir %{mozappdir}/python
 %{mozappdir}/python/*
 %{mozappdir}/components/py*
 %{mozappdir}/libpyxpcom.so
 
+%files -n python-xulrunner-devel
+%defattr(-,root,root,-)
+%{_includedir}/%{name}*%{version_internal}/pyxpcom
 
 #---------------------------------------------------------------------
 
 %changelog
-* Mon May 05 2008 Michael Stone <michael@laptop.org> 1.0-0.61
-- Enable PyXPCOM and include it in a -pyxpcom subpackage.
+* Fri Jun 20 2008 Marco Pesenti Gritti <mpg@redhat.com> 1.9-2
+- Add python-xulrunner and python-xulrunner-devel
 
-* Wed Apr 30 2008 Christopher Aillon <caillon@redhat.com> 1.0-0.60
+* Tue Jun 17 2008 Christopher Aillon <caillon@redhat.com> 1.9-1
+- Update to 1.9 final
+
+* Thu May 29 2008 Christopher Aillon <caillon@redhat.com> 1.9-0.63
+- Simplify PS/PDF operators
+
+* Thu May 22 2008 Christopher Aillon <caillon@redhat.com> 1.9-0.62
+- Upstream patch to fsync() less
+
+* Thu May 08 2008 Colin Walters <walters@redhat.com> 1.9-0.61
+- Ensure we enable startup notification; add BR and modify config
+  (bug #445543)
+
+* Wed Apr 30 2008 Christopher Aillon <caillon@redhat.com> 1.9-0.60
 - Some files moved to mozilla-filesystem; kill them and add the Req
 
 * Mon Apr 28 2008 Christopher Aillon <caillon@redhat.com> 1.9-0.59
