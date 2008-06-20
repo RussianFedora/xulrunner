@@ -1,0 +1,21 @@
+https://bugzilla.mozilla.org/show_bug.cgi?id=429178
+
+Index: mozilla/testing/mochitest/ssltunnel/Makefile.in
+===================================================================
+RCS file: /cvsroot/mozilla/testing/mochitest/ssltunnel/Makefile.in,v
+retrieving revision 1.2
+diff -u -u -r1.2 Makefile.in
+--- mozilla/testing/mochitest/ssltunnel/Makefile.in	11 Apr 2008 05:58:04 -0000	1.2
++++ mozilla/testing/mochitest/ssltunnel/Makefile.in	3 Jun 2008 19:25:55 -0000
+@@ -55,6 +55,10 @@
+ 	nss \
+ 	$(NULL)
+ 
++# Use local includes because they are inserted before INCLUDES
++# so that Mozilla's nss.h is used, not glibc's
++LOCAL_INCLUDES += $(NSPR_CFLAGS) $(NSS_CFLAGS)
++
+ LIBS = \
+ 	$(NSPR_LIBS) \
+ 	$(NSS_LIBS) \
+

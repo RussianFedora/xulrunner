@@ -1,0 +1,32 @@
+https://bugzilla.mozilla.org/show_bug.cgi?id=424063
+
+Index: mozilla/configure.in
+===================================================================
+RCS file: /cvsroot/mozilla/configure.in,v
+retrieving revision 1.1992
+diff -d -u -p -r1.1992 configure.in
+--- mozilla/configure.in	5 May 2008 21:08:14 -0000	1.1992
++++ mozilla/configure.in	17 May 2008 02:26:32 -0000
+@@ -5958,7 +5958,21 @@ then
+     SQLITE_CFLAGS=
+     SQLITE_LIBS='$(call EXPAND_LIBNAME_PATH,sqlite3,$(DIST)/lib)'
+ else
+-    PKG_CHECK_MODULES(SQLITE, sqlite3 >= $SQLITE_VERSION)
++    SQLITE_VERSION_NUMBER=3005004
++    AC_MSG_CHECKING(sqlite version >= $SQLITE_VERSION)
++    AC_TRY_COMPILE([#include <sqlite3.h>], [
++#                   if SQLITE_VERSION_NUMBER < $SQLITE_VERSION_NUMBER
++#                   error "sqlite version < $SQLITE_VERSION_NUMBER
++#                   endif
++                    ] , [res=yes], [res=no])
++    AC_MSG_RESULT([$res])
++    if test "$res" != "yes"; then
++        AC_MSG_ERROR([sqlite version $SQLITE_VERSION or higher required])
++    fi
++    SQLITE_CFLAGS=`$PKG_CONFIG --cflags sqlite3`
++    SQLITE_LIBS=`$PKG_CONFIG --libs sqlite3`
++    AC_SUBST(SQLITE_CFLAGS)
++    AC_SUBST(SQLITE_LIBS)
+ fi
+ 
+ AC_SUBST(MOZ_NATIVE_SQLITE)
