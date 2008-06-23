@@ -8,7 +8,7 @@
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
 Version:        1.9
-Release:        1%{?dist}
+Release:        1%{?dist}.1
 URL:            http://www.mozilla.org/projects/xulrunner/
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
@@ -90,22 +90,22 @@ Provides: gecko-devel-unstable = %{version}
 Unstable files for use with development of Gecko applications.  These headers
 are not frozen and APIs can change at any time, so should not be relied on.
 
-%package -n python-xulrunner
+%package pyxpcom
 Summary: PyXPCOM bindings.
 Group: Development/Libraries
 BuildRequires: python-devel
 
-%description -n python-xulrunner
+%description pyxpcom
 PyXPCOM allows for bidirectional communication between Python and XPCOM which
 permits both extension of XPCOM components from Python and embedding of XPCOM
 components into Python applications.
 
-%package -n python-xulrunner-devel
+%package pyxpcom-devel
 Summary: Development files for PyXPCOM.
 Group: Development/Libraries
-Requires: xulrunner-devel
+Requires: xulrunner-devel = %{version}-%{release}
 
-%description -n python-xulrunner-devel
+%description pyxpcom-devel
 PyXPCOM development files.
 
 #---------------------------------------------------------------------
@@ -393,20 +393,23 @@ fi
 %{_libdir}/pkgconfig/*unstable*.pc
 %{_libdir}/pkgconfig/*gtkmozembed*.pc
 
-%files -n python-xulrunner
+%files pyxpcom 
 %defattr(-,root,root,-)
 %dir %{mozappdir}/python
 %{mozappdir}/python/*
 %{mozappdir}/components/py*
 %{mozappdir}/libpyxpcom.so
 
-%files -n python-xulrunner-devel
+%files  pyxpcom-devel
 %defattr(-,root,root,-)
 %{_includedir}/%{name}*%{version_internal}/pyxpcom
 
 #---------------------------------------------------------------------
 
 %changelog
+* Mon Jun 23 2008 Dennis Gilmore <dennis@ausil.us> 1.9-1.1
+- us xulrunner-pyxpcom instead of python-xulrunner
+
 * Fri Jun 20 2008 Marco Pesenti Gritti <mpg@redhat.com> 1.9-2
 - Add python-xulrunner and python-xulrunner-devel
 
