@@ -8,7 +8,7 @@
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
 Version:        1.9
-Release:        1%{?dist}
+Release:        1%{?dist}.1
 URL:            http://www.mozilla.org/projects/xulrunner/
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
@@ -185,7 +185,7 @@ cd -
   $RPM_BUILD_ROOT/%{_includedir}/${INTERNAL_APP_SDK_NAME}
 
 # Fix multilib devel conflicts...
-%ifarch x86_64 ia64 s390x ppc64
+%ifarch x86_64 ia64 s390x ppc64 sparc64
 %define mozbits 64
 %else
 %define mozbits 32
@@ -196,7 +196,7 @@ genheader=$*
 mv ${genheader}.h ${genheader}%{mozbits}.h
 cat > ${genheader}.h << EOF
 // This file exists to fix multilib conflicts
-#if defined(__x86_64__) || defined(__ia64__) || defined(__s390x__) || defined(__powerpc64__)
+#if defined(__x86_64__) || defined(__ia64__) || defined(__s390x__) || defined(__powerpc64__) ||defined(__sparc__) && defined(__arch64__)
 #include "${genheader}64.h"
 #else
 #include "${genheader}32.h"
@@ -254,7 +254,7 @@ done
 popd
 
 # GRE stuff
-%ifarch x86_64 ia64 ppc64 s390x
+%ifarch x86_64 ia64 ppc64 s390x sparc64
 %define gre_conf_file gre64.conf
 %else
 %define gre_conf_file gre.conf
@@ -266,7 +266,7 @@ MOZILLA_GECKO_VERSION=`./config/milestone.pl --topsrcdir=.`
 chmod 644 $RPM_BUILD_ROOT/etc/gre.d/%{gre_conf_file}
 
 # Library path
-%ifarch x86_64 ia64 ppc64 s390x
+%ifarch x86_64 ia64 ppc64 s390x sparc64
 %define ld_conf_file xulrunner-64.conf
 %else
 %define ld_conf_file xulrunner-32.conf
@@ -377,6 +377,9 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
+* Mon Jun 30 2008 Dennis Gilmore <dennis@ausil.us> 1.9-1.1
+- handle sparc arches
+
 * Tue Jun 17 2008 Christopher Aillon <caillon@redhat.com> 1.9-1
 - Update to 1.9 final
 
