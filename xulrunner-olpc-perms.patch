@@ -1,0 +1,220 @@
+--- modules/plugin/base/src/nsPluginHostImpl.cpp.old	2007-12-22 14:00:39.000000000 +0100
++++ modules/plugin/base/src/nsPluginHostImpl.cpp	2007-12-22 14:01:41.000000000 +0100
+@@ -5573,7 +5573,7 @@
+   if (NS_FAILED(rv))
+     return rv;
+ 
+-  rv = localFile->OpenNSPRFileDesc(PR_WRONLY | PR_CREATE_FILE | PR_TRUNCATE, 0600, &fd);
++  rv = localFile->OpenNSPRFileDesc(PR_WRONLY | PR_CREATE_FILE | PR_TRUNCATE, 0660, &fd);
+   if (NS_FAILED(rv))
+     return rv;
+ 
+--- modules/libpref/src/nsPrefService.cpp.old	2007-12-22 14:02:25.000000000 +0100
++++ modules/libpref/src/nsPrefService.cpp	2007-12-22 14:02:42.000000000 +0100
+@@ -501,7 +501,7 @@
+   rv = NS_NewSafeLocalFileOutputStream(getter_AddRefs(outStreamSink),
+                                        aFile,
+                                        -1,
+-                                       0600);
++                                       0660);
+   if (NS_FAILED(rv)) 
+       return rv;
+   rv = NS_NewBufferedOutputStream(getter_AddRefs(outStream), outStreamSink, 4096);
+--- security/nss/lib/softoken/legacydb/keydb.c.old	2007-12-22 14:03:34.000000000 +0100
++++ security/nss/lib/softoken/legacydb/keydb.c	2007-12-22 14:04:12.000000000 +0100
+@@ -832,7 +832,7 @@
+     if (appName) {
+ 	handle->db = rdbopen( appName, prefix, "key", NO_CREATE, &status);
+     } else {
+-	handle->db = dbopen( dbname, NO_CREATE, 0600, DB_HASH, 0 );
++	handle->db = dbopen( dbname, NO_CREATE, 0660, DB_HASH, 0 );
+     }
+     /* if create fails then we lose */
+     if ( handle->db == NULL ) {
+@@ -853,7 +853,7 @@
+      */
+     if (appName) {
+         NSSLOWKEYDBHandle *updateHandle;
+-	updatedb = dbopen( dbname, NO_RDONLY, 0600, DB_HASH, 0 );
++	updatedb = dbopen( dbname, NO_RDONLY, 0660, DB_HASH, 0 );
+ 	if (!updatedb) {
+ 	    goto noupdate;
+ 	}
+@@ -892,7 +892,7 @@
+      */
+     updname = (*namecb)(cbarg, 2);
+     if ( updname != NULL ) {
+-	handle->updatedb = dbopen( updname, NO_RDONLY, 0600, DB_HASH, 0 );
++	handle->updatedb = dbopen( updname, NO_RDONLY, 0660, DB_HASH, 0 );
+         PORT_Free( updname );
+ 
+ 	if ( handle->updatedb ) {
+@@ -940,7 +940,7 @@
+     if (appName) {
+ 	db = rdbopen( appName, prefix, "key", openflags, NULL);
+     } else {
+-	db = dbopen( dbname, openflags, 0600, DB_HASH, 0 );
++	db = dbopen( dbname, openflags, 0660, DB_HASH, 0 );
+     }
+ 
+     return db;
+@@ -2080,7 +2080,7 @@
+ 	handle->db= 
+ 	    rdbopen(handle->appname, handle->dbname, "key", NO_CREATE, NULL);
+     } else {
+-	handle->db = dbopen( handle->dbname, NO_CREATE, 0600, DB_HASH, 0 );
++	handle->db = dbopen( handle->dbname, NO_CREATE, 0660, DB_HASH, 0 );
+     }
+     if (handle->db == NULL) {
+ 	/* set an error code */
+--- security/nss/lib/softoken/legacydb/pcertdb.c.old	2007-12-22 14:04:53.000000000 +0100
++++ security/nss/lib/softoken/legacydb/pcertdb.c	2007-12-22 14:05:33.000000000 +0100
+@@ -3998,7 +3998,7 @@
+ 
+     tmpname = (* namecb)(cbarg, version);	/* get v6 db name */
+     if ( tmpname ) {
+-	updatedb = dbopen( tmpname, NO_RDONLY, 0600, DB_HASH, 0 );
++	updatedb = dbopen( tmpname, NO_RDONLY, 0660, DB_HASH, 0 );
+ 	PORT_Free(tmpname);
+     }
+     return updatedb;
+@@ -4016,7 +4016,7 @@
+     if (appName) {
+ 	handle->permCertDB=rdbopen( appName, prefix, "cert", NO_CREATE, &status);
+     } else {
+-	handle->permCertDB=dbsopen(certdbname, NO_CREATE, 0600, DB_HASH, 0);
++	handle->permCertDB=dbsopen(certdbname, NO_CREATE, 0660, DB_HASH, 0);
+     }
+ 
+     /* if create fails then we lose */
+@@ -4042,7 +4042,7 @@
+     /* rv must already be Success here because of previous if statement */
+     /* try to upgrade old db here */
+     if (appName &&
+-       (updatedb = dbsopen(certdbname, NO_RDONLY, 0600, DB_HASH, 0)) != NULL) {
++       (updatedb = dbsopen(certdbname, NO_RDONLY, 0660, DB_HASH, 0)) != NULL) {
+ 	rv = UpdateV8DB(handle, updatedb);
+     } else if ((updatedb = nsslowcert_openolddb(namecb,cbarg,7)) != NULL) {
+ 	rv = UpdateV7DB(handle, updatedb);
+@@ -4107,7 +4107,7 @@
+     if (appName) {
+ 	handle->permCertDB = rdbopen( appName, prefix, "cert", openflags, NULL);
+     } else {
+-	handle->permCertDB = dbsopen( certdbname, openflags, 0600, DB_HASH, 0 );
++	handle->permCertDB = dbsopen( certdbname, openflags, 0660, DB_HASH, 0 );
+     }
+ 
+     /* check for correct version number */
+--- security/nss/lib/softoken/legacydb/pk11db.c	2007-06-13 02:24:57.000000000 +0200
++++ security/nss/lib/softoken/legacydb/pk11db.c.old	2007-12-22 14:06:55.000000000 +0100
+@@ -543,7 +543,7 @@
+ 		PORT_Free(secname);
+ 		return pkcs11db;
+ 	    }
+-	    updatedb = dbopen(dbName, NO_RDONLY, 0600, DB_HASH, 0);
++	    updatedb = dbopen(dbName, NO_RDONLY, 0660, DB_HASH, 0);
+ 	    if (updatedb) {
+ 		db_Copy(pkcs11db,updatedb);
+ 		(*updatedb->close)(updatedb);
+@@ -558,14 +558,14 @@
+     }
+   
+     /* I'm sure we should do more checks here sometime... */
+-    pkcs11db = dbopen(dbName, readOnly ? NO_RDONLY : NO_RDWR, 0600, DB_HASH, 0);
++    pkcs11db = dbopen(dbName, readOnly ? NO_RDONLY : NO_RDWR, 0660, DB_HASH, 0);
+ 
+     /* didn't exist? create it */
+     if (pkcs11db == NULL) {
+ 	 if (readOnly) 
+ 	     return NULL;
+ 
+-	 pkcs11db = dbopen( dbName, NO_CREATE, 0600, DB_HASH, 0 );
++	 pkcs11db = dbopen( dbName, NO_CREATE, 0660, DB_HASH, 0 );
+ 	 if (pkcs11db) 
+ 	     (* pkcs11db->sync)(pkcs11db, 0);
+     }
+--- netwerk/cache/src/nsDiskCacheBlockFile.cpp.old	2007-12-22 14:11:31.000000000 +0100
++++ netwerk/cache/src/nsDiskCacheBlockFile.cpp	2007-12-22 14:11:45.000000000 +0100
+@@ -59,7 +59,7 @@
+     mBlockSize = blockSize;
+     
+     // open the file - restricted to user, the data could be confidential
+-    nsresult rv = blockFile->OpenNSPRFileDesc(PR_RDWR | PR_CREATE_FILE, 00600, &mFD);
++    nsresult rv = blockFile->OpenNSPRFileDesc(PR_RDWR | PR_CREATE_FILE, 00660, &mFD);
+     if (NS_FAILED(rv))  return rv;  // unable to open or create file
+     
+     // allocate bit map buffer
+--- netwerk/cache/src/nsDiskCacheDeviceSQL.cpp.old	2007-12-22 14:37:48.000000000 +0100
++++ netwerk/cache/src/nsDiskCacheDeviceSQL.cpp	2007-12-22 14:38:21.000000000 +0100
+@@ -374,7 +374,7 @@
+       rv = file->SetNativeLeafName(nsDependentCString(leaf));
+       if (NS_FAILED(rv))
+         return nsnull;
+-      rv = file->Create(nsIFile::NORMAL_FILE_TYPE, 00600);
++      rv = file->Create(nsIFile::NORMAL_FILE_TYPE, 00660);
+       if (NS_FAILED(rv) && rv != NS_ERROR_FILE_ALREADY_EXISTS)
+         return nsnull;
+       if (NS_SUCCEEDED(rv))
+@@ -1105,7 +1105,7 @@
+   nsCOMPtr<nsIOutputStream> out;
+   NS_NewLocalFileOutputStream(getter_AddRefs(out), binding->mDataFile,
+                               PR_WRONLY | PR_CREATE_FILE | PR_TRUNCATE,
+-                              00600);
++                              00660);
+   if (!out)
+     return NS_ERROR_UNEXPECTED;
+ 
+--- netwerk/cache/src/nsDiskCacheStreams.cpp.old	2007-12-22 14:37:28.000000000 +0100
++++ netwerk/cache/src/nsDiskCacheStreams.cpp	2007-12-22 14:38:06.000000000 +0100
+@@ -666,8 +666,8 @@
+                                                   getter_AddRefs(mLocalFile));
+     if (NS_FAILED(rv))  return rv;
+     
+-    // create PRFileDesc for input stream - the 00600 is just for consistency
+-    rv = mLocalFile->OpenNSPRFileDesc(flags, 00600, fd);
++    // create PRFileDesc for input stream - the 00660 is just for consistency
++    rv = mLocalFile->OpenNSPRFileDesc(flags, 00660, fd);
+     if (NS_FAILED(rv))  return rv;  // unable to open file
+ 
+     return NS_OK;
+--- /tmp/sqlite3.c	2008-04-07 14:31:32.000000000 +0200
++++ db/sqlite3/src/sqlite3.c	2008-04-07 14:32:49.000000000 +0200
+@@ -15768,7 +15768,7 @@
+ ** Default permissions when creating a new file
+ */
+ #ifndef SQLITE_DEFAULT_FILE_PERMISSIONS
+-# define SQLITE_DEFAULT_FILE_PERMISSIONS 0644
++# define SQLITE_DEFAULT_FILE_PERMISSIONS 0664
+ #endif
+ 
+ /* 
+--- /tmp/nsDiskCacheMap.cpp	2008-04-07 14:27:11.000000000 +0200
++++ netwerk/cache/src/nsDiskCacheMap.cpp	2008-04-07 14:28:43.000000000 +0200
+@@ -78,7 +78,7 @@
+     NS_ENSURE_SUCCESS(rv, rv);
+ 
+     // open the file - restricted to user, the data could be confidential
+-    rv = localFile->OpenNSPRFileDesc(PR_RDWR | PR_CREATE_FILE, 00600, &mMapFD);
++    rv = localFile->OpenNSPRFileDesc(PR_RDWR | PR_CREATE_FILE, 00660, &mMapFD);
+     NS_ENSURE_SUCCESS(rv, NS_ERROR_FILE_CORRUPTED);
+ 
+     PRBool cacheFilesExist = CacheFilesExist();
+@@ -676,7 +676,7 @@
+ 
+         PRFileDesc * fd = nsnull;
+         // open the file - restricted to user, the data could be confidential
+-        rv = file->OpenNSPRFileDesc(PR_RDONLY, 00600, &fd);
++        rv = file->OpenNSPRFileDesc(PR_RDONLY, 00660, &fd);
+         NS_ENSURE_SUCCESS(rv, nsnull);
+         
+         PRInt32 fileSize = PR_Available(fd);
+@@ -826,8 +826,8 @@
+         // open the file
+         PRFileDesc * fd;
+         // open the file - restricted to user, the data could be confidential
+-        rv = localFile->OpenNSPRFileDesc(PR_RDWR | PR_TRUNCATE | PR_CREATE_FILE, 00600, &fd);
++        rv = localFile->OpenNSPRFileDesc(PR_RDWR | PR_TRUNCATE | PR_CREATE_FILE, 00660, &fd);
+         NS_ENSURE_SUCCESS(rv, rv);
+ 
+         // write the file
+ 

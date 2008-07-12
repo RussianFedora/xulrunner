@@ -8,7 +8,7 @@
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
 Version:        1.9
-Release:        1%{?dist}.1
+Release:        1%{?dist}.2
 URL:            http://www.mozilla.org/projects/xulrunner/
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
@@ -31,6 +31,12 @@ Patch10:        mozilla-pkgconfig.patch
 Patch26:        mozilla-ps-pdf-simplify-operators.patch
 Patch27:        mozilla-ssl-exception.patch
 
+# OLPC
+Patch201:       xulrunner-olpc-no-native-theme.patch
+Patch202:       xulrunner-olpc-pre-dpi.patch
+Patch203:       xulrunner-olpc-pre-build.patch
+Patch204:       xulrunner-olpc-xds.patch
+Patch205:	xulrunner-olpc-perms.patch
 
 # ---------------------------------------------------
 
@@ -123,6 +129,12 @@ autoconf-2.13
 
 %patch26 -p1 -b .ps-pdf-simplify-operators
 %patch27 -p1 -b .ssl-exception
+
+%patch201 -p0 -b .no-native-theme
+%patch202 -p0 -b .dpi
+%patch203 -p0 -b .build
+%patch204 -p0 -b .xds
+%patch205 -p0 -b .perms
 
 %{__rm} -f .mozconfig
 %{__cp} %{SOURCE10} .mozconfig
@@ -407,6 +419,9 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
+* Sat Jul 12 2008 Simon Schampijer <simon@laptop.org> - 1.9-1.2
+- add the OLPC specific patches
+
 * Mon Jun 23 2008 Dennis Gilmore <dennis@ausil.us> 1.9-1.1
 - us xulrunner-pyxpcom instead of python-xulrunner
 
