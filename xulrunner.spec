@@ -8,7 +8,7 @@
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
 Version:        1.9
-Release:        1%{?dist}.2
+Release:        1%{?dist}.3
 URL:            http://www.mozilla.org/projects/xulrunner/
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
@@ -51,9 +51,7 @@ BuildRequires:  zlib-devel
 BuildRequires:  lcms-devel
 BuildRequires:  libIDL-devel
 BuildRequires:  gtk2-devel
-BuildRequires:  gnome-vfs2-devel
-BuildRequires:  libgnome-devel
-BuildRequires:  libgnomeui-devel
+BuildRequires:  dbus-glib-devel
 BuildRequires:  krb5-devel
 BuildRequires:  pango-devel
 BuildRequires:  freetype-devel >= 2.1.9
@@ -419,6 +417,9 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
+* Mon Jul 14 2008 Simon Schampijer <simon@laptop.org> - 1.9-1.3
+- remove xulrunner deps on libgnome/libgnomevfs redhat-454890
+
 * Sat Jul 12 2008 Simon Schampijer <simon@laptop.org> - 1.9-1.2
 - add the OLPC specific patches
 
