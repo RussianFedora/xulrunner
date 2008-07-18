@@ -41,6 +41,7 @@ BuildRequires:  nss-devel >= %{nss_version}
 BuildRequires:  cairo-devel >= %{cairo_version}
 BuildRequires:  libpng-devel
 BuildRequires:  libjpeg-devel
+BuildRequires:  zip
 BuildRequires:  bzip2-devel
 BuildRequires:  zlib-devel
 BuildRequires:  lcms-devel >= 1.17
