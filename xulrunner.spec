@@ -1,18 +1,18 @@
-%define nspr_version 4.6.99
-%define nss_version 3.11.99.5
-%define cairo_version 0.5
+%define nspr_version 4.7.1
+%define nss_version 3.12.0.3
+%define cairo_version 0.6
 
 %define version_internal  1.9
 %define mozappdir         %{_libdir}/%{name}-%{version_internal}
 
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
-Version:        1.9
+Version:        1.9.0.1
 Release:        1%{?dist}
 URL:            http://www.mozilla.org/projects/xulrunner/
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
-Source0:        xulrunner-1.9-source.tar.bz2
+Source0:        xulrunner-%{version}-source.tar.bz2
 Source10:       %{name}-mozconfig
 Source12:       %{name}-redhat-default-prefs.js
 Source21:       %{name}.sh.in
@@ -21,6 +21,7 @@ Source23:       %{name}.1
 # build patches
 Patch1:         mozilla-build.patch
 Patch2:         xulrunner-path.patch
+Patch3:         xulrunner-version.patch
 Patch4:         mozilla-sqlite.patch
 Patch5:         mozilla-mochitest.patch
 
@@ -42,7 +43,7 @@ BuildRequires:  libpng-devel
 BuildRequires:  libjpeg-devel
 BuildRequires:  bzip2-devel
 BuildRequires:  zlib-devel
-BuildRequires:  lcms-devel
+BuildRequires:  lcms-devel >= 1.17
 BuildRequires:  libIDL-devel
 BuildRequires:  gtk2-devel
 BuildRequires:  gnome-vfs2-devel
@@ -97,6 +98,7 @@ are not frozen and APIs can change at any time, so should not be relied on.
 cd mozilla
 %patch1  -p1 -b .build
 %patch2  -p1 -b .path
+%patch3  -p1 -b .version
 %patch4  -p1 -b .sqlite
 autoconf-2.13
 %patch5  -p1 -b .mochitest
@@ -104,7 +106,7 @@ autoconf-2.13
 %patch10 -p1 -b .pk
 
 %patch26 -p1 -b .ps-pdf-simplify-operators
-%patch27 -p1 -b .ssl-exception
+#%patch27 -p1 -b .ssl-exception
 
 %{__rm} -f .mozconfig
 %{__cp} %{SOURCE10} .mozconfig
@@ -377,6 +379,9 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
+* Wed Jul 16 2008 Christopher Aillon <caillon@redhat.com> 1.9.0.1-1
+- Update to 1.9.0.1
+
 * Tue Jun 17 2008 Christopher Aillon <caillon@redhat.com> 1.9-1
 - Update to 1.9 final
 
