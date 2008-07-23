@@ -8,7 +8,7 @@
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
 Version:        1.9.0.1
-Release:        1%{?dist}
+Release:        2%{?dist}
 URL:            http://www.mozilla.org/projects/xulrunner/
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
@@ -380,6 +380,9 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
+* Wed Jul 23 2008 Christopher Aillon <caillon@redhat.com> 1.9.0.1-2
+- Disable system hunspell for now as it's causing some crashes (447444)
+
 * Wed Jul 16 2008 Christopher Aillon <caillon@redhat.com> 1.9.0.1-1
 - Update to 1.9.0.1
 
