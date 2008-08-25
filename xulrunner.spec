@@ -8,7 +8,7 @@
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
 Version:        1.9
-Release:        1%{?dist}.3
+Release:        1%{?dist}.4
 URL:            http://www.mozilla.org/projects/xulrunner/
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
@@ -417,6 +417,9 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
+* Mon Aug 25 2008 Simon Schampijer <simon@laptop.org> - 1.9-1.4
+- make the theme fill in trough for horizontal scrollbar 7871
+
 * Mon Jul 14 2008 Simon Schampijer <simon@laptop.org> - 1.9-1.3
 - remove xulrunner deps on libgnome/libgnomevfs redhat-454890
 
