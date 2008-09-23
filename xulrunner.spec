@@ -1,5 +1,5 @@
-%define nspr_version 4.6.99
-%define nss_version 3.11.99.5
+%define nspr_version 4.7.1
+%define nss_version 3.12.1.1
 %define cairo_version 0.5
 
 %define version_internal  1.9
