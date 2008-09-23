@@ -1,5 +1,5 @@
 %define nspr_version 4.7.1
-%define nss_version 3.12.0.3
+%define nss_version 3.12.1.1
 %define cairo_version 0.6
 
 %define version_internal  1.9
@@ -7,8 +7,8 @@
 
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
-Version:        1.9.0.1
-Release:        2%{?dist}
+Version:        1.9.0.2
+Release:        1%{?dist}
 URL:            http://developer.mozilla.org/En/XULRunner
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
@@ -380,6 +380,9 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
+* Tue Sep 23 2008 Christopher Aillon <caillon@redhat.com> 1.9.0.2-1
+- Update to 1.9.0.2
+
 * Wed Jul 23 2008 Christopher Aillon <caillon@redhat.com> 1.9.0.1-2
 - Disable system hunspell for now as it's causing some crashes (447444)
 
