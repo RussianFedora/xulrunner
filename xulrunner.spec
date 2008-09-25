@@ -1,5 +1,5 @@
-%define nspr_version 4.6.99
-%define nss_version 3.11.99.5
+%define nspr_version 4.7.1
+%define nss_version 3.12.1.1
 %define cairo_version 0.5
 
 %define version_internal  1.9
@@ -7,12 +7,12 @@
 
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
-Version:        1.9
-Release:        1%{?dist}.4
-URL:            http://www.mozilla.org/projects/xulrunner/
+Version:        1.9.0.2
+Release:        1%{?dist}
+URL:            http://developer.mozilla.org/En/XULRunner
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
-Source0:        xulrunner-1.9-source.tar.bz2
+Source0:        xulrunner-%{version}-source.tar.bz2
 Source10:       %{name}-mozconfig
 Source12:       %{name}-redhat-default-prefs.js
 Source21:       %{name}.sh.in
@@ -21,6 +21,7 @@ Source23:       %{name}.1
 # build patches
 Patch1:         mozilla-build.patch
 Patch2:         xulrunner-path.patch
+Patch3:         xulrunner-version.patch
 Patch4:         mozilla-sqlite.patch
 Patch5:         mozilla-mochitest.patch
 
@@ -119,6 +120,7 @@ PyXPCOM development files.
 cd mozilla
 %patch1  -p1 -b .build
 %patch2  -p1 -b .path
+%patch3  -p1 -b .version
 %patch4  -p1 -b .sqlite
 autoconf-2.13
 %patch5  -p1 -b .mochitest
@@ -126,7 +128,7 @@ autoconf-2.13
 %patch10 -p1 -b .pk
 
 %patch26 -p1 -b .ps-pdf-simplify-operators
-%patch27 -p1 -b .ssl-exception
+#%patch27 -p1 -b .ssl-exception
 
 %patch201 -p0 -b .no-native-theme
 %patch202 -p0 -b .dpi
@@ -213,7 +215,7 @@ cd -
   $RPM_BUILD_ROOT/%{_includedir}/${INTERNAL_APP_SDK_NAME}
 
 # Fix multilib devel conflicts...
-%ifarch x86_64 ia64 s390x ppc64
+%ifarch x86_64 ia64 s390x ppc64 sparc64
 %define mozbits 64
 %else
 %define mozbits 32
@@ -224,7 +226,7 @@ genheader=$*
 mv ${genheader}.h ${genheader}%{mozbits}.h
 cat > ${genheader}.h << EOF
 // This file exists to fix multilib conflicts
-#if defined(__x86_64__) || defined(__ia64__) || defined(__s390x__) || defined(__powerpc64__)
+#if defined(__x86_64__) || defined(__ia64__) || defined(__s390x__) || defined(__powerpc64__) ||defined(__sparc__) && defined(__arch64__)
 #include "${genheader}64.h"
 #else
 #include "${genheader}32.h"
@@ -282,7 +284,7 @@ done
 popd
 
 # GRE stuff
-%ifarch x86_64 ia64 ppc64 s390x
+%ifarch x86_64 ia64 ppc64 s390x sparc64
 %define gre_conf_file gre64.conf
 %else
 %define gre_conf_file gre.conf
@@ -294,7 +296,7 @@ MOZILLA_GECKO_VERSION=`./config/milestone.pl --topsrcdir=.`
 chmod 644 $RPM_BUILD_ROOT/etc/gre.d/%{gre_conf_file}
 
 # Library path
-%ifarch x86_64 ia64 ppc64 s390x
+%ifarch x86_64 ia64 ppc64 s390x sparc64
 %define ld_conf_file xulrunner-64.conf
 %else
 %define ld_conf_file xulrunner-32.conf
@@ -417,6 +419,9 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
+* Thu Sep 25 2008 Marco Pesenti Gritti <mpg@redhat.com> - 1.9.0.2-1
+- Update to 1.9.0.2
+
 * Mon Aug 25 2008 Simon Schampijer <simon@laptop.org> - 1.9-1.4
 - make the theme fill in trough for horizontal scrollbar 7871
 
