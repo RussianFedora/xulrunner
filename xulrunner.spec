@@ -1,6 +1,6 @@
 %define nspr_version 4.7.1
 %define nss_version 3.12.1.1
-%define cairo_version 0.5
+%define cairo_version 0.6
 
 %define version_internal  1.9
 %define mozappdir         %{_libdir}/%{name}-%{version_internal}
@@ -8,7 +8,7 @@
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
 Version:        1.9.0.2
-Release:        1%{?dist}
+Release:        2%{?dist}
 URL:            http://developer.mozilla.org/En/XULRunner
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
@@ -35,7 +35,6 @@ Patch27:        mozilla-ssl-exception.patch
 # OLPC
 Patch201:       xulrunner-olpc-no-native-theme.patch
 Patch202:       xulrunner-olpc-pre-dpi.patch
-Patch203:       xulrunner-olpc-pre-build.patch
 Patch204:       xulrunner-olpc-xds.patch
 Patch205:	xulrunner-olpc-perms.patch
 
@@ -47,9 +46,10 @@ BuildRequires:  nss-devel >= %{nss_version}
 BuildRequires:  cairo-devel >= %{cairo_version}
 BuildRequires:  libpng-devel
 BuildRequires:  libjpeg-devel
+BuildRequires:  zip
 BuildRequires:  bzip2-devel
 BuildRequires:  zlib-devel
-BuildRequires:  lcms-devel
+BuildRequires:  lcms-devel >= 1.17
 BuildRequires:  libIDL-devel
 BuildRequires:  gtk2-devel
 BuildRequires:  dbus-glib-devel
@@ -95,23 +95,26 @@ Provides: gecko-devel-unstable = %{version}
 Unstable files for use with development of Gecko applications.  These headers
 are not frozen and APIs can change at any time, so should not be relied on.
 
-%package pyxpcom
-Summary: PyXPCOM bindings.
-Group: Development/Libraries
+%package python
+Summary: Files needed to run Gecko applications written in python.
+Group: Applications/Internet
 BuildRequires: python-devel
+Requires: gecko-libs = %{version}-%{release}
+Provides: pyxpcom = %{version}-%{release}
+Provides: gecko-python = %{version}-%{release}
 
-%description pyxpcom
-PyXPCOM allows for bidirectional communication between Python and XPCOM which
-permits both extension of XPCOM components from Python and embedding of XPCOM
-components into Python applications.
+%description python
+Files needed to run Gecko applications written in python.
 
-%package pyxpcom-devel
-Summary: Development files for PyXPCOM.
+%package python-devel
+Summary: Development files for building Gecko applications written in python.
 Group: Development/Libraries
-Requires: xulrunner-devel = %{version}-%{release}
+Requires: gecko-devel = %{version}-%{release}
+Provides: pyxpcom-devel = %{version}-%{release}
+Provides: gecko-python-devel = %{version}-%{release}
 
-%description pyxpcom-devel
-PyXPCOM development files.
+%description python-devel
+Development files for building Gecko applications written in python.
 
 #---------------------------------------------------------------------
 
@@ -132,7 +135,6 @@ autoconf-2.13
 
 %patch201 -p0 -b .no-native-theme
 %patch202 -p0 -b .dpi
-%patch203 -p0 -b .build
 %patch204 -p0 -b .xds
 %patch205 -p0 -b .perms
 
@@ -215,7 +217,7 @@ cd -
   $RPM_BUILD_ROOT/%{_includedir}/${INTERNAL_APP_SDK_NAME}
 
 # Fix multilib devel conflicts...
-%ifarch x86_64 ia64 s390x ppc64 sparc64
+%ifarch x86_64 ia64 s390x ppc64
 %define mozbits 64
 %else
 %define mozbits 32
@@ -226,7 +228,7 @@ genheader=$*
 mv ${genheader}.h ${genheader}%{mozbits}.h
 cat > ${genheader}.h << EOF
 // This file exists to fix multilib conflicts
-#if defined(__x86_64__) || defined(__ia64__) || defined(__s390x__) || defined(__powerpc64__) ||defined(__sparc__) && defined(__arch64__)
+#if defined(__x86_64__) || defined(__ia64__) || defined(__s390x__) || defined(__powerpc64__)
 #include "${genheader}64.h"
 #else
 #include "${genheader}32.h"
@@ -284,7 +286,7 @@ done
 popd
 
 # GRE stuff
-%ifarch x86_64 ia64 ppc64 s390x sparc64
+%ifarch x86_64 ia64 ppc64 s390x
 %define gre_conf_file gre64.conf
 %else
 %define gre_conf_file gre.conf
@@ -296,7 +298,7 @@ MOZILLA_GECKO_VERSION=`./config/milestone.pl --topsrcdir=.`
 chmod 644 $RPM_BUILD_ROOT/etc/gre.d/%{gre_conf_file}
 
 # Library path
-%ifarch x86_64 ia64 ppc64 s390x sparc64
+%ifarch x86_64 ia64 ppc64 s390x
 %define ld_conf_file xulrunner-64.conf
 %else
 %define ld_conf_file xulrunner-32.conf
@@ -353,6 +355,7 @@ fi
 %ghost %{mozappdir}/components/xpti.dat
 %{mozappdir}/components/*.so
 %{mozappdir}/components/*.xpt
+%exclude %{mozappdir}/components/libpyloader.so
 %attr(644, root, root) %{mozappdir}/components/*.js
 %{mozappdir}/defaults
 %{mozappdir}/greprefs
@@ -380,8 +383,8 @@ fi
 %dir %{_datadir}/idl/%{name}*%{version_internal}
 %{_datadir}/idl/%{name}*%{version_internal}/stable
 %{_includedir}/%{name}*%{version_internal}
-%exclude %{_includedir}/%{name}*%{version_internal}/pyxpcom
 %exclude %{_includedir}/%{name}*%{version_internal}/unstable
+%exclude %{_includedir}/%{name}*%{version_internal}/pyxpcom
 %dir %{_libdir}/%{name}-sdk-*
 %dir %{_libdir}/%{name}-sdk-*/sdk
 %{mozappdir}/xpcshell
@@ -390,6 +393,7 @@ fi
 %{mozappdir}/xpt_link
 %{_libdir}/%{name}-sdk-*/*.h
 %{_libdir}/%{name}-sdk-*/sdk/*
+%exclude %{_libdir}/%{name}-sdk-%{version_internal}/sdk/lib/libpyxpcom.so
 %exclude %{_libdir}/pkgconfig/*unstable*.pc
 %exclude %{_libdir}/pkgconfig/*gtkmozembed*.pc
 %{_libdir}/pkgconfig/*.pc
@@ -405,20 +409,21 @@ fi
 %{_libdir}/pkgconfig/*unstable*.pc
 %{_libdir}/pkgconfig/*gtkmozembed*.pc
 
-%files pyxpcom 
-%defattr(-,root,root,-)
-%dir %{mozappdir}/python
-%{mozappdir}/python/*
-%{mozappdir}/components/py*
-%{mozappdir}/libpyxpcom.so
+%files python
+%{mozappdir}/components/pyabout.py*
+%{mozappdir}/components/libpyloader.so
+%{mozappdir}/python
 
-%files  pyxpcom-devel
-%defattr(-,root,root,-)
+%files python-devel
 %{_includedir}/%{name}*%{version_internal}/pyxpcom
+%{_libdir}/%{name}-sdk-%{version_internal}/sdk/lib/libpyxpcom.so
 
 #---------------------------------------------------------------------
 
 %changelog
+* Tue Oct  7 2008 Marco Pesenti Gritti <mpg@redhat.com> - 1.9.0.2-2
+- Resync with devel now that pyxpcom is enabled.
+
 * Thu Sep 25 2008 Marco Pesenti Gritti <mpg@redhat.com> - 1.9.0.2-1
 - Update to 1.9.0.2
 
