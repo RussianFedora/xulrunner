@@ -8,7 +8,7 @@
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
 Version:        1.9.0.2
-Release:        2%{?dist}
+Release:        3%{?dist}
 URL:            http://developer.mozilla.org/En/XULRunner
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
@@ -91,6 +91,26 @@ Provides: gecko-devel-unstable = %{version}
 %description devel-unstable
 Unstable files for use with development of Gecko applications.  These headers
 are not frozen and APIs can change at any time, so should not be relied on.
+
+%package python
+Summary: Files needed to run Gecko applications written in python.
+Group: Applications/Internet
+Requires: gecko-libs = %{version}-%{release}
+Provides: pyxpcom = %{version}-%{release}
+Provides: gecko-python = %{version}-%{release}
+
+%description python
+Files needed to run Gecko applications written in python.
+
+%package python-devel
+Summary: Development files for building Gecko applications written in python.
+Group: Development/Libraries
+Requires: gecko-devel = %{version}-%{release}
+Provides: pyxpcom-devel = %{version}-%{release}
+Provides: gecko-python-devel = %{version}-%{release}
+
+%description python-devel
+Development files for building Gecko applications written in python.
 
 #---------------------------------------------------------------------
 
@@ -326,6 +346,7 @@ fi
 %ghost %{mozappdir}/components/xpti.dat
 %{mozappdir}/components/*.so
 %{mozappdir}/components/*.xpt
+%exclude %{mozappdir}/components/libpyloader.so
 %attr(644, root, root) %{mozappdir}/components/*.js
 %{mozappdir}/defaults
 %{mozappdir}/greprefs
@@ -354,6 +375,7 @@ fi
 %{_datadir}/idl/%{name}*%{version_internal}/stable
 %{_includedir}/%{name}*%{version_internal}
 %exclude %{_includedir}/%{name}*%{version_internal}/unstable
+%exclude %{_includedir}/%{name}*%{version_internal}/pyxpcom
 %dir %{_libdir}/%{name}-sdk-*
 %dir %{_libdir}/%{name}-sdk-*/sdk
 %{mozappdir}/xpcshell
@@ -362,6 +384,7 @@ fi
 %{mozappdir}/xpt_link
 %{_libdir}/%{name}-sdk-*/*.h
 %{_libdir}/%{name}-sdk-*/sdk/*
+%exclude %{_libdir}/%{name}-sdk-%{version_internal}/sdk/lib/libpyxpcom.so
 %exclude %{_libdir}/pkgconfig/*unstable*.pc
 %exclude %{_libdir}/pkgconfig/*gtkmozembed*.pc
 %{_libdir}/pkgconfig/*.pc
@@ -377,9 +400,21 @@ fi
 %{_libdir}/pkgconfig/*unstable*.pc
 %{_libdir}/pkgconfig/*gtkmozembed*.pc
 
+%files python
+%{mozappdir}/components/pyabout.py*
+%{mozappdir}/components/libpyloader.so
+%{mozappdir}/python
+
+%files python-devel
+%{_includedir}/%{name}*%{version_internal}/pyxpcom
+%{_libdir}/%{name}-sdk-%{version_internal}/sdk/lib/libpyxpcom.so
+
 #---------------------------------------------------------------------
 
 %changelog
+* Sun Oct  5 2008 Christopher Aillon <caillon@redhat.com> 1.9.0.2-3
+- Enable PyXPCOM
+
 * Thu Sep 25 2008 Martin Stransky <stransky@redhat.com> 1.9.0.2-2 
 - Build with system cairo (#463341)
 
