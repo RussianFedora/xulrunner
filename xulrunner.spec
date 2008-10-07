@@ -8,7 +8,7 @@
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
 Version:        1.9.0.2
-Release:        3%{?dist}
+Release:        4%{?dist}
 URL:            http://developer.mozilla.org/En/XULRunner
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
@@ -95,6 +95,7 @@ are not frozen and APIs can change at any time, so should not be relied on.
 %package python
 Summary: Files needed to run Gecko applications written in python.
 Group: Applications/Internet
+BuildRequires: python-devel
 Requires: gecko-libs = %{version}-%{release}
 Provides: pyxpcom = %{version}-%{release}
 Provides: gecko-python = %{version}-%{release}
@@ -412,6 +413,9 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
+* Tue Oct  7 2008 Marco Pesenti Gritti <mpg@redhat.com> 1.9.0.2-4
+- Add missing dependency on python-devel
+
 * Sun Oct  5 2008 Christopher Aillon <caillon@redhat.com> 1.9.0.2-3
 - Enable PyXPCOM
 
