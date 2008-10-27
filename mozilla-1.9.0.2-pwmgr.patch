@@ -1,0 +1,102 @@
+https://bugzilla.mozilla.org/show_bug.cgi?id=454708
+
+Index: toolkit/components/passwordmgr/src/storage-Legacy.js
+===================================================================
+RCS file: /cvsroot/mozilla/toolkit/components/passwordmgr/src/storage-Legacy.js,v
+retrieving revision 1.28
+diff -u -p -8 -r1.28 storage-Legacy.js
+--- toolkit/components/passwordmgr/src/storage-Legacy.js	26 Aug 2008 19:05:49 -0000	1.28
++++ toolkit/components/passwordmgr/src/storage-Legacy.js	24 Sep 2008 17:38:18 -0000
+@@ -845,17 +845,21 @@ LoginManagerStorage_legacy.prototype = {
+         var parseState = STATE.HEADER;
+ 
+         var nsLoginInfo = new Components.Constructor(
+                 "@mozilla.org/login-manager/loginInfo;1", Ci.nsILoginInfo);
+         var processEntry = false;
+ 
+         do {
+             var hasMore = lineStream.readLine(line);
+-            line.value = this._utfConverter.ConvertToUnicode(line.value);
++            try {
++              line.value = this._utfConverter.ConvertToUnicode(line.value);
++            } catch (e) {
++              this.log("Bad UTF8 conversion: " + line.value);
++            }
+ 
+             switch (parseState) {
+                 // Check file header
+                 case STATE.HEADER:
+                     if (line.value == "#2c") {
+                         formatVersion = 0x2c;
+                     } else if (line.value == "#2d") {
+                         formatVersion = 0x2d;
+Index: toolkit/components/passwordmgr/test/unit/test_storage_legacy_3.js
+===================================================================
+RCS file: /cvsroot/mozilla/toolkit/components/passwordmgr/test/unit/test_storage_legacy_3.js,v
+retrieving revision 1.7
+diff -u -p -8 -r1.7 test_storage_legacy_3.js
+--- toolkit/components/passwordmgr/test/unit/test_storage_legacy_3.js	26 Aug 2008 19:05:49 -0000	1.7
++++ toolkit/components/passwordmgr/test/unit/test_storage_legacy_3.js	24 Sep 2008 17:38:18 -0000
+@@ -536,16 +536,45 @@ storage.setLoginSavingEnabled(utfHost, f
+ 
+ LoginTest.checkStorageData(storage, [utfHost], [utfUser1, utfUser2]);
+ 
+ testdesc = "[flush and reload for verification]"
+ LoginTest.initStorage(storage, OUTDIR, "output-451155.txt");
+ LoginTest.checkStorageData(storage, [utfHost], [utfUser1, utfUser2]);
+ 
+ 
++/*
++ * ---------------------- Bug 454708 ----------------------
++ * Check that previous saved entries that are not valid UTF8
++ * are read without blowing up.
++ */
++
++/* ========== 15 ========== */
++testnum++;
++testdesc = "ensure bogus UTF8 strings don't cause failures."
++
++var badHost = "https://FcK" + String.fromCharCode(0x8a) + ".jp";
++var bad8User = Cc["@mozilla.org/login-manager/loginInfo;1"].
++               createInstance(Ci.nsILoginInfo);
++bad8User.init(badHost, badHost, null,
++              "dummydude", "itsasecret", "put_user_here", "put_pw_here");
++
++LoginTest.initStorage(storage,
++                      INDIR, "signons-454708.txt",
++                      OUTDIR, "output-454708.txt");
++LoginTest.checkStorageData(storage, [], [bad8User]);
++
++// The output file should contain valid UTF8 now, but the resulting
++// JS string value remains the same.
++
++testdesc = "[flush and reload for verification]"
++LoginTest.initStorage(storage, OUTDIR, "output-454708.txt");
++LoginTest.checkStorageData(storage, [], [bad8User]);
++
++
+ 
+ 
+ /* ========== end ========== */
+ } catch (e) {
+     throw ("FAILED in test #" + testnum + " -- " + testdesc + ": " + e);
+ }
+ 
+ };
+Index: toolkit/components/passwordmgr/test/unit/data/signons-454708.txt
+===================================================================
+RCS file: toolkit/components/passwordmgr/test/unit/data/signons-454708.txt
+diff -N toolkit/components/passwordmgr/test/unit/data/signons-454708.txt
+--- /dev/null	1 Jan 1970 00:00:00 -0000
++++ toolkit/components/passwordmgr/test/unit/data/signons-454708.txt	24 Sep 2008 17:38:18 -0000
+@@ -0,0 +1,10 @@
++#2e
++.
++https://FcKŠ.jp
++put_user_here
++MDoEEPgAAAAAAAAAAAAAAAAAAAEwFAYIKoZIhvcNAwcECEnlbhAkNBbBBBCexD5eaffSLGH/ORiFlQ4X
++*put_pw_here
++MDoEEPgAAAAAAAAAAAAAAAAAAAEwFAYIKoZIhvcNAwcECHmiTaseYjkkBBAA0ILJTFSa5CnlpD5PTEYR
++https://FcKŠ.jp
++---
++.
