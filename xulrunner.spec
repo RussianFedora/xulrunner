@@ -7,8 +7,8 @@
 
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
-Version:        1.9.0.2
-Release:        5%{?dist}
+Version:        1.9.0.4
+Release:        1%{?dist}
 URL:            http://developer.mozilla.org/En/XULRunner
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
@@ -31,8 +31,6 @@ Patch10:        mozilla-pkgconfig.patch
 # Upstream patches
 Patch26:        mozilla-ps-pdf-simplify-operators.patch
 Patch27:        mozilla-ssl-exception.patch
-Patch28:        mozilla-1.9.0.2-pwmgr.patch
-Patch29:        mozilla-1.9.0.2-pwmgr2.patch
 
 
 # ---------------------------------------------------
@@ -130,8 +128,6 @@ autoconf-2.13
 %patch10 -p1 -b .pk
 
 %patch26 -p1 -b .ps-pdf-simplify-operators
-%patch28 -p0 -b .pwmgr
-%patch29 -p0 -b .pwmgr2
 
 
 %{__rm} -f .mozconfig
@@ -417,6 +413,9 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
+* Wed Nov 12 2008 Christopher Aillon <caillon@redhat.com> 1.9.0.4-1
+- Update to 1.9.0.4
+
 * Mon Oct 27 2008 Christopher Aillon <caillon@redhat.com> 1.9.0.2-5
 - Password manager fixes from upstream
 
