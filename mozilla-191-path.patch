@@ -75,19 +75,6 @@ diff -up mozilla/dbm/include/mcom_db.h.old mozilla/dbm/include/mcom_db.h
  #endif
  
  #include <fcntl.h>
-diff -up mozilla/js/src/jsfile.c.old mozilla/js/src/jsfile.c
---- mozilla/js/src/jsfile.c.old	2006-07-26 20:55:08.000000000 +0200
-+++ mozilla/js/src/jsfile.c	2007-09-25 18:22:52.000000000 +0200
-@@ -105,7 +105,8 @@
- #define utfstring               "binary"
- #define unicodestring           "unicode"
- 
--#define MAX_PATH_LENGTH         1024
-+#include <limits.h>
-+#define MAX_PATH_LENGTH         PATH_MAX
- #define MODE_SIZE               256
- #define NUMBER_SIZE             32
- #define MAX_LINE_LENGTH         256
 diff -up mozilla/xpcom/typelib/xpidl/xpidl_java.c.old mozilla/xpcom/typelib/xpidl/xpidl_java.c
 --- mozilla/xpcom/typelib/xpidl/xpidl_java.c.old	2007-09-25 18:38:52.000000000 +0200
 +++ mozilla/xpcom/typelib/xpidl/xpidl_java.c	2007-09-25 18:39:17.000000000 +0200

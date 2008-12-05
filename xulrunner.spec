@@ -2,17 +2,17 @@
 %define nss_version 3.12.1.1
 %define cairo_version 0.6
 
-%define version_internal  1.9
+%define version_internal  1.9.1
 %define mozappdir         %{_libdir}/%{name}-%{version_internal}
 
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
-Version:        1.9.0.4
-Release:        1%{?dist}
+Version:        1.9.1
+Release:        0.1.beta1%{?dist}
 URL:            http://developer.mozilla.org/En/XULRunner
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
-Source0:        xulrunner-%{version}-source.tar.bz2
+Source0:        xulrunner-%{version}b1-source.tar.bz2
 Source10:       %{name}-mozconfig
 Source12:       %{name}-redhat-default-prefs.js
 Source21:       %{name}.sh.in
@@ -20,10 +20,10 @@ Source23:       %{name}.1
 
 # build patches
 Patch1:         mozilla-build.patch
-Patch2:         xulrunner-path.patch
+Patch2:         mozilla-191-path.patch
 Patch3:         xulrunner-version.patch
 Patch4:         mozilla-sqlite.patch
-Patch5:         mozilla-mochitest.patch
+Patch5:         mozilla-jemalloc.patch
 
 # Fedora specific patches
 Patch10:        mozilla-pkgconfig.patch
@@ -117,13 +117,13 @@ Development files for building Gecko applications written in python.
 
 %prep
 %setup -q -c
-cd mozilla
+cd mozilla-central
 %patch1  -p1 -b .build
 %patch2  -p1 -b .path
 %patch3  -p1 -b .version
 %patch4  -p1 -b .sqlite
 autoconf-2.13
-%patch5  -p1 -b .mochitest
+%patch5 -p1 -b .jemalloc
 
 %patch10 -p1 -b .pk
 
@@ -136,7 +136,7 @@ autoconf-2.13
 #---------------------------------------------------------------------
 
 %build
-cd mozilla
+cd mozilla-central
 
 INTERNAL_GECKO=%{version_internal}
 MOZ_APP_DIR=%{_libdir}/%{name}-${INTERNAL_GECKO}
@@ -163,7 +163,7 @@ make -f client.mk build STRIP="/bin/true" MOZ_MAKE_FLAGS="$MOZ_SMP_FLAGS"
 #---------------------------------------------------------------------
 
 %install
-cd mozilla
+cd mozilla-central
 %{__rm} -rf $RPM_BUILD_ROOT
 
 INTERNAL_GECKO=%{version_internal}
@@ -413,6 +413,9 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
+* Thu Dec  4 2008 Christopher Aillon <caillon@redhat.com> 1.9.1-0.1
+- 1.9.1 beta 1
+
 * Wed Nov 12 2008 Christopher Aillon <caillon@redhat.com> 1.9.0.4-1
 - Update to 1.9.0.4
 
