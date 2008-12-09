@@ -1,6 +1,9 @@
 %define nspr_version 4.7.1
 %define nss_version 3.12.1.1
 %define cairo_version 0.6
+%define lcms_version 1.17
+%define freetype_version 2.1.9
+%define sqlite_version 3.5
 
 %define version_internal  1.9.1
 %define mozappdir         %{_libdir}/%{name}-%{version_internal}
@@ -8,7 +11,7 @@
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
 Version:        1.9.1
-Release:        0.1.beta1%{?dist}
+Release:        0.2.beta1%{?dist}
 URL:            http://developer.mozilla.org/En/XULRunner
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
@@ -44,7 +47,7 @@ BuildRequires:  libjpeg-devel
 BuildRequires:  zip
 BuildRequires:  bzip2-devel
 BuildRequires:  zlib-devel
-BuildRequires:  lcms-devel >= 1.17
+BuildRequires:  lcms-devel >= %{lcms_version}
 BuildRequires:  libIDL-devel
 BuildRequires:  gtk2-devel
 BuildRequires:  gnome-vfs2-devel
@@ -52,11 +55,11 @@ BuildRequires:  libgnome-devel
 BuildRequires:  libgnomeui-devel
 BuildRequires:  krb5-devel
 BuildRequires:  pango-devel
-BuildRequires:  freetype-devel >= 2.1.9
+BuildRequires:  freetype-devel >= %{freetype_version}
 BuildRequires:  libXt-devel
 BuildRequires:  libXrender-devel
 BuildRequires:  hunspell-devel
-BuildRequires:  sqlite-devel >= 3.5
+BuildRequires:  sqlite-devel >= %{sqlite_version}
 BuildRequires:  startup-notification-devel
 # For -sqlite.patch
 BuildRequires:  autoconf213
@@ -74,10 +77,30 @@ Summary: Development files for Gecko
 Group: Development/Libraries
 Obsoletes: mozilla-devel < 1.9
 Obsoletes: firefox-devel < 2.1
+Provides: gecko-devel = %{version}
+
 Requires: xulrunner = %{version}-%{release}
 Requires: nspr-devel >= %{nspr_version}
 Requires: nss-devel >= %{nss_version}
-Provides: gecko-devel = %{version}
+Requires: cairo-devel >= %{cairo_version}
+Requires: libjpeg-devel
+Requires: zip
+Requires: bzip2-devel
+Requires: zlib-devel
+Requires: lcms-devel >= %{lcms_version}
+Requires: libIDL-devel
+Requires: gtk2-devel
+Requires: gnome-vfs2-devel
+Requires: libgnome-devel
+Requires: libgnomeui-devel
+Requires: krb5-devel
+Requires: pango-devel
+Requires: freetype-devel >= %{freetype_version}
+Requires: libXt-devel
+Requires: libXrender-devel
+Requires: hunspell-devel
+Requires: sqlite-devel >= ${sqlite_version}
+Requires: startup-notification-devel
 
 %description devel
 Gecko development files.
@@ -413,6 +436,9 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
+* Tue Dec  9 2008 Christopher Aillon <caillon@redhat.com> 1.9.1-0.2
+- Add needed -devel requires to the -devel package
+
 * Thu Dec  4 2008 Christopher Aillon <caillon@redhat.com> 1.9.1-0.1
 - 1.9.1 beta 1
 
