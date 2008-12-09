@@ -61,6 +61,7 @@ BuildRequires:  libXrender-devel
 BuildRequires:  hunspell-devel
 BuildRequires:  sqlite-devel >= %{sqlite_version}
 BuildRequires:  startup-notification-devel
+BuildRequires:  alsa-lib-devel
 # For -sqlite.patch
 BuildRequires:  autoconf213
 
@@ -101,6 +102,7 @@ Requires: libXrender-devel
 Requires: hunspell-devel
 Requires: sqlite-devel >= ${sqlite_version}
 Requires: startup-notification-devel
+Requires: alsa-lib-devel
 
 %description devel
 Gecko development files.
