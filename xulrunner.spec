@@ -5,13 +5,13 @@
 %define freetype_version 2.1.9
 %define sqlite_version 3.5
 
-%define version_internal  1.9.1
+%define version_internal  1.9.1pre
 %define mozappdir         %{_libdir}/%{name}-%{version_internal}
 
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
 Version:        1.9.1
-Release:        0.2.beta1%{?dist}
+Release:        0.3.beta1%{?dist}
 URL:            http://developer.mozilla.org/En/XULRunner
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
@@ -22,11 +22,11 @@ Source21:       %{name}.sh.in
 Source23:       %{name}.1
 
 # build patches
+Patch0:         xulrunner-version.patch
 Patch1:         mozilla-build.patch
 Patch2:         mozilla-191-path.patch
-Patch3:         xulrunner-version.patch
-Patch4:         mozilla-sqlite.patch
-Patch5:         mozilla-jemalloc.patch
+Patch3:         mozilla-sqlite.patch
+Patch4:         mozilla-jemalloc.patch
 
 # Fedora specific patches
 Patch10:        mozilla-pkgconfig.patch
@@ -143,12 +143,16 @@ Development files for building Gecko applications written in python.
 %prep
 %setup -q -c
 cd mozilla-central
+
+sed -e 's/__RPM_VERSION_INTERNAL__/%{version_internal}/' %{P:%%PATCH0} \
+    > version.patch
+%{__patch} -p1 -b --suffix .version --fuzz=0 < version.patch
+
 %patch1  -p1 -b .build
 %patch2  -p1 -b .path
-%patch3  -p1 -b .version
-%patch4  -p1 -b .sqlite
+%patch3  -p1 -b .sqlite
 autoconf-2.13
-%patch5 -p1 -b .jemalloc
+%patch4 -p1 -b .jemalloc
 
 %patch10 -p1 -b .pk
 
@@ -438,6 +442,9 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
+* Tue Dec  9 2008 Christopher Aillon <caillon@redhat.com> 1.9.1-0.3
+- Mark this as a pre-release
+
 * Tue Dec  9 2008 Christopher Aillon <caillon@redhat.com> 1.9.1-0.2
 - Add needed -devel requires to the -devel package
 
