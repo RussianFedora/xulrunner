@@ -5,7 +5,7 @@
 %define freetype_version 2.1.9
 %define sqlite_version 3.5
 
-%define version_internal  1.9.1pre
+%define version_internal  1.9.1
 %define mozappdir         %{_libdir}/%{name}-%{version_internal}
 
 Summary:        XUL Runtime for Gecko Applications
