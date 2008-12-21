@@ -11,11 +11,11 @@
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
 Version:        1.9.1
-Release:        0.3.beta1%{?dist}
+Release:        0.4.beta2%{?dist}
 URL:            http://developer.mozilla.org/En/XULRunner
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
-Source0:        xulrunner-%{version}b1-source.tar.bz2
+Source0:        xulrunner-%{version}b2-source.tar.bz2
 Source10:       %{name}-mozconfig
 Source12:       %{name}-redhat-default-prefs.js
 Source21:       %{name}.sh.in
@@ -29,7 +29,7 @@ Patch3:         mozilla-sqlite.patch
 Patch4:         mozilla-jemalloc.patch
 
 # Fedora specific patches
-Patch10:        mozilla-pkgconfig.patch
+Patch10:        mozilla-191-pkgconfig.patch
 
 # Upstream patches
 Patch26:        mozilla-ps-pdf-simplify-operators.patch
@@ -382,6 +382,7 @@ fi
 %{mozappdir}/greprefs
 %dir %{mozappdir}/icons
 %attr(644, root, root) %{mozappdir}/icons/*
+%{mozappdir}/js
 %{mozappdir}/modules
 %{mozappdir}/plugins
 %{mozappdir}/res
@@ -442,6 +443,9 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
+* Sat Dec 20 2008 Christopher Aillon <caillon@redhat.com> 1.9.1-0.4
+- 1.9.1 beta 2
+
 * Tue Dec  9 2008 Christopher Aillon <caillon@redhat.com> 1.9.1-0.3
 - Mark this as a pre-release
 
