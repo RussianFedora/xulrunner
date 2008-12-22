@@ -139,4 +139,4 @@ diff -r f1af606531f5 xulrunner/installer/mozilla-plugin.pc.in
  Version: %MOZILLA_VERSION%
  Requires: %NSPR_NAME% >= %NSPR_VERSION%
 -Cflags: -I${includedir}/stable
-+Cflags: -I${includedir}/stable -I${inncludedir}/java -I${includedir}/plugin
++Cflags: -I${includedir}/stable -I${includedir}/java -I${includedir}/plugin
