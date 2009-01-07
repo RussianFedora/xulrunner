@@ -11,7 +11,7 @@
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
 Version:        1.9.1
-Release:        0.5.beta2%{?dist}
+Release:        0.6.beta2%{?dist}
 URL:            http://developer.mozilla.org/En/XULRunner
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
@@ -237,6 +237,10 @@ cd -
 %{__cp} -rL dist/include/* \
   $RPM_BUILD_ROOT/%{_includedir}/${INTERNAL_APP_SDK_NAME}
 
+# Copy mozilla-config to stable include dir
+%{__cp} dist/include/mozilla-config.h \
+  $RPM_BUILD_ROOT/%{_includedir}/${INTERNAL_APP_SDK_NAME}/stable
+
 # Fix multilib devel conflicts...
 %ifarch x86_64 ia64 s390x ppc64
 %define mozbits 64
@@ -258,6 +262,10 @@ EOF
 }
 
 pushd $RPM_BUILD_ROOT/%{_includedir}/${INTERNAL_APP_SDK_NAME}
+install_file "mozilla-config"
+popd
+
+pushd $RPM_BUILD_ROOT/%{_includedir}/${INTERNAL_APP_SDK_NAME}/stable
 install_file "mozilla-config"
 popd
 
@@ -443,6 +451,9 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
+* Wed Jan 7 2009 Martin Stransky <stransky@redhat.com> 1.9.1-0.6
+- Copied mozilla-config.h to stable include dir (#478445)
+
 * Mon Dec 22 2008 Christopher Aillon <caillon@redhat.com> 1.9.1-0.5
 - Typo fix
 
