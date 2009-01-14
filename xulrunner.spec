@@ -1,6 +1,6 @@
 %define nspr_version 4.7.1
 %define nss_version 3.12.1.1
-%define cairo_version 0.6
+%define cairo_version 1.6.0
 %define lcms_version 1.17
 %define freetype_version 2.1.9
 %define sqlite_version 3.5
