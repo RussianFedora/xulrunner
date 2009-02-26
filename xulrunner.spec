@@ -8,7 +8,7 @@
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
 Version:        1.9.0.6
-Release:        1%{?dist}
+Release:        2%{?dist}
 URL:            http://developer.mozilla.org/En/XULRunner
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
@@ -24,6 +24,7 @@ Patch2:         xulrunner-path.patch
 Patch3:         xulrunner-version.patch
 Patch4:         mozilla-sqlite.patch
 Patch5:         mozilla-mochitest.patch
+Patch6:         mozilla-about-firefox-version.patch
 
 # Fedora specific patches
 Patch10:        mozilla-pkgconfig.patch
@@ -124,6 +125,7 @@ cd mozilla
 %patch4  -p1 -b .sqlite
 autoconf-2.13
 %patch5  -p1 -b .mochitest
+%patch6  -p1 -b .about-firefox-version
 
 %patch10 -p1 -b .pk
 
@@ -421,6 +423,10 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
+* Thu Feb 26 2009 Jan Horak <jhorak@redhat.com> - 1.9.0.6-2
+- Fixed wrong version of Firefox when loading 'about:' as location
+  (#453980).
+
 * Wed Feb  4 2009 Christopher Aillon <caillon@redhat.com> 1.9.0.6-1
 - Update to 1.9.0.6
 

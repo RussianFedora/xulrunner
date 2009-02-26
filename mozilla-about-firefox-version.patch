@@ -1,0 +1,12 @@
+diff -up mozilla/toolkit/content/Makefile.in.fix mozilla/toolkit/content/Makefile.in
+--- mozilla/toolkit/content/Makefile.in.fix	2008-03-13 20:25:52.000000000 +0100
++++ mozilla/toolkit/content/Makefile.in	2008-10-24 16:17:43.000000000 +0200
+@@ -45,7 +45,7 @@ CHROME_DEPS = buildconfig.html
+ 
+ include $(DEPTH)/config/autoconf.mk
+ 
+-DEFINES += -DMOZ_APP_VERSION=$(MOZ_APP_VERSION)
++DEFINES += -DMOZ_APP_VERSION=$(FIREFOX_VERSION)
+ 
+ ifdef ENABLE_TESTS
+ DIRS += tests
