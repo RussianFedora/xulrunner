@@ -1,0 +1,30 @@
+diff -up xulrunner-1.9.1/mozilla-central/gfx/thebes/src/gfxPangoFonts.cpp.old xulrunner-1.9.1/mozilla-central/gfx/thebes/src/gfxPangoFonts.cpp
+--- mozilla-central/gfx/thebes/src/gfxPangoFonts.cpp.old	2009-02-27 16:19:07.000000000 +0100
++++ mozilla-central/gfx/thebes/src/gfxPangoFonts.cpp	2009-02-27 16:37:30.000000000 +0100
+@@ -1299,12 +1299,11 @@ gfx_pango_font_map_context_substitute(Pa
+ 
+ static PangoFcFont *
+ gfx_pango_font_map_create_font(PangoFcFontMap *fontmap,
+-                               PangoContext *context,
+-                               const PangoFontDescription *desc,
+-                               FcPattern *pattern)
++                               PangoFcFontKey *fontkey)
+ {
++    const FcPattern *p_pattern = pango_fc_font_key_get_pattern(fontkey);
+     return PANGO_FC_FONT(g_object_new(GFX_TYPE_PANGO_FC_FONT,
+-                                      "pattern", pattern, NULL));
++                                      "pattern", p_pattern, NULL));
+ }
+ 
+ static void
+@@ -1324,9 +1323,8 @@ gfx_pango_font_map_class_init(gfxPangoFo
+     // context_key_* virtual functions are only necessary if we want to
+     // dynamically respond to changes in the screen cairo_font_options_t.
+ 
+-    // context_substitute and get_font are not likely to be used but
++    // get_font is not likely to be used but
+     //   implemented because the class makes them available.
+-    fcfontmap_class->context_substitute = gfx_pango_font_map_context_substitute;
+     fcfontmap_class->create_font = gfx_pango_font_map_create_font;
+ }
+ 

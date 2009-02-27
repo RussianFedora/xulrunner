@@ -11,7 +11,7 @@
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
 Version:        1.9.1
-Release:        0.8.beta2%{?dist}
+Release:        0.9.beta2%{?dist}
 URL:            http://developer.mozilla.org/En/XULRunner
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
@@ -27,6 +27,7 @@ Patch1:         mozilla-build.patch
 Patch2:         mozilla-191-path.patch
 Patch3:         mozilla-sqlite.patch
 Patch4:         mozilla-jemalloc.patch
+Patch5:         xulrunner-pango.patch
 
 # Fedora specific patches
 Patch10:        mozilla-191-pkgconfig.patch
@@ -153,6 +154,7 @@ sed -e 's/__RPM_VERSION_INTERNAL__/%{version_internal}/' %{P:%%PATCH0} \
 %patch3  -p1 -b .sqlite
 autoconf-2.13
 %patch4 -p1 -b .jemalloc
+%patch5 -p1 -b .pango
 
 %patch10 -p1 -b .pk
 
@@ -451,6 +453,9 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
+* Fri Feb 27 2009 Martin Stransky <stransky@redhat.com> 1.9.1-0.9
+- Build fix for pango 1.23
+
 * Thu Feb 26 2009 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.9.1-0.8.beta2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_11_Mass_Rebuild
 
