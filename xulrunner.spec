@@ -28,6 +28,7 @@ Patch2:         mozilla-191-path.patch
 Patch3:         mozilla-sqlite.patch
 Patch4:         mozilla-jemalloc.patch
 Patch5:         xulrunner-pango.patch
+Patch6:         xulrunner-elif.patch
 
 # Fedora specific patches
 Patch10:        mozilla-191-pkgconfig.patch
@@ -155,6 +156,7 @@ sed -e 's/__RPM_VERSION_INTERNAL__/%{version_internal}/' %{P:%%PATCH0} \
 autoconf-2.13
 %patch4 -p1 -b .jemalloc
 %patch5 -p1 -b .pango
+%patch6 -p1 -b .elif
 
 %patch10 -p1 -b .pk
 
@@ -455,6 +457,7 @@ fi
 %changelog
 * Fri Feb 27 2009 Martin Stransky <stransky@redhat.com> 1.9.1-0.9
 - Build fix for pango 1.23
+- Misc. build fixes
 
 * Thu Feb 26 2009 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.9.1-0.8.beta2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_11_Mass_Rebuild
