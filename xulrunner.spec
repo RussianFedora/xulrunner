@@ -3,7 +3,8 @@
 %define cairo_version 1.6.0
 %define lcms_version 1.17
 %define freetype_version 2.1.9
-%define sqlite_version 3.5
+%define sqlite_version 3.6.7
+%define tarballdir mozilla-1.9.1
 
 %define version_internal  1.9.1
 %define mozappdir         %{_libdir}/%{name}-%{version_internal}
@@ -11,11 +12,11 @@
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
 Version:        1.9.1
-Release:        0.9.beta2%{?dist}
+Release:        0.10.beta3%{?dist}
 URL:            http://developer.mozilla.org/En/XULRunner
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
-Source0:        xulrunner-%{version}b2-source.tar.bz2
+Source0:        xulrunner-%{version}b3-source.tar.bz2
 Source10:       %{name}-mozconfig
 Source12:       %{name}-redhat-default-prefs.js
 Source21:       %{name}.sh.in
@@ -25,10 +26,9 @@ Source23:       %{name}.1
 Patch0:         xulrunner-version.patch
 Patch1:         mozilla-build.patch
 Patch2:         mozilla-191-path.patch
-Patch3:         mozilla-sqlite.patch
-Patch4:         mozilla-jemalloc.patch
-Patch5:         xulrunner-pango.patch
-Patch6:         xulrunner-elif.patch
+Patch3:         mozilla-jemalloc.patch
+Patch4:         xulrunner-pango.patch
+Patch5:         xulrunner-elif.patch
 
 # Fedora specific patches
 Patch10:        mozilla-191-pkgconfig.patch
@@ -64,8 +64,6 @@ BuildRequires:  hunspell-devel
 BuildRequires:  sqlite-devel >= %{sqlite_version}
 BuildRequires:  startup-notification-devel
 BuildRequires:  alsa-lib-devel
-# For -sqlite.patch
-BuildRequires:  autoconf213
 
 Requires:       mozilla-filesystem
 Requires:       nspr >= %{nspr_version}
@@ -144,7 +142,7 @@ Development files for building Gecko applications written in python.
 
 %prep
 %setup -q -c
-cd mozilla-central
+cd %{tarballdir}
 
 sed -e 's/__RPM_VERSION_INTERNAL__/%{version_internal}/' %{P:%%PATCH0} \
     > version.patch
@@ -152,11 +150,9 @@ sed -e 's/__RPM_VERSION_INTERNAL__/%{version_internal}/' %{P:%%PATCH0} \
 
 %patch1  -p1 -b .build
 %patch2  -p1 -b .path
-%patch3  -p1 -b .sqlite
-autoconf-2.13
-%patch4 -p1 -b .jemalloc
-%patch5 -p1 -b .pango
-%patch6 -p1 -b .elif
+%patch3  -p1 -b .jemalloc
+%patch4  -p1 -b .pango
+%patch5  -p1 -b .elif
 
 %patch10 -p1 -b .pk
 
@@ -169,7 +165,7 @@ autoconf-2.13
 #---------------------------------------------------------------------
 
 %build
-cd mozilla-central
+cd %{tarballdir}
 
 INTERNAL_GECKO=%{version_internal}
 MOZ_APP_DIR=%{_libdir}/%{name}-${INTERNAL_GECKO}
@@ -196,7 +192,7 @@ make -f client.mk build STRIP="/bin/true" MOZ_MAKE_FLAGS="$MOZ_SMP_FLAGS"
 #---------------------------------------------------------------------
 
 %install
-cd mozilla-central
+cd %{tarballdir}
 %{__rm} -rf $RPM_BUILD_ROOT
 
 INTERNAL_GECKO=%{version_internal}
@@ -455,6 +451,9 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
+* Fri Mar 13 2009 Christopher Aillon <caillon@redhat.com> 1.9.1-0.10
+- 1.9.1 beta 3
+
 * Fri Feb 27 2009 Martin Stransky <stransky@redhat.com> 1.9.1-0.9
 - Build fix for pango 1.23
 - Misc. build fixes
