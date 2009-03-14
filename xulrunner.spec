@@ -390,7 +390,6 @@ fi
 %{mozappdir}/greprefs
 %dir %{mozappdir}/icons
 %attr(644, root, root) %{mozappdir}/icons/*
-%{mozappdir}/js
 %{mozappdir}/modules
 %{mozappdir}/plugins
 %{mozappdir}/res
