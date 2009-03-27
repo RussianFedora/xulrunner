@@ -12,7 +12,7 @@
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
 Version:        1.9.1
-Release:        0.10.beta3%{?dist}
+Release:        0.11.beta3%{?dist}
 URL:            http://developer.mozilla.org/En/XULRunner
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
@@ -34,9 +34,9 @@ Patch5:         xulrunner-elif.patch
 Patch10:        mozilla-191-pkgconfig.patch
 
 # Upstream patches
-Patch26:        mozilla-ps-pdf-simplify-operators.patch
-Patch27:        mozilla-ssl-exception.patch
-
+Patch100:       mozilla-ps-pdf-simplify-operators.patch
+Patch101:       mfsa-2009-12.patch
+Patch102:       mfsa-2009-13.patch
 
 # ---------------------------------------------------
 
@@ -156,8 +156,10 @@ sed -e 's/__RPM_VERSION_INTERNAL__/%{version_internal}/' %{P:%%PATCH0} \
 
 %patch10 -p1 -b .pk
 
-%patch26 -p1 -b .ps-pdf-simplify-operators
+%patch100 -p1 -b .ps-pdf-simplify-operators
 
+%patch101 -p1 -b .mfsa-2009-12
+%patch102 -p1 -b .mfsa-2009-13
 
 %{__rm} -f .mozconfig
 %{__cp} %{SOURCE10} .mozconfig
@@ -450,6 +452,9 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
+* Fri Mar 27 2009 Christopher Aillon <caillon@redhat.com> 1.9.1-0.11
+- Add patches for MFSA-2009-12, MFSA-2009-13
+
 * Fri Mar 13 2009 Christopher Aillon <caillon@redhat.com> 1.9.1-0.10
 - 1.9.1 beta 3
 

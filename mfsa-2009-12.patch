@@ -1,0 +1,57 @@
+# HG changeset patch
+# User Blake Kaplan <mrbkap@gmail.com>
+# Date 1238011664 25200
+# Node ID 167d03699cdb98daa726b9024dd80ac3d9e80e06
+# Parent c8c6ed1b96a72df7d47fb0ce014b18ec3f71abc7
+Bug 485217 - Pop the eval context before returning. r+sr=peterv
+
+--- a/content/xslt/src/xslt/txKeyFunctionCall.cpp	Wed Mar 25 22:10:03 2009 +0200
++++ b/content/xslt/src/xslt/txKeyFunctionCall.cpp	Wed Mar 25 13:07:44 2009 -0700
+@@ -395,9 +395,9 @@ nsresult txXSLKey::testNode(const txXPat
+             nsRefPtr<txAExprResult> exprResult;
+             rv = mKeys[currKey].useExpr->evaluate(&evalContext,
+                                                   getter_AddRefs(exprResult));
+-            NS_ENSURE_SUCCESS(rv, rv);
+ 
+             aEs.popEvalContext();
++            NS_ENSURE_SUCCESS(rv, rv);
+ 
+             if (exprResult->getResultType() == txAExprResult::NODESET) {
+                 txNodeSet* res = static_cast<txNodeSet*>
+
+# HG changeset patch
+# User Blake Kaplan <mrbkap@gmail.com>
+# Date 1238052189 25200
+# Node ID 4552d789ad8ff607e2596ad3107d33a3d0e92654
+# Parent f087a48da189d0d6404040bc90a97f2624ab544f
+Bug 485286 - Allocate all of these consistently. r+sr=peterv/sicking (a=ss for checkin into a CLOSED TREE).
+
+--- a/content/xslt/src/xslt/txKeyFunctionCall.cpp	Wed Mar 25 16:59:14 2009 -0500
++++ b/content/xslt/src/xslt/txKeyFunctionCall.cpp	Thu Mar 26 00:23:09 2009 -0700
+@@ -388,16 +388,19 @@ nsresult txXSLKey::testNode(const txXPat
+     PRUint32 currKey, numKeys = mKeys.Length();
+     for (currKey = 0; currKey < numKeys; ++currKey) {
+         if (mKeys[currKey].matchPattern->matches(aNode, &aEs)) {
+-            txSingleNodeContext evalContext(aNode, &aEs);
+-            nsresult rv = aEs.pushEvalContext(&evalContext);
++            txSingleNodeContext *evalContext =
++                new txSingleNodeContext(aNode, &aEs);
++            NS_ENSURE_TRUE(evalContext, NS_ERROR_OUT_OF_MEMORY);
++
++            nsresult rv = aEs.pushEvalContext(evalContext);
+             NS_ENSURE_SUCCESS(rv, rv);
+ 
+             nsRefPtr<txAExprResult> exprResult;
+-            rv = mKeys[currKey].useExpr->evaluate(&evalContext,
++            rv = mKeys[currKey].useExpr->evaluate(evalContext,
+                                                   getter_AddRefs(exprResult));
++            NS_ENSURE_SUCCESS(rv, rv);
+ 
+-            aEs.popEvalContext();
+-            NS_ENSURE_SUCCESS(rv, rv);
++            delete aEs.popEvalContext();
+ 
+             if (exprResult->getResultType() == txAExprResult::NODESET) {
+                 txNodeSet* res = static_cast<txNodeSet*>
+
+
