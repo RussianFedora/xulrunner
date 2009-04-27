@@ -3,7 +3,7 @@
 %define cairo_version 1.6.0
 %define lcms_version 1.17
 %define freetype_version 2.1.9
-%define sqlite_version 3.6.7
+%define sqlite_version 3.6.10
 %define tarballdir mozilla-1.9.1
 
 %define version_internal  1.9.1
@@ -12,11 +12,11 @@
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
 Version:        1.9.1
-Release:        0.11.beta3%{?dist}
+Release:        0.20.beta4%{?dist}
 URL:            http://developer.mozilla.org/En/XULRunner
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
-Source0:        xulrunner-%{version}b3-source.tar.bz2
+Source0:        xulrunner-%{version}b4-source.tar.bz2
 Source10:       %{name}-mozconfig
 Source12:       %{name}-redhat-default-prefs.js
 Source21:       %{name}.sh.in
@@ -27,16 +27,12 @@ Patch0:         xulrunner-version.patch
 Patch1:         mozilla-build.patch
 Patch2:         mozilla-191-path.patch
 Patch3:         mozilla-jemalloc.patch
-Patch4:         xulrunner-pango.patch
-Patch5:         xulrunner-elif.patch
 
 # Fedora specific patches
 Patch10:        mozilla-191-pkgconfig.patch
 
 # Upstream patches
 Patch100:       mozilla-ps-pdf-simplify-operators.patch
-Patch101:       mfsa-2009-12.patch
-Patch102:       mfsa-2009-13.patch
 
 # ---------------------------------------------------
 
@@ -151,15 +147,11 @@ sed -e 's/__RPM_VERSION_INTERNAL__/%{version_internal}/' %{P:%%PATCH0} \
 %patch1  -p1 -b .build
 %patch2  -p1 -b .path
 %patch3  -p1 -b .jemalloc
-%patch4  -p1 -b .pango
-%patch5  -p1 -b .elif
 
 %patch10 -p1 -b .pk
 
 %patch100 -p1 -b .ps-pdf-simplify-operators
 
-%patch101 -p1 -b .mfsa-2009-12
-%patch102 -p1 -b .mfsa-2009-13
 
 %{__rm} -f .mozconfig
 %{__cp} %{SOURCE10} .mozconfig
@@ -452,6 +444,9 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
+* Mon Apr 27 2009 Christopher Aillon <caillon@redhat.com> 1.9.1-0.20
+- 1.9.1 beta 4
+
 * Fri Mar 27 2009 Christopher Aillon <caillon@redhat.com> 1.9.1-0.11
 - Add patches for MFSA-2009-12, MFSA-2009-13
 
