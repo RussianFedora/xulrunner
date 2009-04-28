@@ -138,5 +138,5 @@ diff -r f1af606531f5 xulrunner/installer/mozilla-plugin.pc.in
  Description: Mozilla Plug-In API
  Version: %MOZILLA_VERSION%
  Requires: %NSPR_NAME% >= %NSPR_VERSION%
--Cflags: -I${includedir}/stable
-+Cflags: -I${includedir}/stable -I${includedir}/java -I${includedir}/plugin
+-Cflags: -I${includedir}/stable -DXP_UNIX %ojidef%
++Cflags: -I${includedir}/stable -DXP_UNIX %ojidef% -I${includedir}/java -I${includedir}/plugin
