@@ -4,19 +4,16 @@
 %define cairo_version 1.6.0
 %define lcms_version 1.17
 %define freetype_version 2.1.9
-%define sqlite_version 3.6.10
+%define sqlite_version 3.6.14
 %define tarballdir mozilla-1.9.1
 
 %define version_internal  1.9.1
 %define mozappdir         %{_libdir}/%{name}-%{version_internal}
 
-# An actual sqlite version (see #480989)
-%define sqlite_build_version %(pkg-config --modversion sqlite3)
-
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
 Version:        1.9.1
-Release:        0.21.beta4%{?dist}
+Release:        0.22.beta4%{?dist}
 URL:            http://developer.mozilla.org/En/XULRunner
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
@@ -68,7 +65,7 @@ BuildRequires:  alsa-lib-devel
 Requires:       mozilla-filesystem
 Requires:       nspr >= %{nspr_version}
 Requires:       nss >= %{nss_version}
-Requires:       sqlite >= %{sqlite_build_version}
+Requires:       sqlite >= %{sqlite_version}
 Provides:       gecko-libs = %{version}
 
 %description
@@ -449,6 +446,9 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
+* Thu Jun 18 2009 Martin Stransky <stransky@redhat.com> 1.9.1-0.22
+- Backed out last change, it does not work inside mock (koji)
+
 * Tue Jun 16 2009 Stepan Kasal <skasal@redhat.com> 1.9.1-0.21
 - require sqlite of version >= what was used at buildtime (#480989)
 - in devel subpackage, drop version from sqlite-devel require; that's
