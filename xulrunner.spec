@@ -1,3 +1,4 @@
+# Minimal required versions
 %define nspr_version 4.7.1
 %define nss_version 3.12.1.1
 %define cairo_version 1.6.0
@@ -9,14 +10,17 @@
 %define version_internal  1.9.1
 %define mozappdir         %{_libdir}/%{name}-%{version_internal}
 
+# An actual sqlite version (see #480989)
+%define sqlite_build_version %(pkg-config --modversion sqlite3)
+
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
 Version:        1.9.1
-Release:        0.20.beta4%{?dist}
+Release:        0.21.beta4%{?dist}
 URL:            http://developer.mozilla.org/En/XULRunner
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
-Source0:        xulrunner-%{version}b4-source.tar.bz2
+Source0:        %{name}-%{version}b4-source.tar.bz2
 Source10:       %{name}-mozconfig
 Source12:       %{name}-redhat-default-prefs.js
 Source21:       %{name}.sh.in
@@ -64,6 +68,7 @@ BuildRequires:  alsa-lib-devel
 Requires:       mozilla-filesystem
 Requires:       nspr >= %{nspr_version}
 Requires:       nss >= %{nss_version}
+Requires:       sqlite >= %{sqlite_build_version}
 Provides:       gecko-libs = %{version}
 
 %description
@@ -96,7 +101,7 @@ Requires: freetype-devel >= %{freetype_version}
 Requires: libXt-devel
 Requires: libXrender-devel
 Requires: hunspell-devel
-Requires: sqlite-devel >= ${sqlite_version}
+Requires: sqlite-devel
 Requires: startup-notification-devel
 Requires: alsa-lib-devel
 
@@ -444,6 +449,11 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
+* Tue Jun 16 2009 Stepan Kasal <skasal@redhat.com> 1.9.1-0.21
+- require sqlite of version >= what was used at buildtime (#480989)
+- in devel subpackage, drop version from sqlite-devel require; that's
+  handled indirectly through the versioned require in main package
+
 * Mon Apr 27 2009 Christopher Aillon <caillon@redhat.com> 1.9.1-0.20
 - 1.9.1 beta 4
 
