@@ -401,6 +401,8 @@ fi
 # XXX See if these are needed still
 %{mozappdir}/updater*
 
+%exclude %{mozappdir}/update.locale
+
 %files devel
 %defattr(-,root,root,-)
 %dir %{_datadir}/idl/%{name}*%{version_internal}
