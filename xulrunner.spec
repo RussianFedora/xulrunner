@@ -1,4 +1,4 @@
-%define nspr_version 4.7.1
+%define nspr_version 4.8
 %define nss_version 3.12.1.1
 %define cairo_version 1.6.0
 %define lcms_version 1.17
