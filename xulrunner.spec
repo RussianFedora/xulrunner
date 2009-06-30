@@ -403,7 +403,7 @@ fi
 # XXX See if these are needed still
 %{mozappdir}/updater*
 
-%exclude %{mozappdir}/updates.locale
+%exclude %{mozappdir}/update.locale
 
 %files devel
 %defattr(-,root,root,-)
