@@ -29,6 +29,7 @@ Patch1:         mozilla-build.patch
 Patch2:         mozilla-191-path.patch
 Patch3:         mozilla-jemalloc.patch
 Patch4:         mozilla-about-firefox-version.patch
+Patch5:         xulrunner-gtk-include.patch
 
 # Fedora specific patches
 Patch10:        mozilla-191-pkgconfig.patch
@@ -151,6 +152,7 @@ sed -e 's/__RPM_VERSION_INTERNAL__/%{version_internal}/' %{P:%%PATCH0} \
 %patch2  -p1 -b .path
 %patch3  -p1 -b .jemalloc
 %patch4  -p1 -b .about-firefox-version
+%patch5  -p1 -b .gtk-include
 
 %patch10 -p1 -b .pk
 
@@ -452,6 +454,7 @@ fi
 %changelog
 * Mon Jul 13 2009 Jan Horak <jhorak@redhat.com> - 1.9.1-3
 - Fixed wrong version of Firefox when loading 'about:' as location
+- Added patch to compile against latest GTK
 
 * Tue Jun 30 2009 Yanko Kaneti <yaneti@declera.com> - 1.9.1-2
 - Build using system hunspell
