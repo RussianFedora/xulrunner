@@ -12,7 +12,7 @@
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
 Version:        1.9.1
-Release:        3%{?dist}
+Release:        4%{?dist}
 URL:            http://developer.mozilla.org/En/XULRunner
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
@@ -277,6 +277,10 @@ pushd $RPM_BUILD_ROOT/%{_includedir}/${INTERNAL_APP_SDK_NAME}/unstable
 install_file "jsautocfg"
 popd
 
+pushd $RPM_BUILD_ROOT/%{_includedir}/${INTERNAL_APP_SDK_NAME}/js
+install_file "jsconfig"
+popd
+
 %{__install} -p -c -m 755 dist/bin/xpcshell \
   dist/bin/xpidl \
   dist/bin/xpt_dump \
@@ -448,6 +452,9 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
+* Tue Jul 14 2009 Jan Horak <jhorak@redhat.com> - 1.9.1-4
+- Fixed multilib issues
+
 * Tue Jul  7 2009 Jan Horak <jhorak@redhat.com> - 1.9.1-3
 - Fixed wrong version of Firefox when loading 'about:' as location
 
