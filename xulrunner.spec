@@ -278,7 +278,7 @@ install_file "jsautocfg"
 popd
 
 pushd $RPM_BUILD_ROOT/%{_includedir}/${INTERNAL_APP_SDK_NAME}/js
-install_file "jsconfig"
+install_file "js-config"
 popd
 
 %{__install} -p -c -m 755 dist/bin/xpcshell \
