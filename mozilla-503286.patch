@@ -1,0 +1,88 @@
+
+# HG changeset patch
+# User Blake Kaplan <mrbkap@gmail.com>
+# Date 1247525073 25200
+# Node ID a1a6b17a22da99da1b9e4c94a3e215c16799b3ae
+# Parent a6f2586c52dc016475bbb6ffb1c8c33ef951cfc1
+Bug 503286 - Use the right sp for sp_adj to account for tree calls fiddling with state.sp after we've deep bailed. r=jorendorff a=gal/vlad/blocking1.9.1.1+
+
+--- a/js/src/jstracer.cpp	Tue Jul 14 08:58:06 2009 +0100
++++ b/js/src/jstracer.cpp	Mon Jul 13 15:44:33 2009 -0700
+@@ -4622,10 +4622,18 @@ LeaveTree(InterpState& state, VMSideExit
+              * but we have it now. Box it.
+              */
+             uint8* typeMap = getStackTypeMap(innermost);
++
++            /*
++             * If there's a tree call around the point that we deep exited at,
++             * then state.sp and state.rp were restored to their original
++             * values before the tree call and sp might be less than deepBailSp,
++             * which we sampled when we were told to deep bail.
++             */
++            JS_ASSERT(state.deepBailSp >= state.stackBase && state.sp <= state.deepBailSp);
+             NativeToValue(cx,
+                           cx->fp->regs->sp[-1],
+                           typeMap[innermost->numStackSlots - 1],
+-                          (jsdouble *) state.sp + innermost->sp_adj / sizeof(jsdouble) - 1);
++                          (jsdouble *) state.deepBailSp + innermost->sp_adj / sizeof(jsdouble) - 1);
+         }
+         JSTraceMonitor* tm = &JS_TRACE_MONITOR(cx);
+         if (tm->prohibitFlush && --tm->prohibitFlush == 0 && tm->needFlush)
+@@ -5476,7 +5484,10 @@ js_DeepBail(JSContext *cx)
+     debug_only_v(printf("Deep bail.\n");)
+     LeaveTree(*tracecx->interpState, tracecx->bailExit);
+     tracecx->bailExit = NULL;
+-    tracecx->interpState->builtinStatus |= JSBUILTIN_BAILED;
++
++    InterpState* state = tracecx->interpState;
++    state->builtinStatus |= JSBUILTIN_BAILED;
++    state->deepBailSp = state->sp;
+ }
+ 
+ JS_REQUIRES_STACK jsval&
+--- a/js/src/jstracer.h	Tue Jul 14 08:58:06 2009 +0100
++++ b/js/src/jstracer.h	Mon Jul 13 15:44:33 2009 -0700
+@@ -416,6 +416,9 @@ struct InterpState
+      * if an error or exception occurred.
+      */
+     uint32         builtinStatus;
++
++    // Used to communicate the location of the return value in case of a deep bail.
++    double*        deepBailSp;
+ };
+ 
+ static JS_INLINE void
+--- /dev/null	Thu Jan 01 00:00:00 1970 +0000
++++ b/js/src/xpconnect/crashtests/503286-1.html	Mon Jul 13 15:44:33 2009 -0700
+@@ -0,0 +1,23 @@
++<html><head><title>Firefox 3.5 crash</title>
++
++<script language=JavaScript>
++
++function escapeData(data){
++   var escData='';
++   for(var i=0;i<data.length;i++) {
++      var c=data.charAt(i);
++      if( c==' ') c = escape(c);
++      escData+=c;
++    }
++    return escData;
++}
++
++var a = ["a", "a  ", "a", "a "]
++
++var html = "";
++for (i=0;i<a.length;i++){
++    html += escapeData("a")+escapeData(a[i])
++}
++</script>
++</body></html>
++
+--- a/js/src/xpconnect/crashtests/crashtests.list	Tue Jul 14 08:58:06 2009 +0100
++++ b/js/src/xpconnect/crashtests/crashtests.list	Mon Jul 13 15:44:33 2009 -0700
+@@ -18,3 +18,4 @@ load 468552-1.html
+ load 471366-1.html
+ load 475185-1.html
+ load 475291-1.html
++load 503286-1.html
+
