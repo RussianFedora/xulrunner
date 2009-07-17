@@ -11,8 +11,8 @@
 
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
-Version:        1.9.1
-Release:        5%{?dist}
+Version:        1.9.1.1
+Release:        1%{?dist}
 URL:            http://developer.mozilla.org/En/XULRunner
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
@@ -34,7 +34,6 @@ Patch10:        mozilla-191-pkgconfig.patch
 
 # Upstream patches
 Patch100:       mozilla-ps-pdf-simplify-operators.patch
-Patch101:       mozilla-503286.patch
 
 # ---------------------------------------------------
 
@@ -154,7 +153,6 @@ sed -e 's/__RPM_VERSION_INTERNAL__/%{version_internal}/' %{P:%%PATCH0} \
 %patch10 -p1 -b .pk
 
 %patch100 -p1 -b .ps-pdf-simplify-operators
-%patch101 -p1 -b .503286
 
 
 %{__rm} -f .mozconfig
@@ -454,6 +452,9 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
+* Fri Jul 17 2009 Martin Stransky <stransky@redhat.com> 1.9.1.1-1
+- Update to 1.9.1.1
+
 * Thu Jul 16 2009 Christopher Aillon <caillon@redhat.com> - 1.9.1-5
 - Fix for milw0rm 9137
 
