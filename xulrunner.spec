@@ -13,7 +13,7 @@
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
 Version:        1.9.1.1
-Release:        1%{?dist}
+Release:        2%{?dist}
 URL:            http://developer.mozilla.org/En/XULRunner
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
@@ -452,6 +452,9 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
+* Mon Jul 27 2009 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.9.1.1-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_12_Mass_Rebuild
+
 * Fri Jul 17 2009 Christopher Aillon <caillon@redhat.com> - 1.9.1.1-1
 - Update to 1.9.1.1
 
