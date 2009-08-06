@@ -2,9 +2,6 @@
 
 # --with-system-png is disabled because Mozilla requires APNG support in libpng
 #ac_add_options --with-system-png
-# --enable-system-lcms is disabled because Mozilla patched lcms.h to have INTENT_{MIN,MAX}
-# See https://bugzilla.mozilla.org/show_bug.cgi?id=444014
-#ac_add_options --enable-system-lcms
 
 ac_add_options --prefix="$PREFIX"
 ac_add_options --libdir="$LIBDIR"

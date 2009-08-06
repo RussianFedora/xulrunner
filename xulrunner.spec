@@ -2,7 +2,6 @@
 %define nspr_version 4.8
 %define nss_version 3.12.1.1
 %define cairo_version 1.6.0
-%define lcms_version 1.17
 %define freetype_version 2.1.9
 %define sqlite_version 3.6.14
 %define tarballdir mozilla-1.9.1
@@ -48,7 +47,6 @@ BuildRequires:  libjpeg-devel
 BuildRequires:  zip
 BuildRequires:  bzip2-devel
 BuildRequires:  zlib-devel
-BuildRequires:  lcms-devel >= %{lcms_version}
 BuildRequires:  libIDL-devel
 BuildRequires:  gtk2-devel
 BuildRequires:  gnome-vfs2-devel
@@ -89,7 +87,6 @@ Requires: libjpeg-devel
 Requires: zip
 Requires: bzip2-devel
 Requires: zlib-devel
-Requires: lcms-devel >= %{lcms_version}
 Requires: libIDL-devel
 Requires: gtk2-devel
 Requires: gnome-vfs2-devel
