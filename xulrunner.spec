@@ -63,6 +63,7 @@ BuildRequires:  hunspell-devel
 BuildRequires:  sqlite-devel >= %{sqlite_version}
 BuildRequires:  startup-notification-devel
 BuildRequires:  alsa-lib-devel
+BuildRequires:  libnotify-devel
 
 Requires:       mozilla-filesystem
 Requires:       nspr >= %{nspr_version}
@@ -103,6 +104,7 @@ Requires: hunspell-devel
 Requires: sqlite-devel
 Requires: startup-notification-devel
 Requires: alsa-lib-devel
+Requires: libnotify-devel
 
 %description devel
 Gecko development files.
