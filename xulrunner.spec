@@ -12,7 +12,7 @@
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
 Version:        1.9.1.2
-Release:        2%{?dist}
+Release:        3%{?dist}
 URL:            http://developer.mozilla.org/En/XULRunner
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
@@ -251,7 +251,7 @@ function install_file() {
 genheader=$*
 mv ${genheader}.h ${genheader}%{mozbits}.h
 cat > ${genheader}.h << EOF
-// This file exists to fix multilib conflicts
+/* This file exists to fix multilib conflicts */
 #if defined(__x86_64__) || defined(__ia64__) || defined(__s390x__) || defined(__powerpc64__)
 #include "${genheader}64.h"
 #else
@@ -451,6 +451,9 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
+* Wed Aug 12 2009 Martin Stransky <stransky@redhat.com> 1.9.1.2-3
+- Added fix from #516118 - Headers not C89
+
 * Mon Aug 6 2009 Martin Stransky <stransky@redhat.com> 1.9.1.2-2
 - Rebuilt
 
