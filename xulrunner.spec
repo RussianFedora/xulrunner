@@ -12,7 +12,7 @@
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
 Version:        1.9.1.2
-Release:        3%{?dist}
+Release:        4%{?dist}
 URL:            http://developer.mozilla.org/En/XULRunner
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
@@ -29,6 +29,7 @@ Patch2:         mozilla-191-path.patch
 Patch3:         mozilla-jemalloc.patch
 Patch4:         mozilla-about-firefox-version.patch
 Patch5:         xulrunner-gtk-include.patch
+Patch6:         mozilla-libnotify.patch
 
 # Fedora specific patches
 Patch10:        mozilla-191-pkgconfig.patch
@@ -147,11 +148,13 @@ sed -e 's/__RPM_VERSION_INTERNAL__/%{version_internal}/' %{P:%%PATCH0} \
     > version.patch
 %{__patch} -p1 -b --suffix .version --fuzz=0 < version.patch
 
+
 %patch1  -p1 -b .build
 %patch2  -p1 -b .path
 %patch3  -p1 -b .jemalloc
 %patch4  -p1 -b .about-firefox-version
 %patch5  -p1 -b .gtk-include
+%patch6  -p1 -b .libnotify
 
 %patch10 -p1 -b .pk
 
@@ -451,6 +454,9 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
+* Fri Aug 21 2009 Jan Horak <jhorak@redhat.com> - 1.9.1.2-4
+- Added libnotify support
+
 * Wed Aug 12 2009 Martin Stransky <stransky@redhat.com> 1.9.1.2-3
 - Added fix from #516118 - Headers not C89
 
