@@ -1,24 +1,6 @@
 diff -up mozilla-1.9.1/config/autoconf.mk.in.libnotify mozilla-1.9.1/config/autoconf.mk.in
 --- mozilla-1.9.1/config/autoconf.mk.in.libnotify	2009-07-30 17:30:11.000000000 +0200
 +++ mozilla-1.9.1/config/autoconf.mk.in	2009-08-21 15:31:20.000000000 +0200
-@@ -57,14 +57,14 @@ MOZ_PKG_SPECIAL = @MOZ_PKG_SPECIAL@
- prefix		= @prefix@
- exec_prefix	= @exec_prefix@
- bindir		= @bindir@
--includedir	= @includedir@/$(MOZ_APP_NAME)-$(MOZ_APP_VERSION)
-+includedir	= @includedir@/$(MOZ_APP_NAME)-sdk-$(MOZ_APP_VERSION)
- libdir		= @libdir@
- datadir		= @datadir@
- mandir		= @mandir@
--idldir		= $(datadir)/idl/$(MOZ_APP_NAME)-$(MOZ_APP_VERSION)
-+idldir		= $(datadir)/idl/$(MOZ_APP_NAME)-sdk-$(MOZ_APP_VERSION)
- 
- installdir	= $(libdir)/$(MOZ_APP_NAME)-$(MOZ_APP_VERSION)
--sdkdir		= $(libdir)/$(MOZ_APP_NAME)-devel-$(MOZ_APP_VERSION)
-+sdkdir		= $(libdir)/$(MOZ_APP_NAME)-sdk-$(MOZ_APP_VERSION)
- 
- DIST		= $(DEPTH)/dist
- LIBXUL_SDK      = @LIBXUL_SDK@
 @@ -528,6 +528,10 @@ MOZ_PANGO_LIBS          = @MOZ_PANGO_LIB
  MOZ_XIE_LIBS		= @MOZ_XIE_LIBS@
  XT_LIBS			= @XT_LIBS@
