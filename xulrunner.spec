@@ -63,6 +63,7 @@ BuildRequires:  sqlite-devel >= %{sqlite_version}
 BuildRequires:  startup-notification-devel
 BuildRequires:  alsa-lib-devel
 BuildRequires:  libnotify-devel
+BuildRequires:  autoconf213
 
 Requires:       mozilla-filesystem
 Requires:       nspr >= %{nspr_version}
