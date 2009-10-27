@@ -3,7 +3,7 @@
 %define cairo_version 1.6.0
 %define lcms_version 1.17
 %define freetype_version 2.1.9
-%define sqlite_version 3.6.10
+%define sqlite_version 3.6.16
 %define tarballdir mozilla-1.9.1
 
 %define version_internal  1.9.1
@@ -58,7 +58,7 @@ BuildRequires:  freetype-devel >= %{freetype_version}
 BuildRequires:  libXt-devel
 BuildRequires:  libXrender-devel
 BuildRequires:  hunspell-devel
-BuildRequires:  sqlite-devel >= %{sqlite_version}
+#Temporary removed, required 3.6.16 which is not in F11 repo yet: BuildRequires:  sqlite-devel >= %{sqlite_version} 
 BuildRequires:  startup-notification-devel
 BuildRequires:  alsa-lib-devel
 
@@ -97,7 +97,7 @@ Requires: freetype-devel >= %{freetype_version}
 Requires: libXt-devel
 Requires: libXrender-devel
 Requires: hunspell-devel
-Requires: sqlite-devel >= ${sqlite_version}
+#Temporary removed: Requires: sqlite-devel >= ${sqlite_version}
 Requires: startup-notification-devel
 Requires: alsa-lib-devel
 
