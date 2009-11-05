@@ -11,7 +11,7 @@
 
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
-Version:        1.9.1.4
+Version:        1.9.1.5
 Release:        1%{?dist}
 URL:            http://developer.mozilla.org/En/XULRunner
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
@@ -452,6 +452,9 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
+* Thu Nov  5 2009 Jan Horak <jhorak@redhat.com> - 1.9.1.5-1
+- Update to 1.9.1.5
+
 * Mon Oct 26 2009 Jan Horak <jhorak@redhat.com> - 1.9.1.4-1
 - Update to 1.9.1.4
 
