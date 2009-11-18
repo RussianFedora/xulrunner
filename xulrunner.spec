@@ -381,6 +381,7 @@ fi
 # XXX See if these are needed still
 %{mozappdir}/updater*
 %exclude %{mozappdir}/update.locale
+%exclude %{mozappdir}/components/components.list
 
 %files devel
 %defattr(-,root,root,-)
