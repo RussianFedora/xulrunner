@@ -11,13 +11,13 @@
 
 %define version_internal  1.9.2
 %define mozappdir         %{_libdir}/%{name}-%{version_internal}
-%define pretag            b2
+%define pretag            b3
 
 
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
 Version:        1.9.2.1
-Release:        0.1.b2%{?dist}
+Release:        0.2.%{?pretag}%{?dist}
 URL:            http://developer.mozilla.org/En/XULRunner
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
@@ -400,6 +400,9 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
+* Wed Nov 18 2009 Martin Stransky <stransky@redhat.com> 1.9.2.1-0.1.b3
+- Rebase to 1.9.2.1 Beta 3
+
 * Fri Nov 13 2009 Martin Stransky <stransky@redhat.com> 1.9.2.1-0.1.beta2
 - Rebase to 1.9.2.1 Beta 2
 - fix the sqlite runtime requires again (#480989), add a check 
