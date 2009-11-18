@@ -3,20 +3,21 @@
 %define nss_version 3.12.3.99
 %define cairo_version 1.6.0
 %define freetype_version 2.1.9
-%define sqlite_version 3.6.14
-%define tarballdir mozilla-1.9.1
+%define sqlite_version 3.6.16
+%define tarballdir mozilla-1.9.2
 
-%define version_internal  1.9.1
+%define version_internal  1.9.2
 %define mozappdir         %{_libdir}/%{name}-%{version_internal}
+%define pretag            b2
 
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
-Version:        1.9.1.5
-Release:        1%{?dist}
+Version:        1.9.2.1
+Release:        0.1.b2%{?dist}
 URL:            http://developer.mozilla.org/En/XULRunner
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
-Source0:        %{name}-%{version}-source.tar.bz2
+Source0:        %{name}-%{version}%{?pretag}.source.tar.bz2
 Source10:       %{name}-mozconfig
 Source12:       %{name}-redhat-default-prefs.js
 Source21:       %{name}.sh.in
@@ -25,14 +26,12 @@ Source23:       %{name}.1
 # build patches
 Patch0:         xulrunner-version.patch
 Patch1:         mozilla-build.patch
-Patch2:         mozilla-191-path.patch
 Patch3:         mozilla-jemalloc.patch
 Patch4:         mozilla-about-firefox-version.patch
-Patch5:         xulrunner-gtk-include.patch
-Patch6:         mozilla-libnotify.patch
+Patch7:         xulrunner-1.9.2.1-build.patch
 
 # Fedora specific patches
-Patch10:        mozilla-191-pkgconfig.patch
+Patch10:        mozilla-192-pkgconfig.patch
 
 # Upstream patches
 Patch100:       mozilla-ps-pdf-simplify-operators.patch
@@ -64,6 +63,7 @@ BuildRequires:  startup-notification-devel
 BuildRequires:  alsa-lib-devel
 BuildRequires:  libnotify-devel
 BuildRequires:  autoconf213
+BuildRequires:  wireless-tools-devel
 
 Requires:       mozilla-filesystem
 Requires:       nspr >= %{nspr_version}
@@ -80,6 +80,7 @@ Group: Development/Libraries
 Obsoletes: mozilla-devel < 1.9
 Obsoletes: firefox-devel < 2.1
 Provides: gecko-devel = %{version}
+Provides: gecko-devel-unstable = %{version}
 
 Requires: xulrunner = %{version}-%{release}
 Requires: nspr-devel >= %{nspr_version}
@@ -108,37 +109,6 @@ Requires: libnotify-devel
 %description devel
 Gecko development files.
 
-%package devel-unstable
-Summary: Development files for Gecko, which are not considered stable
-Group: Development/Libraries
-Requires: xulrunner-devel = %{version}-%{release}
-Provides: gecko-devel-unstable = %{version}
-
-%description devel-unstable
-Unstable files for use with development of Gecko applications.  These headers
-are not frozen and APIs can change at any time, so should not be relied on.
-
-%package python
-Summary: Files needed to run Gecko applications written in python.
-Group: Applications/Internet
-BuildRequires: python-devel
-Requires: gecko-libs = %{version}-%{release}
-Provides: pyxpcom = %{version}-%{release}
-Provides: gecko-python = %{version}-%{release}
-
-%description python
-Files needed to run Gecko applications written in python.
-
-%package python-devel
-Summary: Development files for building Gecko applications written in python.
-Group: Development/Libraries
-Requires: gecko-devel = %{version}-%{release}
-Provides: pyxpcom-devel = %{version}-%{release}
-Provides: gecko-python-devel = %{version}-%{release}
-
-%description python-devel
-Development files for building Gecko applications written in python.
-
 #---------------------------------------------------------------------
 
 %prep
@@ -149,13 +119,10 @@ sed -e 's/__RPM_VERSION_INTERNAL__/%{version_internal}/' %{P:%%PATCH0} \
     > version.patch
 %{__patch} -p1 -b --suffix .version --fuzz=0 < version.patch
 
-
 %patch1  -p1 -b .build
-%patch2  -p1 -b .path
 %patch3  -p1 -b .jemalloc
 %patch4  -p1 -b .about-firefox-version
-%patch5  -p1 -b .gtk-include
-%patch6  -p1 -b .libnotify
+%patch7  -p2 -b .del
 
 %patch10 -p1 -b .pk
 
@@ -241,8 +208,10 @@ cd -
   $RPM_BUILD_ROOT/%{_includedir}/${INTERNAL_APP_SDK_NAME}
 
 # Copy mozilla-config to stable include dir
-%{__cp} dist/include/mozilla-config.h \
-  $RPM_BUILD_ROOT/%{_includedir}/${INTERNAL_APP_SDK_NAME}/stable
+#%{__cp} dist/include/mozilla-config.h \
+#  $RPM_BUILD_ROOT/%{_includedir}/${INTERNAL_APP_SDK_NAME}/stable
+#%{__cp} dist/include/mozilla-config.h \
+#  $RPM_BUILD_ROOT/%{_includedir}/${INTERNAL_APP_SDK_NAME}
 
 # Fix multilib devel conflicts...
 %ifarch x86_64 ia64 s390x ppc64
@@ -268,19 +237,7 @@ pushd $RPM_BUILD_ROOT/%{_includedir}/${INTERNAL_APP_SDK_NAME}
 install_file "mozilla-config"
 popd
 
-pushd $RPM_BUILD_ROOT/%{_includedir}/${INTERNAL_APP_SDK_NAME}/stable
-install_file "mozilla-config"
-popd
-
-pushd $RPM_BUILD_ROOT/%{_includedir}/${INTERNAL_APP_SDK_NAME}/unstable
-install_file "mozilla-config"
-popd
-
-pushd $RPM_BUILD_ROOT/%{_includedir}/${INTERNAL_APP_SDK_NAME}/js
-install_file "jsautocfg"
-popd
-
-pushd $RPM_BUILD_ROOT/%{_includedir}/${INTERNAL_APP_SDK_NAME}/unstable
+pushd $RPM_BUILD_ROOT/%{_includedir}/${INTERNAL_APP_SDK_NAME}
 install_file "jsautocfg"
 popd
 
@@ -294,17 +251,19 @@ popd
 %{__rm} -rf $RPM_BUILD_ROOT/%{_datadir}/idl/${INTERNAL_APP_NAME}
 
 %{__rm} -rf $RPM_BUILD_ROOT${MOZ_APP_SDK_DIR}/include
-ln -s  %{_includedir}/${INTERNAL_APP_SDK_NAME}/unstable \
+ln -s  %{_includedir}/${INTERNAL_APP_SDK_NAME} \
        $RPM_BUILD_ROOT${MOZ_APP_SDK_DIR}/include
+
 %{__rm} -rf $RPM_BUILD_ROOT${MOZ_APP_SDK_DIR}/idl
-ln -s  %{_datadir}/idl/${INTERNAL_APP_SDK_NAME}/unstable \
+ln -s  %{_datadir}/idl/${INTERNAL_APP_SDK_NAME} \
        $RPM_BUILD_ROOT${MOZ_APP_SDK_DIR}/idl
 
 %{__rm} -rf $RPM_BUILD_ROOT${MOZ_APP_SDK_DIR}/sdk/include
-ln -s  %{_includedir}/${INTERNAL_APP_SDK_NAME}/stable \
+ln -s  %{_includedir}/${INTERNAL_APP_SDK_NAME} \
        $RPM_BUILD_ROOT${MOZ_APP_SDK_DIR}/sdk/include
+
 %{__rm} -rf $RPM_BUILD_ROOT${MOZ_APP_SDK_DIR}/sdk/idl
-ln -s  %{_datadir}/idl/${INTERNAL_APP_SDK_NAME}/stable \
+ln -s  %{_datadir}/idl/${INTERNAL_APP_SDK_NAME} \
        $RPM_BUILD_ROOT${MOZ_APP_SDK_DIR}/sdk/idl
 
 find $RPM_BUILD_ROOT/%{_includedir} -type f -name "*.h" | xargs chmod 644
@@ -387,7 +346,6 @@ fi
 %ghost %{mozappdir}/components/xpti.dat
 %{mozappdir}/components/*.so
 %{mozappdir}/components/*.xpt
-%exclude %{mozappdir}/components/libpyloader.so
 %attr(644, root, root) %{mozappdir}/components/*.js
 %{mozappdir}/defaults
 %{mozappdir}/greprefs
@@ -409,52 +367,29 @@ fi
 
 # XXX See if these are needed still
 %{mozappdir}/updater*
-
 %exclude %{mozappdir}/update.locale
 
 %files devel
 %defattr(-,root,root,-)
-%dir %{_datadir}/idl/%{name}*%{version_internal}
-%{_datadir}/idl/%{name}*%{version_internal}/stable
-%{_includedir}/%{name}*%{version_internal}
-%exclude %{_includedir}/%{name}*%{version_internal}/unstable
-%exclude %{_includedir}/%{name}*%{version_internal}/pyxpcom
 %dir %{_libdir}/%{name}-sdk-*
 %dir %{_libdir}/%{name}-sdk-*/sdk
+%dir %{_datadir}/idl/%{name}*%{version_internal}
+%{_datadir}/idl/%{name}*%{version_internal}
+%{_includedir}/%{name}*%{version_internal}
+%{_libdir}/%{name}-sdk-*/*
+%{_libdir}/%{name}-sdk-*/sdk/*
+%{_libdir}/pkgconfig/*.pc
 %{mozappdir}/xpcshell
 %{mozappdir}/xpidl
 %{mozappdir}/xpt_dump
 %{mozappdir}/xpt_link
-%{_libdir}/%{name}-sdk-*/*.h
-%{_libdir}/%{name}-sdk-*/sdk/*
-%exclude %{_libdir}/%{name}-sdk-%{version_internal}/sdk/lib/libpyxpcom.so
-%exclude %{_libdir}/pkgconfig/*unstable*.pc
-%exclude %{_libdir}/pkgconfig/*gtkmozembed*.pc
-%{_libdir}/pkgconfig/*.pc
-
-%files devel-unstable
-%defattr(-,root,root,-)
-%{_datadir}/idl/%{name}*%{version_internal}/unstable
-%{_includedir}/%{name}*%{version_internal}/unstable
-%dir %{_libdir}/%{name}-sdk-*
-%{_libdir}/%{name}-sdk-*/*
-%exclude %{_libdir}/%{name}-sdk-*/*.h
-%exclude %{_libdir}/%{name}-sdk-*/sdk
-%{_libdir}/pkgconfig/*unstable*.pc
-%{_libdir}/pkgconfig/*gtkmozembed*.pc
-
-%files python
-%{mozappdir}/components/pyabout.py*
-%{mozappdir}/components/libpyloader.so
-%{mozappdir}/python
-
-%files python-devel
-%{_includedir}/%{name}*%{version_internal}/pyxpcom
-%{_libdir}/%{name}-sdk-%{version_internal}/sdk/lib/libpyxpcom.so
 
 #---------------------------------------------------------------------
 
 %changelog
+* Fri Nov 13 2009 Martin Stransky <stransky@redhat.com> 1.9.2.1-0.1.beta2
+- Rebase to 1.9.2.1 Beta 2
+
 * Thu Nov  5 2009 Jan Horak <jhorak@redhat.com> - 1.9.1.5-1
 - Update to 1.9.1.5
 
