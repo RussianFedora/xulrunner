@@ -17,10 +17,11 @@
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
 Version:        1.9.2.1
-Release:        0.2.%{?pretag}%{?dist}
+Release:        0.3.%{?pretag}%{?dist}
 URL:            http://developer.mozilla.org/En/XULRunner
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
+# You can get sources at ftp://ftp.mozilla.org/pub/firefox/releases/%{version}%{?pretag}/source
 Source0:        %{name}-%{version}%{?pretag}.source.tar.bz2
 Source10:       %{name}-mozconfig
 Source12:       %{name}-redhat-default-prefs.js
@@ -67,7 +68,6 @@ BuildRequires:  startup-notification-devel
 BuildRequires:  alsa-lib-devel
 BuildRequires:  libnotify-devel
 BuildRequires:  autoconf213
-BuildRequires:  wireless-tools-devel
 
 Requires:       mozilla-filesystem
 Requires:       nspr >= %{nspr_version}
@@ -83,6 +83,7 @@ Summary: Development files for Gecko
 Group: Development/Libraries
 Obsoletes: mozilla-devel < 1.9
 Obsoletes: firefox-devel < 2.1
+Obsoletes: xulrunner-devel-unstable
 Provides: gecko-devel = %{version}
 Provides: gecko-devel-unstable = %{version}
 
@@ -401,7 +402,12 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
-* Wed Nov 18 2009 Martin Stransky <stransky@redhat.com> 1.9.2.1-0.1.b3
+* Fri Nov 20 2009 Martin Stransky <stransky@redhat.com> 1.9.2.1-0.3.b3
+- Necko wifi monitor disabled
+- fixed a dependency (#539261)
+- added source URL (#521704)
+
+* Wed Nov 18 2009 Martin Stransky <stransky@redhat.com> 1.9.2.1-0.2.b3
 - Rebase to 1.9.2.1 Beta 3
 
 * Fri Nov 13 2009 Martin Stransky <stransky@redhat.com> 1.9.2.1-0.1.beta2

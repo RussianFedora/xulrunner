@@ -29,6 +29,7 @@ ac_add_options --disable-crashreporter
 ac_add_options --enable-safe-browsing
 ac_add_options --enable-extensions=default
 ac_add_options --enable-libnotify
+ac_add_options --disable-necko-wifi
 
 export BUILD_OFFICIAL=1
 export MOZILLA_OFFICIAL=1
