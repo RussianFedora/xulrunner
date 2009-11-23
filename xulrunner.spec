@@ -17,7 +17,7 @@
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
 Version:        1.9.2.1
-Release:        0.3.%{?pretag}%{?dist}
+Release:        0.4.%{?pretag}%{?dist}
 URL:            http://developer.mozilla.org/En/XULRunner
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
@@ -221,11 +221,11 @@ cd -
 %{__cp} -rL dist/include/* \
   $RPM_BUILD_ROOT/%{_includedir}/${INTERNAL_APP_SDK_NAME}
 
-# Copy mozilla-config to stable include dir
-#%{__cp} dist/include/mozilla-config.h \
-#  $RPM_BUILD_ROOT/%{_includedir}/${INTERNAL_APP_SDK_NAME}/stable
-#%{__cp} dist/include/mozilla-config.h \
-#  $RPM_BUILD_ROOT/%{_includedir}/${INTERNAL_APP_SDK_NAME}
+# Copy pc files (for compatibility with 1.9.1)
+%{__cp} $RPM_BUILD_ROOT/%{_libdir}/pkgconfig/libxul.pc \
+        $RPM_BUILD_ROOT/%{_libdir}/pkgconfig/libxul-unstable.pc
+%{__cp} $RPM_BUILD_ROOT/%{_libdir}/pkgconfig/libxul-embedding.pc \
+        $RPM_BUILD_ROOT/%{_libdir}/pkgconfig/libxul-embedding-unstable.pc
 
 # Fix multilib devel conflicts...
 %ifarch x86_64 ia64 s390x ppc64
@@ -402,6 +402,9 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
+* Mon Nov 23 2009 Martin Stransky <stransky@redhat.com> 1.9.2.1-0.4.b3
+- added -unstable.pc files for compatibility with 1.9.1
+
 * Fri Nov 20 2009 Martin Stransky <stransky@redhat.com> 1.9.2.1-0.3.b3
 - Necko wifi monitor disabled
 - fixed a dependency (#539261)
