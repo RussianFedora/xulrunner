@@ -17,7 +17,7 @@
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
 Version:        1.9.2.1
-Release:        0.5.%{?pretag}%{?dist}
+Release:        0.6.%{?pretag}%{?dist}
 URL:            http://developer.mozilla.org/En/XULRunner
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
@@ -34,6 +34,7 @@ Patch1:         mozilla-build.patch
 Patch3:         mozilla-jemalloc.patch
 Patch4:         mozilla-about-firefox-version.patch
 Patch7:         xulrunner-1.9.2.1-build.patch
+Patch8:         mozilla-plugin.patch
 
 # Fedora specific patches
 Patch10:        mozilla-192-pkgconfig.patch
@@ -128,6 +129,7 @@ sed -e 's/__RPM_VERSION_INTERNAL__/%{version_internal}/' %{P:%%PATCH0} \
 %patch3  -p1 -b .jemalloc
 %patch4  -p1 -b .about-firefox-version
 %patch7  -p2 -b .del
+%patch8  -p1 -b .plugin
 
 %patch10 -p1 -b .pk
 
@@ -402,6 +404,9 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
+* Thu Dec 3 2009 Martin Stransky <stransky@redhat.com> 1.9.2.1-0.6.b4
+- Added fix for #543585 - mozilla-plugin.pc contains incorrect CFLAGS
+
 * Fri Nov 27 2009 Martin Stransky <stransky@redhat.com> 1.9.2.1-0.5.b4
 - Update to 1.9.2.1 Beta 4
 
