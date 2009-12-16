@@ -58,7 +58,7 @@ BuildRequires:  freetype-devel >= %{freetype_version}
 BuildRequires:  libXt-devel
 BuildRequires:  libXrender-devel
 BuildRequires:  hunspell-devel
-BuildRequires:  sqlite-devel >= %{sqlite_version} 
+#sqlite >= 3.6.16 still missing in F11: BuildRequires:  sqlite-devel >= %{sqlite_version} 
 BuildRequires:  startup-notification-devel
 BuildRequires:  alsa-lib-devel
 
