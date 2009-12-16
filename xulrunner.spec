@@ -11,7 +11,7 @@
 
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
-Version:        1.9.1.5
+Version:        1.9.1.6
 Release:        1%{?dist}
 URL:            http://developer.mozilla.org/En/XULRunner
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
@@ -58,7 +58,7 @@ BuildRequires:  freetype-devel >= %{freetype_version}
 BuildRequires:  libXt-devel
 BuildRequires:  libXrender-devel
 BuildRequires:  hunspell-devel
-#Temporary removed, required 3.6.16 which is not in F11 repo yet: BuildRequires:  sqlite-devel >= %{sqlite_version} 
+BuildRequires:  sqlite-devel >= %{sqlite_version} 
 BuildRequires:  startup-notification-devel
 BuildRequires:  alsa-lib-devel
 
@@ -452,6 +452,9 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
+* Wed Dec 16 2009 Jan Horak <jhorak@redhat.com> - 1.9.1.6-1
+- Update to 1.9.1.6
+
 * Thu Nov  5 2009 Jan Horak <jhorak@redhat.com> - 1.9.1.5-1
 - Update to 1.9.1.5
 
