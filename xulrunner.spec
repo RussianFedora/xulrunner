@@ -3,7 +3,7 @@
 %define nss_version 3.12.3.99
 %define cairo_version 1.6.0
 %define freetype_version 2.1.9
-%define sqlite_version 3.6.14
+%define sqlite_version 3.6.16
 %define tarballdir mozilla-1.9.1
 
 %define version_internal  1.9.1
@@ -11,7 +11,7 @@
 
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
-Version:        1.9.1.5
+Version:        1.9.1.6
 Release:        1%{?dist}
 URL:            http://developer.mozilla.org/En/XULRunner
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
@@ -455,6 +455,9 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
+* Wed Dec 16 2009 Jan Horak <jhorak@redhat.com> - 1.9.1.6-1
+- Update to 1.9.1.6
+
 * Thu Nov  5 2009 Jan Horak <jhorak@redhat.com> - 1.9.1.5-1
 - Update to 1.9.1.5
 
