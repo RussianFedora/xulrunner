@@ -11,13 +11,13 @@
 
 %define version_internal  1.9.2
 %define mozappdir         %{_libdir}/%{name}-%{version_internal}
-%define pretag            b4
+%define pretag            b5
 
 
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
 Version:        1.9.2.1
-Release:        0.7.%{?pretag}%{?dist}
+Release:        0.8.%{?pretag}%{?dist}
 URL:            http://developer.mozilla.org/En/XULRunner
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
@@ -406,6 +406,9 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
+* Mon Dec 21 2009 Martin Stransky <stransky@redhat.com> 1.9.2.1-0.8.b5
+- Update to 1.9.2.1 Beta 5
+
 * Thu Dec 17 2009 Martin Stransky <stransky@redhat.com> 1.9.2.1-0.7.b4
 - Added fix for mozbz#543585 - jemalloc alignment assertion 
   and abort on Linux
