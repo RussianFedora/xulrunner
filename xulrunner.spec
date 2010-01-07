@@ -9,10 +9,13 @@
 %define version_internal  1.9.1
 %define mozappdir         %{_libdir}/%{name}-%{version_internal}
 
+# The actual sqlite version (see #480989):
+%global sqlite_build_version %(pkg-config --silence-errors --modversion sqlite3 2>/dev/null || echo 65536)
+
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
 Version:        1.9.1.6
-Release:        1%{?dist}
+Release:        2%{?dist}
 URL:            http://developer.mozilla.org/En/XULRunner
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
@@ -68,7 +71,7 @@ BuildRequires:  autoconf213
 Requires:       mozilla-filesystem
 Requires:       nspr >= %{nspr_version}
 Requires:       nss >= %{nss_version}
-Requires:       sqlite >= %{sqlite_version}
+Requires:       sqlite >= %{sqlite_build_version}
 Provides:       gecko-libs = %{version}
 
 %description
@@ -168,6 +171,15 @@ sed -e 's/__RPM_VERSION_INTERNAL__/%{version_internal}/' %{P:%%PATCH0} \
 #---------------------------------------------------------------------
 
 %build
+# Do not proceed with build if the sqlite require would be broken:
+# make sure the minimum requirement is non-empty, ...
+sqlite_version=$(expr "%{sqlite_version}" : '\([0-9]*\.\)[0-9]*\.') || exit 1
+# ... and that major number of the computed build-time version matches:
+case "%{sqlite_build_version}" in
+  "$sqlite_version"*) ;;
+  *) exit 1 ;;
+esac
+
 cd %{tarballdir}
 
 INTERNAL_GECKO=%{version_internal}
@@ -455,6 +467,9 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
+* Thu Jan 7 2010 Martin Stransky <stransky@redhat.com> - 1.9.1.6-2
+- Added fix for #480989
+
 * Wed Dec 16 2009 Jan Horak <jhorak@redhat.com> - 1.9.1.6-1
 - Update to 1.9.1.6
 
