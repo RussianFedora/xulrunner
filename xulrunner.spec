@@ -36,6 +36,7 @@ Patch4:         mozilla-about-firefox-version.patch
 Patch5:         mozilla-jemalloc-526152.patch
 Patch7:         xulrunner-1.9.2.1-build.patch
 Patch8:         mozilla-plugin.patch
+Patch9:         mozilla-build-sbrk.patch
 
 # Fedora specific patches
 Patch10:        mozilla-192-pkgconfig.patch
@@ -132,6 +133,7 @@ sed -e 's/__RPM_VERSION_INTERNAL__/%{version_internal}/' %{P:%%PATCH0} \
 %patch5  -p1 -b .jemalloc-526152
 %patch7  -p2 -b .del
 %patch8  -p1 -b .plugin
+%patch9  -p1 -b .sbrk
 
 %patch10 -p1 -b .pk
 

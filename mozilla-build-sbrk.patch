@@ -1,0 +1,10 @@
+--- mozilla-1.9.2/js/src/shell/js.cpp.old	2010-01-06 04:35:17.000000000 +0100
++++ mozilla-1.9.2/js/src/shell/js.cpp	2010-01-13 13:12:02.000000000 +0100
+@@ -48,6 +48,7 @@
+ #include <string.h>
+ #include <signal.h>
+ #include <locale.h>
++#include <unistd.h>
+ #include "jstypes.h"
+ #include "jsarena.h"
+ #include "jsutil.h"
