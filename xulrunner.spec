@@ -133,7 +133,7 @@ sed -e 's/__RPM_VERSION_INTERNAL__/%{version_internal}/' %{P:%%PATCH0} \
 %patch5  -p1 -b .jemalloc-526152
 %patch7  -p2 -b .del
 %patch8  -p1 -b .plugin
-%patch9  -p1 -b .sbrk
+%patch9  -p2 -b .sbrk
 
 %patch10 -p1 -b .pk
 
