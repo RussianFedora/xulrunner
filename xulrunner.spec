@@ -15,7 +15,7 @@
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
 Version:        1.9.2.1
-Release:        1%{?pretag}%{?dist}
+Release:        2%{?pretag}%{?dist}
 URL:            http://developer.mozilla.org/En/XULRunner
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
@@ -259,6 +259,10 @@ pushd $RPM_BUILD_ROOT/%{_includedir}/${INTERNAL_APP_SDK_NAME}
 install_file "jsautocfg"
 popd
 
+pushd $RPM_BUILD_ROOT/%{_includedir}/${INTERNAL_APP_SDK_NAME}
+install_file "js-config"
+popd
+
 %{__install} -p -c -m 755 dist/bin/xpcshell \
   dist/bin/xpidl \
   dist/bin/xpt_dump \
@@ -406,6 +410,9 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
+* Wed Feb 17 2010 Martin Stransky <stransky@redhat.com> 1.9.2.1-2
+- Added fix for #564184 - xulrunner-devel multilib conflict
+
 * Fri Jan 22 2010 Martin Stransky <stransky@redhat.com> 1.9.2.1-1
 - Update to 1.9.2.1
 
