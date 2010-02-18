@@ -41,6 +41,7 @@ Patch10:        mozilla-192-pkgconfig.patch
 
 # Upstream patches
 Patch100:       mozilla-ps-pdf-simplify-operators.patch
+Patch101:       mozilla-462919.patch
 
 # ---------------------------------------------------
 
@@ -136,6 +137,7 @@ sed -e 's/__RPM_VERSION_INTERNAL__/%{version_internal}/' %{P:%%PATCH0} \
 %patch10 -p1 -b .pk
 
 %patch100 -p1 -b .ps-pdf-simplify-operators
+%patch101 -p1 -b .462919
 
 
 %{__rm} -f .mozconfig
@@ -410,6 +412,10 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
+* Thu Feb 18 2010 Jan Horak <jhorak@redhat.com> - 1.9.2.1-3
+- Added fix for mozbz#462919 - Override NSS database path 
+  for xulrunner application
+       
 * Wed Feb 17 2010 Martin Stransky <stransky@redhat.com> 1.9.2.1-2
 - Added fix for #564184 - xulrunner-devel multilib conflict
 
