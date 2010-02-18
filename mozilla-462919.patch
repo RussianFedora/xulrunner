@@ -1,11 +1,7 @@
-Index: mozilla/security/manager/ssl/src/nsNSSComponent.cpp
-===================================================================
-RCS file: /cvsroot/mozilla/security/manager/ssl/src/nsNSSComponent.cpp,v
-retrieving revision 1.167
-diff -u -u -r1.167 nsNSSComponent.cpp
---- mozilla/security/manager/ssl/src/nsNSSComponent.cpp	16 Sep 2008 20:44:53 -0000	1.167
-+++ mozilla/security/manager/ssl/src/nsNSSComponent.cpp	29 Oct 2008 06:11:27 -0000
-@@ -1516,9 +1516,15 @@
+diff -up mozilla-1.9.2/security/manager/ssl/src/nsNSSComponent.cpp.462919 mozilla-1.9.2/security/manager/ssl/src/nsNSSComponent.cpp
+--- mozilla-1.9.2/security/manager/ssl/src/nsNSSComponent.cpp.462919	2010-01-21 04:31:05.000000000 +0100
++++ mozilla-1.9.2/security/manager/ssl/src/nsNSSComponent.cpp	2010-02-18 16:24:49.000000000 +0100
+@@ -1573,9 +1573,15 @@ nsNSSComponent::InitializeNSS(PRBool sho
        return rv;
    #endif
  
@@ -22,5 +18,5 @@ diff -u -u -r1.167 nsNSSComponent.cpp
 +        return rv;
 +    }
  
-   #if defined(XP_MACOSX)
-     // function may modify the parameters
+     hashTableCerts = PL_NewHashTable( 0, certHashtable_keyHash, certHashtable_keyCompare,
+       certHashtable_valueCompare, 0, 0 );
