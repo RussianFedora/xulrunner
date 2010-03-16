@@ -15,7 +15,7 @@
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
 Version:        1.9.2.1
-Release:        3%{?pretag}%{?dist}
+Release:        4%{?pretag}%{?dist}
 URL:            http://developer.mozilla.org/En/XULRunner
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
@@ -412,6 +412,9 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
+* Mon Mar 15 2010 Colin Walters <walters@verbum.org> - 1.9.2.1-4
+- Enable startup notification, closes #445543
+
 * Thu Feb 18 2010 Jan Horak <jhorak@redhat.com> - 1.9.2.1-3
 - Added fix for mozbz#462919 - Override NSS database path 
   for xulrunner application
