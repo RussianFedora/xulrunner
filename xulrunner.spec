@@ -410,6 +410,9 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
+* Mon Mar 15 2010 Colin Walters <walters@verbum.org> 1.9.2.1-3
+- Enable startup notification, closes #445543
+
 * Wed Feb 17 2010 Martin Stransky <stransky@redhat.com> 1.9.2.1-2
 - Added fix for #564184 - xulrunner-devel multilib conflict
 
