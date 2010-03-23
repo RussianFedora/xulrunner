@@ -14,8 +14,8 @@
 
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
-Version:        1.9.2.1
-Release:        4%{?pretag}%{?dist}
+Version:        1.9.2.2
+Release:        1%{?pretag}%{?dist}
 URL:            http://developer.mozilla.org/En/XULRunner
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
@@ -41,7 +41,6 @@ Patch10:        mozilla-192-pkgconfig.patch
 
 # Upstream patches
 Patch100:       mozilla-ps-pdf-simplify-operators.patch
-Patch101:       mozilla-462919.patch
 
 # ---------------------------------------------------
 
@@ -137,7 +136,6 @@ sed -e 's/__RPM_VERSION_INTERNAL__/%{version_internal}/' %{P:%%PATCH0} \
 %patch10 -p1 -b .pk
 
 %patch100 -p1 -b .ps-pdf-simplify-operators
-%patch101 -p1 -b .462919
 
 
 %{__rm} -f .mozconfig
@@ -412,6 +410,9 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
+* Tue Mar 23 2010 Jan Horak <jhorak@redhat.com> - 1.9.2.2-1
+- Update to 1.9.2.2
+
 * Mon Mar 15 2010 Colin Walters <walters@verbum.org> - 1.9.2.1-4
 - Enable startup notification, closes #445543
 
