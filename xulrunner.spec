@@ -15,7 +15,7 @@
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
 Version:        1.9.1.8
-Release:        2%{?dist}
+Release:        2%{?dist}.1
 URL:            http://developer.mozilla.org/En/XULRunner
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
@@ -168,6 +168,12 @@ sed -e 's/__RPM_VERSION_INTERNAL__/%{version_internal}/' %{P:%%PATCH0} \
 %{__rm} -f .mozconfig
 %{__cp} %{SOURCE10} .mozconfig
 
+# Upstream bug filed without resolution
+# for now make sure jit is not enabled on sparc64
+%ifarch sparc64
+echo "ac_add_options --disable-jit" >> .mozconfig
+%endif
+
 #---------------------------------------------------------------------
 
 %build
@@ -257,7 +263,7 @@ cd -
   $RPM_BUILD_ROOT/%{_includedir}/${INTERNAL_APP_SDK_NAME}/stable
 
 # Fix multilib devel conflicts...
-%ifarch x86_64 ia64 s390x ppc64
+%ifarch x86_64 ia64 s390x ppc64 sparc64
 %define mozbits 64
 %else
 %define mozbits 32
@@ -268,7 +274,7 @@ genheader=$*
 mv ${genheader}.h ${genheader}%{mozbits}.h
 cat > ${genheader}.h << EOF
 /* This file exists to fix multilib conflicts */
-#if defined(__x86_64__) || defined(__ia64__) || defined(__s390x__) || defined(__powerpc64__)
+#if defined(__x86_64__) || defined(__ia64__) || defined(__s390x__) || defined(__powerpc64__) || (defined(__sparc__) && defined(__arch64__))
 #include "${genheader}64.h"
 #else
 #include "${genheader}32.h"
@@ -334,7 +340,7 @@ done
 popd
 
 # GRE stuff
-%ifarch x86_64 ia64 ppc64 s390x
+%ifarch x86_64 ia64 ppc64 s390x sparc64
 %define gre_conf_file gre64.conf
 %else
 %define gre_conf_file gre.conf
@@ -346,7 +352,7 @@ MOZILLA_GECKO_VERSION=`./config/milestone.pl --topsrcdir=.`
 chmod 644 $RPM_BUILD_ROOT/etc/gre.d/%{gre_conf_file}
 
 # Library path
-%ifarch x86_64 ia64 ppc64 s390x
+%ifarch x86_64 ia64 ppc64 s390x sparc64
 %define ld_conf_file xulrunner-64.conf
 %else
 %define ld_conf_file xulrunner-32.conf
@@ -471,6 +477,10 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
+* Wed Mar 24 2010 Dennis Gilmore <dennis@ausil.us> - 1.9.1.8-2.1
+- fix sparc arch multilib
+- dont try and build nanojit on sparc64
+
 * Wed Feb 17 2010 Martin Stransky <stransky@redhat.com> - 1.9.1.8-2
 - Added fix for #564184 - xulrunner-devel multilib conflict
 
