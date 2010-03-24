@@ -1,0 +1,24 @@
+diff -up xulrunner-1.9.1/mozilla-1.9.1/js/src/nanojit/Assembler.cpp.BAD xulrunner-1.9.1/mozilla-1.9.1/js/src/nanojit/Assembler.cpp
+--- xulrunner-1.9.1/mozilla-1.9.1/js/src/nanojit/Assembler.cpp.BAD	2009-07-01 15:22:47.534707233 -0400
++++ xulrunner-1.9.1/mozilla-1.9.1/js/src/nanojit/Assembler.cpp	2009-07-02 13:18:40.509279263 -0400
+@@ -50,8 +50,20 @@ extern "C" void __clear_cache(char *BEG,
+ #endif
+ 
+ #ifdef AVMPLUS_SPARC
++#ifdef __linux__
++void sync_instruction_memory(caddr_t v, u_int len)
++{
++	caddr_t end = v + len;
++	caddr_t p = v;
++	while (p < end) {
++		asm("flush %0" : : "r" (p));
++		p += 32;
++	}
++}
++#else
+ extern  "C"	void sync_instruction_memory(caddr_t v, u_int len);
+ #endif
++#endif
+ 
+ namespace nanojit
+ {
