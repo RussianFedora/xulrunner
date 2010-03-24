@@ -164,7 +164,7 @@ sed -e 's/__RPM_VERSION_INTERNAL__/%{version_internal}/' %{P:%%PATCH0} \
 %patch10 -p1 -b .pk
 
 %patch100 -p1 -b .ps-pdf-simplify-operators
-%patch101 -p1 -b .sparc-linux-sync_instruction_memory
+%patch101 -p2 -b .sparc-linux-sync_instruction_memory
 
 
 %{__rm} -f .mozconfig
