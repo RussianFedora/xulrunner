@@ -14,8 +14,8 @@
 
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
-Version:        1.9.1.8
-Release:        2%{?dist}.1
+Version:        1.9.1.9
+Release:        1%{?dist}
 URL:            http://developer.mozilla.org/En/XULRunner
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
@@ -479,6 +479,9 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
+* Tue Mar 30 2010 Jan Horak <jhorak@redhat.com> - 1.9.1.9-1
+- Update to 1.9.1.9
+
 * Wed Mar 24 2010 Dennis Gilmore <dennis@ausil.us> - 1.9.1.8-2.1
 - fix sparc arch multilib
 - dont try and build nanojit on sparc64
