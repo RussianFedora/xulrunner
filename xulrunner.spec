@@ -15,7 +15,7 @@
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
 Version:        1.9.1.9
-Release:        1%{?dist}
+Release:        2%{?dist}
 URL:            http://developer.mozilla.org/En/XULRunner
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
@@ -33,6 +33,7 @@ Patch3:         mozilla-jemalloc.patch
 Patch4:         mozilla-about-firefox-version.patch
 Patch5:         xulrunner-gtk-include.patch
 Patch6:         mozilla-libnotify.patch
+Patch7:         mozilla-516124.patch
 
 # Fedora specific patches
 Patch10:        mozilla-191-pkgconfig.patch
@@ -160,6 +161,7 @@ sed -e 's/__RPM_VERSION_INTERNAL__/%{version_internal}/' %{P:%%PATCH0} \
 %patch4  -p1 -b .about-firefox-version
 %patch5  -p1 -b .gtk-include
 %patch6  -p1 -b .libnotify
+%patch7  -p1 -b .516124
 
 %patch10 -p1 -b .pk
 
@@ -479,6 +481,9 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
+* Mon May 10 2010 Martin Stransky <stransky@redhat.com> - 1.9.1.9-2
+- Added fix for mozbz#516124
+
 * Tue Mar 30 2010 Jan Horak <jhorak@redhat.com> - 1.9.1.9-1
 - Update to 1.9.1.9
 

@@ -1,0 +1,30 @@
+--- a/toolkit/system/gnome/nsAlertsIconListener.cpp
++++ b/toolkit/system/gnome/nsAlertsIconListener.cpp
+@@ -245,23 +245,25 @@ nsAlertsIconListener::StartRequest(const
+   return il->LoadImage(imageUri, nsnull, nsnull, nsnull, this,
+                        nsnull, nsIRequest::LOAD_NORMAL, nsnull, nsnull,
+                        getter_AddRefs(mIconRequest));
+ }
+ 
+ void
+ nsAlertsIconListener::SendCallback()
+ {
+-  mAlertListener->Observe(NULL, "alertclickcallback", mAlertCookie.get());
++  if (mAlertListener)
++    mAlertListener->Observe(NULL, "alertclickcallback", mAlertCookie.get());
+ }
+ 
+ void
+ nsAlertsIconListener::SendClosed()
+ {
+-  mAlertListener->Observe(NULL, "alertfinished", mAlertCookie.get());
++  if (mAlertListener)
++    mAlertListener->Observe(NULL, "alertfinished", mAlertCookie.get());
+ }
+ 
+ nsresult
+ nsAlertsIconListener::InitAlertAsync(const nsAString & aImageUrl,
+                                      const nsAString & aAlertTitle, 
+                                      const nsAString & aAlertText,
+                                      PRBool aAlertTextClickable,
+                                      const nsAString & aAlertCookie,
