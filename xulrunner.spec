@@ -15,7 +15,7 @@
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
 Version:        1.9.2.3
-Release:        1%{?pretag}%{?dist}
+Release:        2%{?pretag}%{?dist}
 URL:            http://developer.mozilla.org/En/XULRunner
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
@@ -35,9 +35,10 @@ Patch5:         mozilla-jemalloc-526152.patch
 Patch7:         xulrunner-1.9.2.1-build.patch
 Patch8:         mozilla-plugin.patch
 Patch9:         mozilla-build-sbrk.patch
+Patch10:        mozilla-build-s390.patch
 
 # Fedora specific patches
-Patch10:        mozilla-192-pkgconfig.patch
+Patch20:        mozilla-192-pkgconfig.patch
 
 # Upstream patches
 Patch100:       mozilla-ps-pdf-simplify-operators.patch
@@ -132,8 +133,11 @@ sed -e 's/__RPM_VERSION_INTERNAL__/%{version_internal}/' %{P:%%PATCH0} \
 %patch7  -p2 -b .del
 %patch8  -p1 -b .plugin
 %patch9  -p2 -b .sbrk
+%ifarch s390
+%patch10 -p1 -b .s390
+%endif
 
-%patch10 -p1 -b .pk
+%patch20 -p1 -b .pk
 
 %patch100 -p1 -b .ps-pdf-simplify-operators
 
@@ -410,6 +414,9 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
+* Tue Jun 15 2010 Dan Horák <dan@danny.cz> 1.9.2.3-2
+- Fixed build on s390
+
 * Fri Apr 2 2010 Martin Stransky <stransky@redhat.com> 1.9.2.3-1
 - Update to 1.9.2.3
 
