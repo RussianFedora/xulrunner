@@ -5,6 +5,7 @@
 %define freetype_version 2.1.9
 %define sqlite_version 3.6.16
 %define tarballdir mozilla-1.9.2
+%define include_debuginfo       0
 
 # The actual sqlite version (see #480989):
 %global sqlite_build_version %(pkg-config --silence-errors --modversion sqlite3 2>/dev/null || echo 65536)
@@ -14,7 +15,7 @@
 
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
-Version:        1.9.2.3
+Version:        1.9.2.4
 Release:        1%{?pretag}%{?dist}
 URL:            http://developer.mozilla.org/En/XULRunner
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
@@ -22,6 +23,7 @@ Group:          Applications/Internet
 # You can get sources at ftp://ftp.mozilla.org/pub/firefox/releases/%{version}%{?pretag}/source
 Source0:        %{name}-%{version}%{?pretag}.source.tar.bz2
 Source10:       %{name}-mozconfig
+Source11:       %{name}-mozconfig-debuginfo
 Source12:       %{name}-redhat-default-prefs.js
 Source21:       %{name}.sh.in
 Source23:       %{name}.1
@@ -35,9 +37,10 @@ Patch5:         mozilla-jemalloc-526152.patch
 Patch7:         xulrunner-1.9.2.1-build.patch
 Patch8:         mozilla-plugin.patch
 Patch9:         mozilla-build-sbrk.patch
+Patch11:        nspr-build.patch
 
 # Fedora specific patches
-Patch10:        mozilla-192-pkgconfig.patch
+Patch20:        mozilla-192-pkgconfig.patch
 
 # Upstream patches
 Patch100:       mozilla-ps-pdf-simplify-operators.patch
@@ -132,14 +135,18 @@ sed -e 's/__RPM_VERSION_INTERNAL__/%{version_internal}/' %{P:%%PATCH0} \
 %patch7  -p2 -b .del
 %patch8  -p1 -b .plugin
 %patch9  -p2 -b .sbrk
+%patch11 -p1 -b .nspr
 
-%patch10 -p1 -b .pk
+%patch20 -p1 -b .pk
 
 %patch100 -p1 -b .ps-pdf-simplify-operators
 
 
 %{__rm} -f .mozconfig
 %{__cp} %{SOURCE10} .mozconfig
+%if %{include_debuginfo}
+%{__cat} %{SOURCE11} >> .mozconfig
+%endif
 
 #---------------------------------------------------------------------
 
@@ -176,6 +183,12 @@ MOZ_SMP_FLAGS=-j1
 
 export LDFLAGS="-Wl,-rpath,${MOZ_APP_DIR}"
 make -f client.mk build STRIP="/bin/true" MOZ_MAKE_FLAGS="$MOZ_SMP_FLAGS"
+
+# create debuginfo for crash-stats.mozilla.com
+%if %{include_debuginfo}
+#cd %{moz_objdir}
+make buildsymbols
+%endif
 
 #---------------------------------------------------------------------
 
@@ -334,6 +347,13 @@ ln -s %{_datadir}/myspell ${RPM_BUILD_ROOT}${MOZ_APP_DIR}/dictionaries
 touch $RPM_BUILD_ROOT${MOZ_APP_DIR}/components/compreg.dat
 touch $RPM_BUILD_ROOT${MOZ_APP_DIR}/components/xpti.dat
 
+# Add debuginfo for crash-stats.mozilla.com 
+%if %{include_debuginfo}
+mkdir -p $RPM_BUILD_ROOT%{_libdir}/debug%{mozappdir}
+cp dist/%{name}-%{version}.en-US.linux-*.crashreporter-symbols.zip $RPM_BUILD_ROOT/%{_libdir}/debug%{mozappdir}
+#cp %{moz_objdir}/mozilla/dist/firefox-%{version}.en-US.linux-i686.crashreporter-symbols.zip $RPM_BUILD_ROOT%{_libdir}/debug%{mozappdir}
+%endif
+
 #---------------------------------------------------------------------
 
 %clean
@@ -392,6 +412,13 @@ fi
 %exclude %{mozappdir}/update.locale
 %exclude %{mozappdir}/components/components.list
 
+%if %{include_debuginfo}
+%{mozappdir}/crashreporter
+%{mozappdir}/crashreporter.ini
+%{mozappdir}/Throbber-small.gif
+%{mozappdir}/plugin-container
+%endif
+
 %files devel
 %defattr(-,root,root,-)
 %dir %{_libdir}/%{name}-sdk-*
@@ -410,6 +437,9 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
+* Tue Jun 22 2010 Jan Horak <jhorak@redhat.com> - 1.9.2.4-1
+- Update to 1.9.2.4
+
 * Fri Apr 2 2010 Martin Stransky <stransky@redhat.com> 1.9.2.3-1
 - Update to 1.9.2.3
 
