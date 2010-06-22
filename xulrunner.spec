@@ -38,6 +38,7 @@ Patch7:         xulrunner-1.9.2.1-build.patch
 Patch8:         mozilla-plugin.patch
 Patch9:         mozilla-build-sbrk.patch
 Patch10:        mozilla-build-s390.patch
+Patch11:	      nspr-build.patch
 
 # Fedora specific patches
 Patch20:        mozilla-192-pkgconfig.patch
@@ -138,6 +139,7 @@ sed -e 's/__RPM_VERSION_INTERNAL__/%{version_internal}/' %{P:%%PATCH0} \
 %ifarch s390
 %patch10 -p1 -b .s390
 %endif
+%patch11 -p1 -b .nspr
 
 %patch20 -p1 -b .pk
 
