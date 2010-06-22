@@ -406,6 +406,7 @@ fi
 %{mozappdir}/platform.ini
 %{mozappdir}/dependentlibs.list
 %{_sysconfdir}/ld.so.conf.d/xulrunner*.conf
+%{mozappdir}/plugin-container
 
 # XXX See if these are needed still
 %{mozappdir}/updater*
