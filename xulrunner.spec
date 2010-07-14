@@ -456,7 +456,7 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
-* Tue Jun 1 2010 Martin Stransky <stransky@redhat.com> 1.9.2.6-2
+* Wed Jul 1 2010 Martin Stransky <stransky@redhat.com> 1.9.2.6-2
 - Disabled oopp on unsupported arches (rhbz#614363)
 
 * Wed Jun 30 2010 Jan Horak <jhorak@redhat.com> - 1.9.2.6-1
