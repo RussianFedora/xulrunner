@@ -434,7 +434,6 @@ fi
 %{mozappdir}/crashreporter
 %{mozappdir}/crashreporter.ini
 %{mozappdir}/Throbber-small.gif
-%{mozappdir}/plugin-container
 %endif
 
 %files devel
