@@ -1,3 +1,10 @@
+# Separated plugins are supported on x86(64) only
+%ifarch i386 x86_64
+%define separated_plugins 1
+%else
+%define separated_plugins 0
+%endif
+
 # Minimal required versions
 %define nspr_version 4.8
 %define nss_version 3.12.6
@@ -16,7 +23,7 @@
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
 Version:        1.9.2.6
-Release:        1%{?pretag}%{?dist}
+Release:        2%{?pretag}%{?dist}
 URL:            http://developer.mozilla.org/En/XULRunner
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
@@ -150,6 +157,10 @@ sed -e 's/__RPM_VERSION_INTERNAL__/%{version_internal}/' %{P:%%PATCH0} \
 %{__cp} %{SOURCE10} .mozconfig
 %if %{include_debuginfo}
 %{__cat} %{SOURCE11} >> .mozconfig
+%endif
+
+%if !%{?separated_plugins}
+echo "ac_add_options --disable-ipc" >> .mozconfig
 %endif
 
 #---------------------------------------------------------------------
@@ -411,6 +422,9 @@ fi
 %{mozappdir}/dependentlibs.list
 %{_sysconfdir}/ld.so.conf.d/xulrunner*.conf
 %{mozappdir}/plugin-container
+%if %{?separated_plugins}
+%{mozappdir}/plugin-container
+%endif
 
 # XXX See if these are needed still
 %{mozappdir}/updater*
@@ -442,6 +456,9 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
+* Tue Jun 1 2010 Martin Stransky <stransky@redhat.com> 1.9.2.6-2
+- Disabled oopp on unsupported arches (rhbz#614363)
+
 * Wed Jun 30 2010 Jan Horak <jhorak@redhat.com> - 1.9.2.6-1
 - Update to 1.9.2.6
 
