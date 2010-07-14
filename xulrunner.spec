@@ -5,7 +5,7 @@
 %define freetype_version 2.1.9
 %define sqlite_version 3.6.16
 %define tarballdir mozilla-1.9.2
-%define include_debuginfo       0
+%define enable_mozilla_crashreporter       0
 
 # The actual sqlite version (see #480989):
 %global sqlite_build_version %(pkg-config --silence-errors --modversion sqlite3 2>/dev/null || echo 65536)
@@ -144,7 +144,7 @@ sed -e 's/__RPM_VERSION_INTERNAL__/%{version_internal}/' %{P:%%PATCH0} \
 
 %{__rm} -f .mozconfig
 %{__cp} %{SOURCE10} .mozconfig
-%if %{include_debuginfo}
+%if %{enable_mozilla_crashreporter}
 %{__cat} %{SOURCE11} >> .mozconfig
 %endif
 
@@ -185,7 +185,7 @@ export LDFLAGS="-Wl,-rpath,${MOZ_APP_DIR}"
 make -f client.mk build STRIP="/bin/true" MOZ_MAKE_FLAGS="$MOZ_SMP_FLAGS"
 
 # create debuginfo for crash-stats.mozilla.com
-%if %{include_debuginfo}
+%if %{enable_mozilla_crashreporter}
 #cd %{moz_objdir}
 make buildsymbols
 %endif
@@ -348,7 +348,7 @@ touch $RPM_BUILD_ROOT${MOZ_APP_DIR}/components/compreg.dat
 touch $RPM_BUILD_ROOT${MOZ_APP_DIR}/components/xpti.dat
 
 # Add debuginfo for crash-stats.mozilla.com 
-%if %{include_debuginfo}
+%if %{enable_mozilla_crashreporter}
 mkdir -p $RPM_BUILD_ROOT%{_libdir}/debug%{mozappdir}
 cp dist/%{name}-%{version}.en-US.linux-*.crashreporter-symbols.zip $RPM_BUILD_ROOT/%{_libdir}/debug%{mozappdir}
 #cp %{moz_objdir}/mozilla/dist/firefox-%{version}.en-US.linux-i686.crashreporter-symbols.zip $RPM_BUILD_ROOT%{_libdir}/debug%{mozappdir}
@@ -413,7 +413,7 @@ fi
 %exclude %{mozappdir}/update.locale
 %exclude %{mozappdir}/components/components.list
 
-%if %{include_debuginfo}
+%if %{enable_mozilla_crashreporter}
 %{mozappdir}/crashreporter
 %{mozappdir}/crashreporter.ini
 %{mozappdir}/Throbber-small.gif
