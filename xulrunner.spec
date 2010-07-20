@@ -34,7 +34,6 @@ Patch4:         mozilla-about-firefox-version.patch
 Patch5:         xulrunner-gtk-include.patch
 Patch6:         mozilla-libnotify.patch
 Patch7:         mozilla-516124.patch
-Patch8:         mozilla-499295.patch
 
 # Fedora specific patches
 Patch10:        mozilla-191-pkgconfig.patch
@@ -163,7 +162,6 @@ sed -e 's/__RPM_VERSION_INTERNAL__/%{version_internal}/' %{P:%%PATCH0} \
 %patch5  -p1 -b .gtk-include
 %patch6  -p1 -b .libnotify
 %patch7  -p1 -b .516124
-%patch8  -p1 -b .499295
 
 %patch10 -p1 -b .pk
 
