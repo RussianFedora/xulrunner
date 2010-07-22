@@ -1,5 +1,5 @@
 # Separated plugins are supported on x86(64) only
-%ifarch i386 x86_64
+%ifarch i386 i686 x86_64
 %define separated_plugins 1
 %else
 %define separated_plugins 0
@@ -47,6 +47,7 @@ Patch10:        mozilla-build-s390.patch
 
 # Fedora specific patches
 Patch20:        mozilla-192-pkgconfig.patch
+Patch21:        mozilla-libjpeg-turbo.patch
 
 # Upstream patches
 Patch100:       mozilla-ps-pdf-simplify-operators.patch
@@ -145,6 +146,7 @@ sed -e 's/__RPM_VERSION_INTERNAL__/%{version_internal}/' %{P:%%PATCH0} \
 %endif
 
 %patch20 -p1 -b .pk
+%patch21 -p2 -b .jpeg-turbo
 
 %patch100 -p1 -b .ps-pdf-simplify-operators
 
