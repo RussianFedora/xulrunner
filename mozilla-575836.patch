@@ -1,0 +1,35 @@
+# HG changeset patch
+# User Chris Jones <jones.chris.g@gmail.com>
+# Date 1279837785 14400
+# Node ID 2f748ad22bbbf50c47fb0783e8f948917f3e8990
+# Parent  3e8356d36728e61162b9d02b54676aef7b07f178
+Bug 575836: Fix logic here. r=jst r=josh a=beltzner
+
+diff --git a/layout/generic/nsObjectFrame.cpp b/layout/generic/nsObjectFrame.cpp
+--- a/layout/generic/nsObjectFrame.cpp
++++ b/layout/generic/nsObjectFrame.cpp
+@@ -3144,9 +3144,10 @@ nsresult nsPluginInstanceOwner::EnsureCa
+   // to the bottom of the array if there isn't already a "src" specified.
+   PRUint16 numRealAttrs = mNumCachedAttrs;
+   nsAutoString data;
+-  if (mContent->Tag() == nsGkAtoms::object
+-    && !mContent->HasAttr(kNameSpaceID_None, nsGkAtoms::src)
+-    && mContent->GetAttr(kNameSpaceID_None, nsGkAtoms::data, data)) {
++  if (mContent->Tag() == nsGkAtoms::object &&
++      !mContent->HasAttr(kNameSpaceID_None, nsGkAtoms::src) &&
++      mContent->GetAttr(kNameSpaceID_None, nsGkAtoms::data, data) &&
++      !data.IsEmpty()) {
+       mNumCachedAttrs++;
+   }
+ 
+@@ -3194,7 +3195,7 @@ nsresult nsPluginInstanceOwner::EnsureCa
+   }
+ 
+   // if the conditions above were met, copy the "data" attribute to a "src" array entry
+-  if (data.Length()) {
++  if (!data.IsEmpty()) {
+     mCachedAttrParamNames [nextAttrParamIndex] = ToNewUTF8String(NS_LITERAL_STRING("SRC"));
+     mCachedAttrParamValues[nextAttrParamIndex] = ToNewUTF8String(data);
+     nextAttrParamIndex++;
+
+
