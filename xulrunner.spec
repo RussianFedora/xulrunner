@@ -23,7 +23,7 @@
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
 Version:        1.9.2.7
-Release:        1%{?pretag}%{?dist}
+Release:        2%{?pretag}%{?dist}
 URL:            http://developer.mozilla.org/En/XULRunner
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
@@ -44,6 +44,7 @@ Patch7:         xulrunner-1.9.2.1-build.patch
 Patch8:         mozilla-plugin.patch
 Patch9:         mozilla-build-sbrk.patch
 Patch10:        mozilla-build-s390.patch
+Patch11:        mozilla-gdk-pixbuf.patch
 
 # Fedora specific patches
 Patch20:        mozilla-192-pkgconfig.patch
@@ -144,6 +145,7 @@ sed -e 's/__RPM_VERSION_INTERNAL__/%{version_internal}/' %{P:%%PATCH0} \
 %ifarch s390
 %patch10 -p1 -b .s390
 %endif
+%patch11 -p1 -b .gdk-pixbuf
 
 %patch20 -p1 -b .pk
 %patch21 -p2 -b .jpeg-turbo
@@ -452,6 +454,9 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
+* Mon Aug 9 2010 Martin Stransky <stransky@redhat.com> 1.9.2.7-2
+- added build-fix by Adam Tkac <atkac@redhat.com>
+
 * Tue Jul 20 2010 Jan Horak <jhorak@redhat.com> - 1.9.2.7-1
 - Update to 1.9.2.7
 
