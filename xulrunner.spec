@@ -11,19 +11,20 @@
 %define cairo_version 1.6.0
 %define freetype_version 2.1.9
 %define sqlite_version 3.6.16
-%define tarballdir mozilla-1.9.2
+%define tarballdir mozilla-central
 %define enable_mozilla_crashreporter       0
 
 # The actual sqlite version (see #480989):
 %global sqlite_build_version %(pkg-config --silence-errors --modversion sqlite3 2>/dev/null || echo 65536)
 
-%define version_internal  1.9.2
+%define version_internal  1.9.3
 %define mozappdir         %{_libdir}/%{name}-%{version_internal}
+%define pretag            b3
 
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
-Version:        1.9.2.7
-Release:        1%{?pretag}%{?dist}
+Version:        1.9.3.0
+Release:        0%{?pretag}%{?dist}
 URL:            http://developer.mozilla.org/En/XULRunner
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
@@ -46,7 +47,7 @@ Patch9:         mozilla-build-sbrk.patch
 Patch10:        mozilla-build-s390.patch
 
 # Fedora specific patches
-Patch20:        mozilla-192-pkgconfig.patch
+Patch20:        mozilla-193-pkgconfig.patch
 Patch21:        mozilla-libjpeg-turbo.patch
 
 # Upstream patches
@@ -135,21 +136,20 @@ sed -e 's/__RPM_VERSION_INTERNAL__/%{version_internal}/' %{P:%%PATCH0} \
     > version.patch
 %{__patch} -p1 -b --suffix .version --fuzz=0 < version.patch
 
-%patch1  -p1 -b .build
-%patch3  -p1 -b .jemalloc
+%patch1  -p2 -b .build
+#%patch3  -p1 -b .jemalloc
 %patch4  -p1 -b .about-firefox-version
 %patch7  -p2 -b .del
-%patch8  -p1 -b .plugin
-%patch9  -p2 -b .sbrk
+#%patch8  -p1 -b .plugin
+#%patch9  -p2 -b .sbrk
 %ifarch s390
 %patch10 -p1 -b .s390
 %endif
 
-%patch20 -p1 -b .pk
+%patch20 -p2 -b .pk
 %patch21 -p2 -b .jpeg-turbo
 
-%patch100 -p1 -b .ps-pdf-simplify-operators
-
+#%patch100 -p1 -b .ps-pdf-simplify-operators
 
 %{__rm} -f .mozconfig
 %{__cp} %{SOURCE10} .mozconfig
@@ -452,6 +452,9 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
+* Mon Aug 16 2010 Martin Stransky <stransky@redhat.com> 1.9.3.0-0.b3
+- Update to 1.9.3.1 beta 3
+
 * Tue Jul 20 2010 Jan Horak <jhorak@redhat.com> - 1.9.2.7-1
 - Update to 1.9.2.7
 
