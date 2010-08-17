@@ -45,6 +45,7 @@ Patch7:         xulrunner-1.9.2.1-build.patch
 Patch8:         mozilla-plugin.patch
 Patch9:         mozilla-build-sbrk.patch
 Patch10:        mozilla-build-s390.patch
+Patch11:        mozilla-malloc.patch
 
 # Fedora specific patches
 Patch20:        mozilla-193-pkgconfig.patch
@@ -146,6 +147,7 @@ sed -e 's/__RPM_VERSION_INTERNAL__/%{version_internal}/' %{P:%%PATCH0} \
 %ifarch s390
 %patch10 -p1 -b .s390
 %endif
+%patch11 -p2 -b .malloc
 
 %patch20 -p2 -b .pk
 %patch21 -p2 -b .jpeg-turbo
