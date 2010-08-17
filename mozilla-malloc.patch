@@ -6,7 +6,7 @@ diff -up xulrunner-1.9.3.0/mozilla-central/memory/mozalloc/mozalloc.h.old xulrun
  #endif
  
 -#ifdef MOZ_CPP_EXCEPTIONS
-+#ifdef 1
++#if 1
  #define MOZALLOC_THROW_BAD_ALLOC throw(std::bad_alloc)
  #else
  #define MOZALLOC_THROW_BAD_ALLOC MOZALLOC_THROW_IF_HAS_EXCEPTIONS
