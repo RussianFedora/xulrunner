@@ -82,6 +82,7 @@ BuildRequires:  alsa-lib-devel
 BuildRequires:  libnotify-devel
 BuildRequires:  autoconf213
 BuildRequires:  mesa-libGL-devel
+BuildRequires:  yasm
 
 Requires:       mozilla-filesystem
 Requires:       nspr >= %{nspr_version}
