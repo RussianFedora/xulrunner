@@ -19,12 +19,12 @@
 
 %define version_internal  1.9.3
 %define mozappdir         %{_libdir}/%{name}-%{version_internal}
-%define pretag            b3
+%define pretag            b4
 
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
 Version:        1.9.3.0
-Release:        0%{?pretag}%{?dist}
+Release:        0.1%{?pretag}%{?dist}
 URL:            http://developer.mozilla.org/En/XULRunner
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
@@ -456,6 +456,9 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
+* Fri Aug 27 2010 Martin Stransky <stransky@redhat.com> 1.9.3.0-0.1.b4
+- Update to 1.9.3.1 beta 4
+
 * Mon Aug 16 2010 Martin Stransky <stransky@redhat.com> 1.9.3.0-0.b3
 - Update to 1.9.3.1 beta 3
 
