@@ -7,7 +7,7 @@
 
 # Minimal required versions
 %define nspr_version 4.8
-%define nss_version 3.12.6
+%define nss_version 3.12.7
 %define cairo_version 1.6.0
 %define freetype_version 2.1.9
 %define sqlite_version 3.6.16
