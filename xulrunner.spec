@@ -398,12 +398,14 @@ fi
 %doc %attr(644, root, root) %{mozappdir}/LICENSE
 %doc %attr(644, root, root) %{mozappdir}/README.txt
 %{mozappdir}/chrome
+%{mozappdir}/chrome.manifest
 %{mozappdir}/dictionaries
 %dir %{mozappdir}/components
 %ghost %{mozappdir}/components/compreg.dat
 %ghost %{mozappdir}/components/xpti.dat
 %{mozappdir}/components/*.so
 %{mozappdir}/components/*.xpt
+%{mozappdir}/components/*.manifest
 %attr(644, root, root) %{mozappdir}/components/*.js
 %{mozappdir}/defaults
 %dir %{mozappdir}/icons
@@ -419,6 +421,7 @@ fi
 %{mozappdir}/xulrunner-stub
 %{mozappdir}/platform.ini
 %{mozappdir}/dependentlibs.list
+%{mozappdir}/greprefs.js
 %{_sysconfdir}/ld.so.conf.d/xulrunner*.conf
 %if %{?separated_plugins}
 %{mozappdir}/plugin-container
