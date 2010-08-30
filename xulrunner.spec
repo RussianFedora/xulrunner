@@ -227,8 +227,6 @@ DESTDIR=$RPM_BUILD_ROOT make install
 %{__mkdir_p} $RPM_BUILD_ROOT/${MOZ_APP_DIR} \
              $RPM_BUILD_ROOT%{_datadir}/idl/${INTERNAL_APP_SDK_NAME} \
              $RPM_BUILD_ROOT%{_includedir}/${INTERNAL_APP_SDK_NAME}
-%{__install} -p dist/sdk/bin/regxpcom $RPM_BUILD_ROOT/$MOZ_APP_DIR
-
 %{__mkdir_p} $RPM_BUILD_ROOT{%{_libdir},%{_bindir},%{_datadir}/applications}
 
 # set up our default preferences
@@ -417,7 +415,6 @@ fi
 %{mozappdir}/*.so
 %{mozappdir}/mozilla-xremote-client
 %{mozappdir}/run-mozilla.sh
-%{mozappdir}/regxpcom
 %{mozappdir}/xulrunner
 %{mozappdir}/xulrunner-bin
 %{mozappdir}/xulrunner-stub
