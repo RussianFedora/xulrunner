@@ -406,7 +406,6 @@ fi
 %{mozappdir}/components/*.xpt
 %attr(644, root, root) %{mozappdir}/components/*.js
 %{mozappdir}/defaults
-%{mozappdir}/greprefs
 %dir %{mozappdir}/icons
 %attr(644, root, root) %{mozappdir}/icons/*
 %{mozappdir}/modules
@@ -428,7 +427,6 @@ fi
 # XXX See if these are needed still
 %{mozappdir}/updater*
 %exclude %{mozappdir}/update.locale
-%exclude %{mozappdir}/components/components.list
 
 %if %{enable_mozilla_crashreporter}
 %{mozappdir}/crashreporter
