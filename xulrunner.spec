@@ -186,8 +186,10 @@ MOZ_APP_DIR=%{_libdir}/%{name}-${INTERNAL_GECKO}
 # everywhere in the code; so, don't override that.
 # and disable C++ exceptions
 MOZ_OPT_FLAGS=$(echo $RPM_OPT_FLAGS | %{__sed} -e 's/-Wall//' | %{__sed} -e 's/-fexceptions//')
-export CFLAGS=$MOZ_OPT_FLAGS
-export CXXFLAGS=$MOZ_OPT_FLAGS
+# TODO - mozilla seems to use its own optimize config in Firefox 4,
+# we need to figure how set our gcc flags properly.
+#export CFLAGS=$MOZ_OPT_FLAGS
+#export CXXFLAGS=$MOZ_OPT_FLAGS
 
 export PREFIX='%{_prefix}'
 export LIBDIR='%{_libdir}'
