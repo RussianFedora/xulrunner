@@ -24,7 +24,7 @@
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
 Version:        1.9.3.0
-Release:        0.1%{?pretag}%{?dist}
+Release:        0.2%{?pretag}%{?dist}
 URL:            http://developer.mozilla.org/En/XULRunner
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
@@ -39,7 +39,7 @@ Source23:       %{name}.1
 # build patches
 Patch0:         xulrunner-version.patch
 Patch1:         mozilla-build.patch
-Patch3:         mozilla-jemalloc.patch
+Patch3:         firefox4-jemalloc.patch
 Patch4:         mozilla-about-firefox-version.patch
 Patch7:         xulrunner-1.9.2.1-build.patch
 Patch8:         mozilla-plugin.patch
@@ -125,6 +125,7 @@ Requires: sqlite-devel
 Requires: startup-notification-devel
 Requires: alsa-lib-devel
 Requires: libnotify-devel
+Requires: mesa-libGL-devel
 
 %description devel
 Gecko development files.
@@ -140,11 +141,11 @@ sed -e 's/__RPM_VERSION_INTERNAL__/%{version_internal}/' %{P:%%PATCH0} \
 %{__patch} -p1 -b --suffix .version --fuzz=0 < version.patch
 
 %patch1  -p2 -b .build
-#%patch3  -p1 -b .jemalloc
+%patch3  -p1 -b .jemalloc
 %patch4  -p1 -b .about-firefox-version
 %patch7  -p2 -b .del
 #%patch8  -p1 -b .plugin
-#%patch9  -p2 -b .sbrk
+%patch9  -p2 -b .sbrk
 %ifarch s390
 %patch10 -p1 -b .s390
 %endif
@@ -185,11 +186,9 @@ MOZ_APP_DIR=%{_libdir}/%{name}-${INTERNAL_GECKO}
 # Mozilla builds with -Wall with exception of a few warnings which show up
 # everywhere in the code; so, don't override that.
 # and disable C++ exceptions
-MOZ_OPT_FLAGS=$(echo $RPM_OPT_FLAGS | %{__sed} -e 's/-Wall//' | %{__sed} -e 's/-fexceptions//')
-# TODO - mozilla seems to use its own optimize config in Firefox 4,
-# we need to figure how set our gcc flags properly.
-#export CFLAGS=$MOZ_OPT_FLAGS
-#export CXXFLAGS=$MOZ_OPT_FLAGS
+MOZ_OPT_FLAGS=$(echo $RPM_OPT_FLAGS | %{__sed} -e 's/-Wall//' | %{__sed} -e 's/-fexceptions/-fno-exceptions/')
+export CFLAGS=$MOZ_OPT_FLAGS
+export CXXFLAGS=$MOZ_OPT_FLAGS
 
 export PREFIX='%{_prefix}'
 export LIBDIR='%{_libdir}'
@@ -202,7 +201,7 @@ MOZ_SMP_FLAGS=-j1
 %endif
 
 export LDFLAGS="-Wl,-rpath,${MOZ_APP_DIR}"
-make -f client.mk build STRIP="/bin/true" MOZ_MAKE_FLAGS="$MOZ_SMP_FLAGS"
+make -f client.mk build STRIP="/bin/true" MOZ_MAKE_FLAGS="$MOZ_SMP_FLAGS" MOZ_SERVICES_SYNC="1"
 
 # create debuginfo for crash-stats.mozilla.com
 %if %{enable_mozilla_crashreporter}
@@ -441,13 +440,9 @@ fi
 
 %files devel
 %defattr(-,root,root,-)
-%dir %{_libdir}/%{name}-sdk-*
-%dir %{_libdir}/%{name}-sdk-*/sdk
-%dir %{_datadir}/idl/%{name}*%{version_internal}
 %{_datadir}/idl/%{name}*%{version_internal}
 %{_includedir}/%{name}*%{version_internal}
-%{_libdir}/%{name}-sdk-*/*
-%{_libdir}/%{name}-sdk-*/sdk/*
+%{_libdir}/%{name}-sdk-*/
 %{_libdir}/pkgconfig/*.pc
 %{mozappdir}/xpcshell
 %{mozappdir}/xpidl
@@ -457,6 +452,9 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
+* Tue Sep  7 2010 Tom "spot" Callaway <tcallawa@redhat.com> 1.9.3.0-0.2.b4
+- spec file cleanup
+
 * Fri Aug 27 2010 Martin Stransky <stransky@redhat.com> 1.9.3.0-0.1.b4
 - Update to 1.9.3.1 beta 4
 
