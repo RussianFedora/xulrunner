@@ -1,6 +1,6 @@
 # Minimal required versions
 %define nspr_version 4.8
-%define nss_version 3.12.6
+%define nss_version 3.12.7
 %define cairo_version 1.6.0
 %define freetype_version 2.1.9
 %define sqlite_version 3.6.16
@@ -15,8 +15,8 @@
 
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
-Version:        1.9.2.7
-Release:        2%{?pretag}%{?dist}
+Version:        1.9.2.9
+Release:        1%{?pretag}%{?dist}
 URL:            http://developer.mozilla.org/En/XULRunner
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
@@ -42,7 +42,6 @@ Patch20:        mozilla-192-pkgconfig.patch
 
 # Upstream patches
 Patch100:       mozilla-ps-pdf-simplify-operators.patch
-Patch101:       mozilla-575836.patch
 
 # ---------------------------------------------------
 
@@ -137,7 +136,6 @@ sed -e 's/__RPM_VERSION_INTERNAL__/%{version_internal}/' %{P:%%PATCH0} \
 %patch20 -p1 -b .pk
 
 %patch100 -p1 -b .ps-pdf-simplify-operators
-%patch101 -p1 -b .575836
 
 
 %{__rm} -f .mozconfig
@@ -436,6 +434,9 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
+* Mon Sep  6 2010 Jan Horak <jhorak@redhat.com> - 1.9.2.9-1
+- Update to 1.9.2.9
+
 * Fri Jul 23 2010 Christopher Aillon <caillon@redhat.com> - 1.9.2.7-2
 - Add patch for mozbz#575836 (1.9.2.8)
 
