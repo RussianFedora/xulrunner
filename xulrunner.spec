@@ -186,7 +186,7 @@ MOZ_APP_DIR=%{_libdir}/%{name}-${INTERNAL_GECKO}
 # Mozilla builds with -Wall with exception of a few warnings which show up
 # everywhere in the code; so, don't override that.
 # and disable C++ exceptions
-MOZ_OPT_FLAGS=$(echo $RPM_OPT_FLAGS | %{__sed} -e 's/-Wall//' | %{__sed} -e 's/-fexceptions/-fno-exceptions/')
+export MOZ_OPT_FLAGS=$(echo $RPM_OPT_FLAGS | %{__sed} -e 's/-Wall//' | %{__sed} -e 's/-fexceptions/-fno-exceptions/g')
 export CFLAGS=$MOZ_OPT_FLAGS
 export CXXFLAGS=$MOZ_OPT_FLAGS
 
