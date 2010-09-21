@@ -17,14 +17,14 @@
 # The actual sqlite version (see #480989):
 %global sqlite_build_version %(pkg-config --silence-errors --modversion sqlite3 2>/dev/null || echo 65536)
 
-%define version_internal  1.9.3
+%define version_internal  2
 %define mozappdir         %{_libdir}/%{name}-%{version_internal}
-%define pretag            b4
+%define pretag            b6
 
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
-Version:        1.9.3.0
-Release:        0.2%{?pretag}%{?dist}
+Version:        2.0
+Release:        0.1%{?pretag}%{?dist}
 URL:            http://developer.mozilla.org/En/XULRunner
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
@@ -452,6 +452,9 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
+* Tue Sep 21 2010 Martin Stransky <stransky@redhat.com> 2.0-0.1.b6
+- Update to 2.0b6
+
 * Tue Sep  7 2010 Tom "spot" Callaway <tcallawa@redhat.com> 1.9.3.0-0.2.b4
 - spec file cleanup
 
