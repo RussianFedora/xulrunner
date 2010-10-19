@@ -41,7 +41,6 @@ Patch9:         mozilla-build-sbrk.patch
 Patch20:        mozilla-192-pkgconfig.patch
 
 # Upstream patches
-Patch100:       mozilla-ps-pdf-simplify-operators.patch
 
 # ---------------------------------------------------
 
@@ -134,9 +133,6 @@ sed -e 's/__RPM_VERSION_INTERNAL__/%{version_internal}/' %{P:%%PATCH0} \
 %patch9  -p2 -b .sbrk
 
 %patch20 -p1 -b .pk
-
-%patch100 -p1 -b .ps-pdf-simplify-operators
-
 
 %{__rm} -f .mozconfig
 %{__cp} %{SOURCE10} .mozconfig
