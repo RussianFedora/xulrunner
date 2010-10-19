@@ -7,7 +7,7 @@
 
 # Minimal required versions
 %define nspr_version 4.8
-%define nss_version 3.12.7
+%define nss_version 3.12.8
 %define cairo_version 1.6.0
 %define freetype_version 2.1.9
 %define sqlite_version 3.6.16
@@ -22,7 +22,7 @@
 
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
-Version:        1.9.2.10
+Version:        1.9.2.11
 Release:        1%{?pretag}%{?dist}.1
 URL:            http://developer.mozilla.org/En/XULRunner
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
@@ -454,6 +454,9 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
+* Tue Oct 19 2010 Jan Horak <jhorak@redhat.com> - 1.9.2.11-1
+- Update to 1.9.2.11
+
 * Tue Oct 05 2010 jkeating - 1.9.2.10-1.1
 - Rebuilt for gcc bug 634757
 
