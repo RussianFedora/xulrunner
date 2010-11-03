@@ -11,6 +11,7 @@
 %define cairo_version 1.6.0
 %define freetype_version 2.1.9
 %define sqlite_version 3.6.16
+%define notify_version 0.7.0
 %define tarballdir mozilla-central
 %define enable_mozilla_crashreporter       0
 
@@ -24,7 +25,7 @@
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
 Version:        2.0
-Release:        0.2%{?pretag}%{?dist}
+Release:        0.3%{?pretag}%{?dist}
 URL:            http://developer.mozilla.org/En/XULRunner
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
@@ -50,6 +51,7 @@ Patch11:        mozilla-malloc.patch
 # Fedora specific patches
 Patch20:        mozilla-193-pkgconfig.patch
 Patch21:        mozilla-libjpeg-turbo.patch
+Patch22:        mozilla-notify.patch
 
 # Upstream patches
 Patch100:       mozilla-ps-pdf-simplify-operators.patch
@@ -79,7 +81,7 @@ BuildRequires:  hunspell-devel
 BuildRequires:  sqlite-devel >= %{sqlite_version}
 BuildRequires:  startup-notification-devel
 BuildRequires:  alsa-lib-devel
-BuildRequires:  libnotify-devel
+BuildRequires:  libnotify-devel >= %{notify_version}
 BuildRequires:  autoconf213
 BuildRequires:  mesa-libGL-devel
 BuildRequires:  yasm
@@ -153,6 +155,7 @@ sed -e 's/__RPM_VERSION_INTERNAL__/%{version_internal}/' %{P:%%PATCH0} \
 
 %patch20 -p2 -b .pk
 %patch21 -p2 -b .jpeg-turbo
+%patch22 -p2 -b .notify
 
 #%patch100 -p1 -b .ps-pdf-simplify-operators
 
@@ -452,6 +455,9 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
+* Wed Nov 3 2010 Martin Stransky <stransky@redhat.com> 2.0-0.3.b6
+- Libnotify rebuild (rhbz#649071)
+
 * Wed Sep 29 2010 jkeating - 2.0-0.2b6
 - Rebuilt for gcc bug 634757
 
