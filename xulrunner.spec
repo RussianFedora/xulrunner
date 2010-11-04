@@ -25,7 +25,7 @@
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
 Version:        2.0
-Release:        0.3%{?pretag}%{?dist}
+Release:        0.4%{?pretag}%{?dist}
 URL:            http://developer.mozilla.org/En/XULRunner
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
@@ -52,6 +52,7 @@ Patch11:        mozilla-malloc.patch
 Patch20:        mozilla-193-pkgconfig.patch
 Patch21:        mozilla-libjpeg-turbo.patch
 Patch22:        mozilla-notify.patch
+Patch23:        wmclass.patch
 
 # Upstream patches
 Patch100:       mozilla-ps-pdf-simplify-operators.patch
@@ -156,6 +157,7 @@ sed -e 's/__RPM_VERSION_INTERNAL__/%{version_internal}/' %{P:%%PATCH0} \
 %patch20 -p2 -b .pk
 %patch21 -p2 -b .jpeg-turbo
 %patch22 -p2 -b .notify
+%patch23 -p1 -b .wmclass
 
 #%patch100 -p1 -b .ps-pdf-simplify-operators
 
@@ -455,6 +457,9 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
+* Thu Nov 4 2010 Christopher Aillon <caillon@redhat.com> 2.0-0.4.b6
+- Ensure that WM_CLASS matches the desktop file
+
 * Wed Nov 3 2010 Martin Stransky <stransky@redhat.com> 2.0-0.3.b6
 - Libnotify rebuild (rhbz#649071)
 
