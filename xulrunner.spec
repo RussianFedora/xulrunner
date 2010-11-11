@@ -20,12 +20,12 @@
 
 %define version_internal  2
 %define mozappdir         %{_libdir}/%{name}-%{version_internal}
-%define pretag            b6
+%define pretag            b7
 
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
 Version:        2.0
-Release:        0.4%{?pretag}%{?dist}
+Release:        0.5%{?pretag}%{?dist}
 URL:            http://developer.mozilla.org/En/XULRunner
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
@@ -457,6 +457,9 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
+* Thu Nov 11 2010 Jan Horak <jhorak@redhat.com> - 2.0-0.5.b7
+- Update to 2.0b7
+
 * Thu Nov 4 2010 Christopher Aillon <caillon@redhat.com> 2.0-0.4.b6
 - Ensure that WM_CLASS matches the desktop file
 
