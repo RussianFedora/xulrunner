@@ -41,7 +41,6 @@ Source23:       %{name}.1
 Patch0:         xulrunner-version.patch
 Patch1:         mozilla-build.patch
 Patch3:         firefox4-jemalloc.patch
-Patch4:         mozilla-about-firefox-version.patch
 Patch7:         xulrunner-1.9.2.1-build.patch
 Patch8:         mozilla-plugin.patch
 Patch9:         mozilla-build-sbrk.patch
@@ -144,7 +143,6 @@ sed -e 's/__RPM_VERSION_INTERNAL__/%{version_internal}/' %{P:%%PATCH0} \
 
 %patch1  -p2 -b .build
 %patch3  -p1 -b .jemalloc
-#%patch4  -p1 -b .about-firefox-version
 %patch7  -p2 -b .del
 #%patch8  -p1 -b .plugin
 %patch9  -p2 -b .sbrk
