@@ -145,7 +145,7 @@ sed -e 's/__RPM_VERSION_INTERNAL__/%{version_internal}/' %{P:%%PATCH0} \
 
 %patch1  -p2 -b .build
 %patch3  -p1 -b .jemalloc
-%patch4  -p1 -b .about-firefox-version
+#%patch4  -p1 -b .about-firefox-version
 %patch7  -p2 -b .del
 #%patch8  -p1 -b .plugin
 %patch9  -p2 -b .sbrk
