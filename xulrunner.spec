@@ -25,7 +25,7 @@
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
 Version:        2.0
-Release:        0.5%{?pretag}%{?dist}
+Release:        0.6%{?pretag}%{?dist}
 URL:            http://developer.mozilla.org/En/XULRunner
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
@@ -45,7 +45,6 @@ Patch4:         mozilla-about-firefox-version.patch
 Patch7:         xulrunner-1.9.2.1-build.patch
 Patch8:         mozilla-plugin.patch
 Patch9:         mozilla-build-sbrk.patch
-Patch10:        mozilla-build-s390.patch
 Patch11:        mozilla-malloc.patch
 
 # Fedora specific patches
@@ -149,9 +148,6 @@ sed -e 's/__RPM_VERSION_INTERNAL__/%{version_internal}/' %{P:%%PATCH0} \
 %patch7  -p2 -b .del
 #%patch8  -p1 -b .plugin
 %patch9  -p2 -b .sbrk
-%ifarch s390
-%patch10 -p1 -b .s390
-%endif
 %patch11 -p2 -b .malloc
 
 %patch20 -p2 -b .pk
@@ -457,6 +453,9 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
+* Thu Nov 11 2010 Dan Horák <dan[at]danny.cz> - 2.0-0.6.b7
+- The s390 patch is not needed anymore
+
 * Thu Nov 11 2010 Jan Horak <jhorak@redhat.com> - 2.0-0.5.b7
 - Update to 2.0b7
 
