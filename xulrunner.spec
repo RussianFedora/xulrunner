@@ -45,6 +45,9 @@ Patch7:         xulrunner-1.9.2.1-build.patch
 Patch8:         mozilla-plugin.patch
 Patch9:         mozilla-build-sbrk.patch
 Patch11:        mozilla-malloc.patch
+Patch12:        xulrunner-2.0-64bit-big-endian.patch
+Patch13:        xulrunner-2.0-secondary-jit.patch
+Patch14:        xulrunner-2.0-chromium-types.patch
 
 # Fedora specific patches
 Patch20:        mozilla-193-pkgconfig.patch
@@ -147,6 +150,9 @@ sed -e 's/__RPM_VERSION_INTERNAL__/%{version_internal}/' %{P:%%PATCH0} \
 #%patch8  -p1 -b .plugin
 %patch9  -p2 -b .sbrk
 %patch11 -p2 -b .malloc
+%patch12 -p2 -b .64bit-big-endian
+%patch13 -p2 -b .secondary-jit
+%patch14 -p2 -b .chromium-types
 
 %patch20 -p2 -b .pk
 %patch21 -p2 -b .jpeg-turbo
