@@ -49,6 +49,7 @@ Patch11:        mozilla-gdk-pixbuf.patch
 # Fedora specific patches
 Patch20:        mozilla-192-pkgconfig.patch
 Patch21:        mozilla-libjpeg-turbo.patch
+Patch22:        mozilla-crashreporter-static.patch
 
 # Upstream patches
 
@@ -121,6 +122,8 @@ Requires: sqlite-devel
 Requires: startup-notification-devel
 Requires: alsa-lib-devel
 Requires: libnotify-devel
+Requires: curl-devel
+BuildRequires: libcurl-devel
 
 %description devel
 Gecko development files.
@@ -148,6 +151,7 @@ sed -e 's/__RPM_VERSION_INTERNAL__/%{version_internal}/' %{P:%%PATCH0} \
 
 %patch20 -p1 -b .pk
 %patch21 -p2 -b .jpeg-turbo
+%patch22 -p1 -b .static
 
 
 %{__rm} -f .mozconfig
