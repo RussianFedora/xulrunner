@@ -22,7 +22,7 @@
 
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
-Version:        1.9.2.12
+Version:        1.9.2.13
 Release:        1%{?pretag}%{?dist}
 URL:            http://developer.mozilla.org/En/XULRunner
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
@@ -41,7 +41,6 @@ Patch1:         mozilla-build.patch
 Patch3:         mozilla-jemalloc.patch
 Patch4:         mozilla-about-firefox-version.patch
 Patch7:         xulrunner-1.9.2.1-build.patch
-Patch8:         mozilla-plugin.patch
 Patch9:         mozilla-build-sbrk.patch
 Patch10:        mozilla-build-s390.patch
 Patch11:        mozilla-gdk-pixbuf.patch
@@ -142,7 +141,6 @@ sed -e 's/__RPM_VERSION_INTERNAL__/%{version_internal}/' %{P:%%PATCH0} \
 %patch3  -p1 -b .jemalloc
 %patch4  -p1 -b .about-firefox-version
 %patch7  -p2 -b .del
-%patch8  -p1 -b .plugin
 %patch9  -p2 -b .sbrk
 %ifarch s390
 %patch10 -p1 -b .s390
@@ -455,6 +453,9 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
+* Thu Dec  9 2010 Jan Horak <jhorak@redhat.com> - 1.9.2.13-1
+- Update to 1.9.2.13
+
 * Wed Oct 27 2010 Jan Horak <jhorak@redhat.com> - 1.9.2.12-1
 - Update to 1.9.2.12
 
