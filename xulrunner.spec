@@ -87,6 +87,7 @@ BuildRequires:  libnotify-devel >= %{notify_version}
 BuildRequires:  autoconf213
 BuildRequires:  mesa-libGL-devel
 BuildRequires:  yasm
+BuildRequires:  libcurl-devel
 
 Requires:       mozilla-filesystem
 Requires:       nspr >= %{nspr_version}
