@@ -11,7 +11,7 @@
 %define cairo_version 1.6.0
 %define freetype_version 2.1.9
 %define sqlite_version 3.6.16
-%define notify_version 0.7.0
+%define notify_version 0.5.0
 %define tarballdir mozilla-central
 %define enable_mozilla_crashreporter       1
 
@@ -375,7 +375,7 @@ touch $RPM_BUILD_ROOT${MOZ_APP_DIR}/components/xpti.dat
 # Add debuginfo for crash-stats.mozilla.com 
 %if %{enable_mozilla_crashreporter}
 mkdir -p $RPM_BUILD_ROOT%{_libdir}/debug%{mozappdir}
-cp dist/%{name}-%{version}.en-US.linux-*.crashreporter-symbols.zip $RPM_BUILD_ROOT/%{_libdir}/debug%{mozappdir}
+cp dist/%{name}-%{version}*.crashreporter-symbols.zip $RPM_BUILD_ROOT/%{_libdir}/debug%{mozappdir}
 #cp %{moz_objdir}/mozilla/dist/firefox-%{version}.en-US.linux-i686.crashreporter-symbols.zip $RPM_BUILD_ROOT%{_libdir}/debug%{mozappdir}
 %endif
 
