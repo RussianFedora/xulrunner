@@ -7,13 +7,13 @@
 
 # Minimal required versions
 %define nspr_version 4.8
-%define nss_version 3.12.7
+%define nss_version 3.12.8
 %define cairo_version 1.6.0
 %define freetype_version 2.1.9
 %define sqlite_version 3.6.16
 %define notify_version 0.7.0
 %define tarballdir mozilla-central
-%define enable_mozilla_crashreporter       0
+%define enable_mozilla_crashreporter       1
 
 # The actual sqlite version (see #480989):
 %global sqlite_build_version %(pkg-config --silence-errors --modversion sqlite3 2>/dev/null || echo 65536)
@@ -25,7 +25,7 @@
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
 Version:        2.0
-Release:        0.6%{?pretag}%{?dist}
+Release:        0.7%{?pretag}%{?dist}
 URL:            http://developer.mozilla.org/En/XULRunner
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
@@ -457,6 +457,9 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
+* Tue Dec 14 2010 Jan Horak <jhorak@redhat.com> - 2.0-0.7.b7
+- Enable mozilla crash reporter
+
 * Thu Nov 11 2010 Dan Horák <dan[at]danny.cz> - 2.0-0.6.b7
 - The s390 patch is not needed anymore
 
