@@ -54,6 +54,7 @@ Patch20:        mozilla-193-pkgconfig.patch
 Patch21:        mozilla-libjpeg-turbo.patch
 Patch22:        mozilla-notify.patch
 Patch23:        wmclass.patch
+Patch24:        crashreporter-remove-static.patch
 
 # Upstream patches
 Patch100:       mozilla-ps-pdf-simplify-operators.patch
@@ -159,6 +160,7 @@ sed -e 's/__RPM_VERSION_INTERNAL__/%{version_internal}/' %{P:%%PATCH0} \
 %patch21 -p2 -b .jpeg-turbo
 %patch22 -p2 -b .notify
 %patch23 -p1 -b .wmclass
+%patch24 -p1 -b .static
 
 #%patch100 -p1 -b .ps-pdf-simplify-operators
 
