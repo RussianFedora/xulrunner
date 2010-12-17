@@ -13,7 +13,12 @@
 %define sqlite_version 3.6.16
 %define notify_version 0.7.0
 %define tarballdir mozilla-central
+# build crash reporter only on x86/x86_64 for now
+%ifarch %{ix86} x86_64
 %define enable_mozilla_crashreporter       1
+%else
+%define enable_mozilla_crashreporter       0
+%endif
 
 # The actual sqlite version (see #480989):
 %global sqlite_build_version %(pkg-config --silence-errors --modversion sqlite3 2>/dev/null || echo 65536)
@@ -25,7 +30,7 @@
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
 Version:        2.0
-Release:        0.7%{?pretag}%{?dist}
+Release:        0.8%{?pretag}%{?dist}
 URL:            http://developer.mozilla.org/En/XULRunner
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
@@ -270,7 +275,7 @@ cd -
         $RPM_BUILD_ROOT/%{_libdir}/pkgconfig/libxul-embedding-unstable.pc
 
 # Fix multilib devel conflicts...
-%ifarch x86_64 ia64 s390x ppc64
+%ifarch x86_64 ia64 s390x ppc64 sparc64
 %define mozbits 64
 %else
 %define mozbits 32
@@ -281,7 +286,7 @@ genheader=$*
 mv ${genheader}.h ${genheader}%{mozbits}.h
 cat > ${genheader}.h << EOF
 /* This file exists to fix multilib conflicts */
-#if defined(__x86_64__) || defined(__ia64__) || defined(__s390x__) || defined(__powerpc64__)
+#if defined(__x86_64__) || defined(__ia64__) || defined(__s390x__) || defined(__powerpc64__) || (defined(__sparc__) && defined(__arch64__))
 #include "${genheader}64.h"
 #else
 #include "${genheader}32.h"
@@ -337,7 +342,7 @@ done
 popd
 
 # GRE stuff
-%ifarch x86_64 ia64 ppc64 s390x
+%ifarch x86_64 ia64 ppc64 s390x sparc64
 %define gre_conf_file gre64.conf
 %else
 %define gre_conf_file gre.conf
@@ -349,7 +354,7 @@ MOZILLA_GECKO_VERSION=`./config/milestone.pl --topsrcdir=.`
 chmod 644 $RPM_BUILD_ROOT/etc/gre.d/%{gre_conf_file}
 
 # Library path
-%ifarch x86_64 ia64 ppc64 s390x
+%ifarch x86_64 ia64 ppc64 s390x sparc64
 %define ld_conf_file xulrunner-64.conf
 %else
 %define ld_conf_file xulrunner-32.conf
@@ -461,6 +466,10 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
+* Fri Dec 17 2010 Dan Horák <dan[at]danny.cz> - 2.0-0.8.b7
+- disable the crash reporter on non-x86 arches
+- add sparc64 as 64-bit arch
+
 * Tue Dec 14 2010 Jan Horak <jhorak@redhat.com> - 2.0-0.7.b7
 - Enable mozilla crash reporter
 
