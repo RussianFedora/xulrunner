@@ -374,11 +374,10 @@ touch $RPM_BUILD_ROOT${MOZ_APP_DIR}/components/xpti.dat
 
 # Add debuginfo for crash-stats.mozilla.com 
 %if %{enable_mozilla_crashreporter}
-mkdir -p $RPM_BUILD_ROOT%{_libdir}/debug%{mozappdir}
 # Debug symbols are stored in /usr/lib even in x86_64 arch
-DEBUG_LIB_DIR=`echo $RPM_BUILD_ROOT|sed -e "s/lib64/lib/"`
-cp dist/%{name}-%{version}*.crashreporter-symbols.zip $DEBUG_LIB_DIR/%{_libdir}/debug%{mozappdir}
-#cp %{moz_objdir}/mozilla/dist/firefox-%{version}.en-US.linux-i686.crashreporter-symbols.zip $RPM_BUILD_ROOT%{_libdir}/debug%{mozappdir}
+DEBUG_LIB_DIR=`echo %{_libdir}|sed -e "s/lib64/lib/"`
+mkdir -p $RPM_BUILD_ROOT$DEBUG_LIB_DIR/debug%{mozappdir}
+cp dist/%{name}-%{version}*.crashreporter-symbols.zip $RPM_BUILD_ROOT$DEBUG_LIB_DIR/debug%{mozappdir}
 %endif
 
 #---------------------------------------------------------------------
