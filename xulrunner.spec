@@ -30,7 +30,7 @@
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
 Version:        2.0
-Release:        0.10%{?pretag}%{?dist}
+Release:        0.11%{?pretag}%{?dist}
 URL:            http://developer.mozilla.org/En/XULRunner
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
@@ -449,6 +449,9 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
+* Tue Dec 21 2010 Martin Stransky <stransky@redhat.com> 2.0-0.11.b8
+- enable url-classifier and jar format for chrome files
+
 * Tue Dec 21 2010 Martin Stransky <stransky@redhat.com> 2.0-0.10.b8
 - Update to 2.0b8
 

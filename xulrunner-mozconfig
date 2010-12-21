@@ -33,6 +33,8 @@ ac_add_options --disable-necko-wifi
 ac_add_options --enable-startup-notification
 ac_add_options --disable-cpp-exceptions
 ac_add_options --enable-shared-js
+ac_add_options --enable-chrome-format=jar
+ac_add_options --enable-url-classifier
 
 export BUILD_OFFICIAL=1
 export MOZILLA_OFFICIAL=1
