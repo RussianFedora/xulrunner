@@ -25,12 +25,12 @@
 
 %define version_internal  2
 %define mozappdir         %{_libdir}/%{name}-%{version_internal}
-%define pretag            b7
+%define pretag            b8
 
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
 Version:        2.0
-Release:        0.9%{?pretag}%{?dist}
+Release:        0.10%{?pretag}%{?dist}
 URL:            http://developer.mozilla.org/En/XULRunner
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
@@ -46,8 +46,6 @@ Source23:       %{name}.1
 Patch0:         xulrunner-version.patch
 Patch1:         mozilla-build.patch
 Patch3:         firefox4-jemalloc.patch
-Patch7:         xulrunner-1.9.2.1-build.patch
-Patch8:         mozilla-plugin.patch
 Patch9:         mozilla-build-sbrk.patch
 Patch11:        mozilla-malloc.patch
 Patch12:        xulrunner-2.0-64bit-big-endian.patch
@@ -153,8 +151,6 @@ sed -e 's/__RPM_VERSION_INTERNAL__/%{version_internal}/' %{P:%%PATCH0} \
 
 %patch1  -p2 -b .build
 %patch3  -p1 -b .jemalloc
-%patch7  -p2 -b .del
-#%patch8  -p1 -b .plugin
 %patch9  -p2 -b .sbrk
 %patch11 -p2 -b .malloc
 %patch12 -p2 -b .64bit-big-endian
@@ -453,6 +449,9 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
+* Tue Dec 21 2010 Martin Stransky <stransky@redhat.com> 2.0-0.10.b8
+- Update to 2.0b8
+
 * Mon Dec 20 2010 Martin Stransky <stransky@redhat.com> 2.0-0.9.b8
 - removed unused library path (rhbz#658471)
 
