@@ -1,7 +1,7 @@
-diff -up xulrunner-2.0/mozilla-central/js/src/jsval.h.s390 xulrunner-2.0/mozilla-central/js/src/jsval.h
---- xulrunner-2.0/mozilla-central/js/src/jsval.h.s390	2010-11-15 10:43:49.000000000 +0100
-+++ xulrunner-2.0/mozilla-central/js/src/jsval.h	2010-11-15 10:45:41.000000000 +0100
-@@ -331,6 +331,27 @@ typedef union jsval_layout
+diff -up xulrunner-2.0/mozilla-central/js/src/jsval.h.64bit-big-endian xulrunner-2.0/mozilla-central/js/src/jsval.h
+--- xulrunner-2.0/mozilla-central/js/src/jsval.h.64bit-big-endian	2010-12-15 02:03:06.000000000 +0100
++++ xulrunner-2.0/mozilla-central/js/src/jsval.h	2010-12-22 12:00:57.000000000 +0100
+@@ -334,6 +334,32 @@ typedef union jsval_layout
      double asDouble;
      void *asPtr;
  } jsval_layout;
@@ -20,7 +20,12 @@ diff -up xulrunner-2.0/mozilla-central/js/src/jsval.h.s390 xulrunner-2.0/mozilla
 +        union {
 +            int32          i32;
 +            uint32         u32;
++            JSBool         boo;
++            JSString       *str;
++            JSObject       *obj;
++            void           *ptr;
 +            JSWhyMagic     why;
++            jsuword        word;
 +        } payload;
 +    } s;
 +    double asDouble;
