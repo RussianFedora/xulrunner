@@ -30,7 +30,7 @@
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
 Version:        2.0
-Release:        0.12%{?pretag}%{?dist}
+Release:        0.13%{?pretag}%{?dist}
 URL:            http://developer.mozilla.org/En/XULRunner
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
@@ -349,6 +349,18 @@ MOZILLA_GECKO_VERSION=`./config/milestone.pl --topsrcdir=.`
         $RPM_BUILD_ROOT/etc/gre.d/%{gre_conf_file}
 chmod 644 $RPM_BUILD_ROOT/etc/gre.d/%{gre_conf_file}
 
+# Library path
+%ifarch x86_64 ia64 ppc64 s390x sparc64
+%define ld_conf_file xulrunner-64.conf
+%else
+%define ld_conf_file xulrunner-32.conf
+%endif
+
+%{__mkdir_p} $RPM_BUILD_ROOT/etc/ld.so.conf.d
+%{__cat} > $RPM_BUILD_ROOT/etc/ld.so.conf.d/%{ld_conf_file} << EOF
+${MOZ_APP_DIR}
+EOF
+                        
 # Copy over the LICENSE
 %{__install} -p -c -m 644 LICENSE $RPM_BUILD_ROOT${MOZ_APP_DIR}
 
@@ -421,6 +433,7 @@ fi
 %{mozappdir}/platform.ini
 %{mozappdir}/dependentlibs.list
 %{mozappdir}/greprefs.js
+%{_sysconfdir}/ld.so.conf.d/xulrunner*.conf
 %if %{?separated_plugins}
 %{mozappdir}/plugin-container
 %endif
@@ -449,6 +462,9 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
+* Thu Dec 23 2010 Martin Stransky <stransky@redhat.com> 2.0-0.13.b8
+- reverted fix for rhbz#658471
+
 * Wed Dec 22 2010 Dan Horák <dan[at]danny.cz> - 2.0-0.11.b8
 - updated the 64bit-big-endian patch
 
