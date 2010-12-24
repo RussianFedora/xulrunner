@@ -14,8 +14,8 @@
 
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
-Version:        1.9.2.3
-Release:        1%{?pretag}%{?dist}
+Version:        1.9.2.4
+Release:        0.3.build4%{?pretag}%{?dist}
 URL:            http://developer.mozilla.org/En/XULRunner
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
@@ -121,6 +121,8 @@ Gecko development files.
 %setup -q -c
 cd %{tarballdir}
 
+sed -i 's!nspr/prtypes.h!nspr4/prtypes.h!g' ipc/chromium/src/base/basictypes.h
+sed -i 's!nspr/obsolete/protypes.h!nspr4/obsolete/protypes.h!g' ipc/chromium/src/base/basictypes.h
 sed -e 's/__RPM_VERSION_INTERNAL__/%{version_internal}/' %{P:%%PATCH0} \
     > version.patch
 %{__patch} -p1 -b --suffix .version --fuzz=0 < version.patch
@@ -362,6 +364,7 @@ fi
 %doc %attr(644, root, root) %{mozappdir}/LICENSE
 %doc %attr(644, root, root) %{mozappdir}/README.txt
 %{mozappdir}/chrome
+%{mozappdir}/plugin-container
 %{mozappdir}/dictionaries
 %dir %{mozappdir}/components
 %ghost %{mozappdir}/components/compreg.dat
@@ -410,6 +413,9 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
+* Sun May 22 2010 Arkady L. Shane <ashejn@yandex-team.ru> 1.9.2.4-0.3.build4
+- last candidate build4
+
 * Fri Apr 2 2010 Martin Stransky <stransky@redhat.com> 1.9.2.3-1
 - Update to 1.9.2.3
 
