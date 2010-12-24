@@ -23,7 +23,7 @@
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
 Version:        1.9.2.13
-Release:        1%{?pretag}%{?dist}
+Release:        1%{?pretag}%{?dist}.1
 URL:            http://developer.mozilla.org/En/XULRunner
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
@@ -51,6 +51,7 @@ Patch21:        mozilla-libjpeg-turbo.patch
 Patch22:        mozilla-crashreporter-static.patch
 
 # Upstream patches
+Patch100:       firefox-fix-anigifs.patch
 
 # ---------------------------------------------------
 
@@ -151,6 +152,7 @@ sed -e 's/__RPM_VERSION_INTERNAL__/%{version_internal}/' %{P:%%PATCH0} \
 %patch21 -p2 -b .jpeg-turbo
 %patch22 -p1 -b .static
 
+%patch100 -p1 -b .anigifs
 
 %{__rm} -f .mozconfig
 %{__cp} %{SOURCE10} .mozconfig
@@ -453,6 +455,9 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
+* Sat Dec 11 2010 Arkady L. Shane <ashejn@yandex-team.ru> - 1.9.2.13-1.1
+- fix rh#628331 (animated gifs are not properly displayed)
+
 * Thu Dec  9 2010 Jan Horak <jhorak@redhat.com> - 1.9.2.13-1
 - Update to 1.9.2.13
 
