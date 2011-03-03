@@ -12,7 +12,12 @@
 %define freetype_version 2.1.9
 %define sqlite_version 3.6.16
 %define tarballdir mozilla-1.9.2
-%define enable_mozilla_crashreporter       0
+# enable crash reporter only for iX86
+%ifarch %{ix86}
+%define enable_mozilla_crashreporter 1
+%else
+%define enable_mozilla_crashreporter 0
+%endif
 
 # The actual sqlite version (see #480989):
 %global sqlite_build_version %(pkg-config --silence-errors --modversion sqlite3 2>/dev/null || echo 65536)
@@ -22,7 +27,7 @@
 
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
-Version:        1.9.2.13
+Version:        1.9.2.14
 Release:        1%{?pretag}%{?dist}.1
 URL:            http://developer.mozilla.org/En/XULRunner
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
@@ -51,6 +56,7 @@ Patch21:        mozilla-libjpeg-turbo.patch
 Patch22:        mozilla-crashreporter-static.patch
 
 # Upstream patches
+Patch30:	mozilla-513747.patch
 Patch100:       firefox-fix-anigifs.patch
 
 # ---------------------------------------------------
@@ -152,6 +158,7 @@ sed -e 's/__RPM_VERSION_INTERNAL__/%{version_internal}/' %{P:%%PATCH0} \
 %patch21 -p2 -b .jpeg-turbo
 %patch22 -p1 -b .static
 
+%patch30 -p2 -b .513747
 %patch100 -p1 -b .anigifs
 
 %{__rm} -f .mozconfig
@@ -162,6 +169,12 @@ sed -e 's/__RPM_VERSION_INTERNAL__/%{version_internal}/' %{P:%%PATCH0} \
 
 %if !%{?separated_plugins}
 echo "ac_add_options --disable-ipc" >> .mozconfig
+%endif
+
+# Upstream bug filed without resolution
+# for now make sure jit is not enabled on sparc64
+%ifarch sparc64
+echo "ac_add_options --disable-jit" >> .mozconfig
 %endif
 
 #---------------------------------------------------------------------
@@ -365,9 +378,10 @@ touch $RPM_BUILD_ROOT${MOZ_APP_DIR}/components/xpti.dat
 
 # Add debuginfo for crash-stats.mozilla.com 
 %if %{enable_mozilla_crashreporter}
-mkdir -p $RPM_BUILD_ROOT%{_libdir}/debug%{mozappdir}
-cp dist/%{name}-%{version}.en-US.linux-*.crashreporter-symbols.zip $RPM_BUILD_ROOT/%{_libdir}/debug%{mozappdir}
-#cp %{moz_objdir}/mozilla/dist/firefox-%{version}.en-US.linux-i686.crashreporter-symbols.zip $RPM_BUILD_ROOT%{_libdir}/debug%{mozappdir}
+# Debug symbols are stored in /usr/lib even in x86_64 arch
+DEBUG_LIB_DIR=`echo %{_libdir}|sed -e "s/lib64/lib/"`
+mkdir -p $RPM_BUILD_ROOT$DEBUG_LIB_DIR/debug%{mozappdir}
+cp dist/%{name}-%{version}*.crashreporter-symbols.zip $RPM_BUILD_ROOT$DEBUG_LIB_DIR/debug%{mozappdir}
 %endif
 
 #---------------------------------------------------------------------
@@ -455,8 +469,27 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
-* Sat Dec 11 2010 Arkady L. Shane <ashejn@yandex-team.ru> - 1.9.2.13-1.1
-- fix rh#628331 (animated gifs are not properly displayed)
+* Thu Mar  1 2011 Jan Horak <jhorak@redhat.com> - 1.9.2.14-1.1
+- another fix rh#628331 (animated gifs are not properly displayed)
+
+* Tue Mar  1 2011 Jan Horak <jhorak@redhat.com> - 1.9.2.14-1
+- Update to 1.9.2.14
+
+* Mon Jan 10 2011 Dennis Gilmore <dennis@ausil.us> 1.9.2.13-6
+- disable nanojit on sparc64 its not supported and doesnt get automatically switched off
+
+* Mon Jan 3 2011 Martin Stransky <stransky@redhat.com> 1.9.2.13-5
+- renamed libsqlite3.so to libmozsqlite3.so (rhbz#658471)
+
+* Mon Jan  3 2011 Jan Horak <jhorak@redhat.com> - 1.9.2.13-4
+- Enabled mozilla crash reporter
+
+* Mon Jan 3 2011 Martin Stransky <stransky@redhat.com> 1.9.2.13-3
+- reverted fix for rhbz#658471, breaks gnome shell
+- disabled system cairo, breaks animated gifs (rhbz#628331)
+
+* Mon Dec 20 2010 Martin Stransky <stransky@redhat.com> 1.9.2.13-2
+- removed unused library path (rhbz#658471)
 
 * Thu Dec  9 2010 Jan Horak <jhorak@redhat.com> - 1.9.2.13-1
 - Update to 1.9.2.13
