@@ -13,7 +13,7 @@
 %define sqlite_version 3.6.16
 %define tarballdir mozilla-1.9.2
 # enable crash reporter only for iX86
-%ifarch %{ix86}
+%ifarch %{ix86} x86_64
 %define enable_mozilla_crashreporter 1
 %else
 %define enable_mozilla_crashreporter 0
@@ -27,13 +27,13 @@
 
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
-Version:        1.9.2.14
+Version:        1.9.2.15
 Release:        1%{?pretag}%{?dist}.1
 URL:            http://developer.mozilla.org/En/XULRunner
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
 # You can get sources at ftp://ftp.mozilla.org/pub/firefox/releases/%{version}%{?pretag}/source
-Source0:        ftp://ftp.mozilla.org/pub/xulrunner/releases/%{version}/source/%{name}-%{version}.source.tar.bz2
+Source0:        %{name}-%{version}%{?pretag}.source.tar.bz2
 Source10:       %{name}-mozconfig
 Source11:       %{name}-mozconfig-debuginfo
 Source12:       %{name}-redhat-default-prefs.js
@@ -54,6 +54,7 @@ Patch11:        mozilla-gdk-pixbuf.patch
 Patch20:        mozilla-192-pkgconfig.patch
 Patch21:        mozilla-libjpeg-turbo.patch
 Patch22:        mozilla-crashreporter-static.patch
+Patch24:        crashreporter-remove-static.patch
 
 # Upstream patches
 Patch30:	mozilla-513747.patch
@@ -196,7 +197,11 @@ MOZ_APP_DIR=%{_libdir}/%{name}-${INTERNAL_GECKO}
 
 # Mozilla builds with -Wall with exception of a few warnings which show up
 # everywhere in the code; so, don't override that.
-MOZ_OPT_FLAGS=$(echo $RPM_OPT_FLAGS | %{__sed} -e 's/-Wall//')
+#
+# -fpermissive is needed to build with gcc 4.6+ which has become stricter
+#
+MOZ_OPT_FLAGS=$(echo "$RPM_OPT_FLAGS -fpermissive" | \
+                      %{__sed} -e 's/-Wall//' )
 export CFLAGS=$MOZ_OPT_FLAGS
 export CXXFLAGS=$MOZ_OPT_FLAGS
 
@@ -469,8 +474,11 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
-* Thu Mar  1 2011 Jan Horak <jhorak@redhat.com> - 1.9.2.14-1.1
-- another fix rh#628331 (animated gifs are not properly displayed)
+* Sat Mar 12 2011 Arkady L. Shane <ashejn@yandex-team.ru> - 1.9.2.15-1.1
+- reenable system cairo and apply gif patch
+
+* Mon Mar  7 2011 Jan Horak <jhorak@redhat.com> - 1.9.2.15-1
+- Update to 1.9.2.15
 
 * Tue Mar  1 2011 Jan Horak <jhorak@redhat.com> - 1.9.2.14-1
 - Update to 1.9.2.14
