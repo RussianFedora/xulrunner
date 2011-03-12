@@ -33,7 +33,7 @@ URL:            http://developer.mozilla.org/En/XULRunner
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
 # You can get sources at ftp://ftp.mozilla.org/pub/firefox/releases/%{version}%{?pretag}/source
-Source0:        %{name}-%{version}%{?pretag}.source.tar.bz2
+Source0:        ftp://ftp.mozilla.org/pub/xulrunner/releases/%{version}/source/%{name}-%{version}%{?pretag}.source.tar.bz2
 Source10:       %{name}-mozconfig
 Source11:       %{name}-mozconfig-debuginfo
 Source12:       %{name}-redhat-default-prefs.js
