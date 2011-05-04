@@ -27,13 +27,13 @@
 
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
-Version:        1.9.2.16
-Release:        1%{?pretag}%{?dist}.1
+Version:        1.9.2.17
+Release:        2%{?pretag}%{?dist}.1.R
 URL:            http://developer.mozilla.org/En/XULRunner
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
 # You can get sources at ftp://ftp.mozilla.org/pub/firefox/releases/%{version}%{?pretag}/source
-Source0:        ftp://ftp.mozilla.org/pub/xulrunner/releases/%{version}/source/%{name}-%{version}.source.tar.bz2
+Source0:        ftp://ftp.mozilla.org/pub/xulrunner/releases/%{version}/source/%{name}-%{version}%{?pretag}.source.tar.bz2
 Source10:       %{name}-mozconfig
 Source11:       %{name}-mozconfig-debuginfo
 Source12:       %{name}-redhat-default-prefs.js
@@ -58,6 +58,7 @@ Patch24:        crashreporter-remove-static.patch
 
 # Upstream patches
 Patch30:	mozilla-513747.patch
+Patch31:	mozilla-comodo-646460.patch
 Patch100:       firefox-fix-anigifs.patch
 
 # ---------------------------------------------------
@@ -160,6 +161,7 @@ sed -e 's/__RPM_VERSION_INTERNAL__/%{version_internal}/' %{P:%%PATCH0} \
 %patch22 -p1 -b .static
 
 %patch30 -p2 -b .513747
+%patch31 -p1 -b .646460
 %patch100 -p1 -b .anigifs
 
 %{__rm} -f .mozconfig
@@ -474,11 +476,14 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
-* Thu Mar 24 2011 Arkady L. Shane <ashejn@yandex-team.ru> - 1.9.2.16-1.1.P
-- update to 1.9.2.16
+* Wed May  4 2011 Arkady L. Shane <ashejn@russianfedora.ru> - 1.9.2.17-2.1.R
+- enable system cairo and apply gif patch
 
-* Sat Mar 12 2011 Arkady L. Shane <ashejn@yandex-team.ru> - 1.9.2.15-1.1
-- reenable system cairo and apply gif patch
+* Thu Apr 28 2011 Jan Horak <jhorak@redhat.com> - 1.9.2.17-2
+- Update to 1.9.2.17
+
+* Tue Mar 22 2011 Christopher Aillon <caillon@redhat.com> - 3.6.16-1
+- Update to 1.9.2.16
 
 * Mon Mar  7 2011 Jan Horak <jhorak@redhat.com> - 1.9.2.15-1
 - Update to 1.9.2.15
