@@ -100,7 +100,7 @@ BuildRequires:  hunspell-devel
 BuildRequires:  sqlite-devel >= %{sqlite_version}
 BuildRequires:  startup-notification-devel
 BuildRequires:  alsa-lib-devel
-BuildRequires:  libnotify-devel >= %{libnotify_version}
+BuildRequires:  libnotify-devel
 BuildRequires:  mesa-libGL-devel
 BuildRequires:  yasm
 BuildRequires:  libcurl-devel
