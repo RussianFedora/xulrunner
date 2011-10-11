@@ -1,68 +1,86 @@
-# Separated plugins are supported on x86(64) only
-%ifarch i386 i686 x86_64
-%define separated_plugins 1
-%else
-%define separated_plugins 0
-%endif
-
 # Minimal required versions
-%define nspr_version 4.8
-%define nss_version 3.12.8
-%define cairo_version 1.6.0
-%define freetype_version 2.1.9
-%define sqlite_version 3.6.16
-%define tarballdir mozilla-1.9.2
-# enable crash reporter only for iX86
+%global nspr_version 4.8.8
+%global nss_version 3.12.10
+%global cairo_version 1.6.0
+%global freetype_version 2.1.9
+%global sqlite_version 3.7.4
+%global libnotify_version 0.7.0
+
+# gecko_dir_ver should be set to the version in our directory names
+# alpha_version should be set to the alpha number if using an alpha, 0 otherwise
+# beta_version  should be set to the beta number if using a beta, 0 otherwise
+# rc_version    should be set to the RC number if using an RC, 0 otherwise
+%global gecko_dir_ver 2
+%global alpha_version 0
+%global beta_version  0
+%global rc_version    0
+
+%global mozappdir         %{_libdir}/%{name}-%{gecko_dir_ver}
+%global tarballdir        mozilla-release
+
+# crash reporter work only on x86/x86_64
 %ifarch %{ix86} x86_64
-%define enable_mozilla_crashreporter 1
+%global enable_mozilla_crashreporter 1
 %else
-%define enable_mozilla_crashreporter 0
+%global enable_mozilla_crashreporter 0
 %endif
 
 # The actual sqlite version (see #480989):
 %global sqlite_build_version %(pkg-config --silence-errors --modversion sqlite3 2>/dev/null || echo 65536)
 
-%define version_internal  1.9.2
-%define mozappdir         %{_libdir}/%{name}-%{version_internal}
+%if %{alpha_version} > 0
+%global pre_version a%{alpha_version}
+%global pre_name    alpha%{alpha_version}
+%endif
+%if %{beta_version} > 0
+%global pre_version b%{beta_version}
+%global pre_name    beta%{beta_version}
+%endif
+%if %{rc_version} > 0
+%global pre_version rc%{rc_version}
+%global pre_name    rc%{rc_version}
+%endif
+%if %{defined pre_version}
+%global gecko_verrel %{expand:%%{version}}-%{pre_name}
+%global pre_tag .%{pre_version}
+%else
+%global gecko_verrel %{expand:%%{version}}
+%endif
 
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
-Version:        1.9.2.16
-Release:        1%{?pretag}%{?dist}.1
+Version:        7.0.1
+Release:        2.el6.R
 URL:            http://developer.mozilla.org/En/XULRunner
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
-# You can get sources at ftp://ftp.mozilla.org/pub/firefox/releases/%{version}%{?pretag}/source
-Source0:        ftp://ftp.mozilla.org/pub/xulrunner/releases/%{version}/source/%{name}-%{version}.source.tar.bz2
+# You can get sources at ftp://ftp.mozilla.org/pub/firefox/releases/%{version}%{?pre_ver}/source
+Source0:        ftp://ftp.mozilla.org/pub/xulrunner/releases/7.0.1/source/%{name}-%{version}.source.tar.bz2
 Source10:       %{name}-mozconfig
 Source11:       %{name}-mozconfig-debuginfo
 Source12:       %{name}-redhat-default-prefs.js
 Source21:       %{name}.sh.in
-Source23:       %{name}.1
 
 # build patches
 Patch0:         xulrunner-version.patch
 Patch1:         mozilla-build.patch
-Patch3:         mozilla-jemalloc.patch
-Patch4:         mozilla-about-firefox-version.patch
-Patch7:         xulrunner-1.9.2.1-build.patch
 Patch9:         mozilla-build-sbrk.patch
-Patch10:        mozilla-build-s390.patch
-Patch11:        mozilla-gdk-pixbuf.patch
+Patch14:        xulrunner-2.0-chromium-types.patch
+Patch16:        add-gtkmozembed.patch
+Patch18:        xulrunner-6.0-secondary-ipc.patch
 
 # Fedora specific patches
-Patch20:        mozilla-192-pkgconfig.patch
+Patch20:        mozilla-193-pkgconfig.patch
 Patch21:        mozilla-libjpeg-turbo.patch
-Patch22:        mozilla-crashreporter-static.patch
+Patch23:        wmclass.patch
 Patch24:        crashreporter-remove-static.patch
 
 # Upstream patches
-Patch30:	mozilla-513747.patch
-Patch100:       firefox-fix-anigifs.patch
+Patch34:        xulrunner-2.0-network-link-service.patch
+Patch35:        xulrunner-2.0-NetworkManager09.patch
 
 # ---------------------------------------------------
 
-BuildRoot:      %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 BuildRequires:  nspr-devel >= %{nspr_version}
 BuildRequires:  nss-devel >= %{nss_version}
 BuildRequires:  cairo-devel >= %{cairo_version}
@@ -73,9 +91,6 @@ BuildRequires:  bzip2-devel
 BuildRequires:  zlib-devel
 BuildRequires:  libIDL-devel
 BuildRequires:  gtk2-devel
-BuildRequires:  gnome-vfs2-devel
-BuildRequires:  libgnome-devel
-BuildRequires:  libgnomeui-devel
 BuildRequires:  krb5-devel
 BuildRequires:  pango-devel
 BuildRequires:  freetype-devel >= %{freetype_version}
@@ -85,17 +100,25 @@ BuildRequires:  hunspell-devel
 BuildRequires:  sqlite-devel >= %{sqlite_version}
 BuildRequires:  startup-notification-devel
 BuildRequires:  alsa-lib-devel
-BuildRequires:  libnotify-devel
-BuildRequires:  autoconf213
+BuildRequires:  libnotify-devel >= %{libnotify_version}
+BuildRequires:  mesa-libGL-devel
+BuildRequires:  yasm
+BuildRequires:  libcurl-devel
+BuildRequires:  libvpx-devel
 
 Requires:       mozilla-filesystem
 Requires:       nspr >= %{nspr_version}
 Requires:       nss >= %{nss_version}
 Requires:       sqlite >= %{sqlite_build_version}
-Provides:       gecko-libs = %{version}
+Provides:       gecko-libs = %{gecko_verrel}
+Provides:       gecko-libs%{?_isa} = %{gecko_verrel}
 
 %description
-XULRunner provides the XUL Runtime environment for Gecko applications.
+XULRunner is a Mozilla runtime package that can be used to bootstrap XUL+XPCOM
+applications that are as rich as Firefox and Thunderbird. It provides mechanisms
+for installing, upgrading, and uninstalling these applications. XULRunner also
+provides libxul, a solution which allows the embedding of Mozilla technologies
+in other projects and products.
 
 %package devel
 Summary: Development files for Gecko
@@ -103,8 +126,10 @@ Group: Development/Libraries
 Obsoletes: mozilla-devel < 1.9
 Obsoletes: firefox-devel < 2.1
 Obsoletes: xulrunner-devel-unstable
-Provides: gecko-devel = %{version}
-Provides: gecko-devel-unstable = %{version}
+Provides: gecko-devel = %{gecko_verrel}
+Provides: gecko-devel%{?_isa} = %{gecko_verrel}
+Provides: gecko-devel-unstable = %{gecko_verrel}
+Provides: gecko-devel-unstable%{?_isa} = %{gecko_verrel}
 
 Requires: xulrunner = %{version}-%{release}
 Requires: nspr-devel >= %{nspr_version}
@@ -116,9 +141,6 @@ Requires: bzip2-devel
 Requires: zlib-devel
 Requires: libIDL-devel
 Requires: gtk2-devel
-Requires: gnome-vfs2-devel
-Requires: libgnome-devel
-Requires: libgnomeui-devel
 Requires: krb5-devel
 Requires: pango-devel
 Requires: freetype-devel >= %{freetype_version}
@@ -129,11 +151,30 @@ Requires: sqlite-devel
 Requires: startup-notification-devel
 Requires: alsa-lib-devel
 Requires: libnotify-devel
-Requires: curl-devel
-BuildRequires: libcurl-devel
+Requires: mesa-libGL-devel
 
 %description devel
-Gecko development files.
+This package contains the libraries amd header files that are needed
+for writing XUL+XPCOM applications with Mozilla XULRunner and Gecko.
+
+%if %{enable_mozilla_crashreporter}
+%global moz_debug_prefix %{_prefix}/lib/debug
+%global moz_debug_dir %{moz_debug_prefix}%{mozappdir}
+%global uname_m %(uname -m)
+%global symbols_file_name %{name}-%{version}.en-US.%{_os}-%{uname_m}.crashreporter-symbols.zip
+%global symbols_file_path %{moz_debug_dir}/%{symbols_file_name}
+%global _find_debuginfo_opts -p %{symbols_file_path} -o debugcrashreporter.list
+%global crashreporter_pkg_name mozilla-crashreporter-%{name}-debuginfo
+%package -n %{crashreporter_pkg_name}
+Summary: Debugging symbols used by Mozilla's crash reporter servers
+Group: Development/Debug
+%description -n %{crashreporter_pkg_name}
+This package provides debug information for XULRunner, for use by
+Mozilla's crash reporter servers.  If you are trying to locally
+debug %{name}, you want to install %{name}-debuginfo instead.
+%files -n %{crashreporter_pkg_name} -f debugcrashreporter.list
+%defattr(-,root,root)
+%endif
 
 #---------------------------------------------------------------------
 
@@ -141,26 +182,23 @@ Gecko development files.
 %setup -q -c
 cd %{tarballdir}
 
-sed -e 's/__RPM_VERSION_INTERNAL__/%{version_internal}/' %{P:%%PATCH0} \
+sed -e 's/__RPM_VERSION_INTERNAL__/%{gecko_dir_ver}/' %{P:%%PATCH0} \
     > version.patch
 %{__patch} -p1 -b --suffix .version --fuzz=0 < version.patch
 
-%patch1  -p1 -b .build
-%patch3  -p1 -b .jemalloc
-%patch4  -p1 -b .about-firefox-version
-%patch7  -p2 -b .del
+%patch1  -p2 -b .build
 %patch9  -p2 -b .sbrk
-%ifarch s390
-%patch10 -p1 -b .s390
-%endif
-%patch11 -p1 -b .gdk-pixbuf
+%patch14 -p1 -b .chromium-types
+%patch16 -p2 -b .gtkmozembed
+%patch18 -p2 -b .secondary-ipc
 
-%patch20 -p1 -b .pk
+%patch20 -p2 -b .pk
 %patch21 -p2 -b .jpeg-turbo
-%patch22 -p1 -b .static
+%patch23 -p1 -b .wmclass
+%patch24 -p1 -b .static
 
-%patch30 -p2 -b .513747
-%patch100 -p1 -b .anigifs
+%patch34 -p1 -b .network-link-service
+%patch35 -p1 -b .NetworkManager09
 
 %{__rm} -f .mozconfig
 %{__cp} %{SOURCE10} .mozconfig
@@ -168,14 +206,10 @@ sed -e 's/__RPM_VERSION_INTERNAL__/%{version_internal}/' %{P:%%PATCH0} \
 %{__cat} %{SOURCE11} >> .mozconfig
 %endif
 
-%if !%{?separated_plugins}
-echo "ac_add_options --disable-ipc" >> .mozconfig
-%endif
-
 # Upstream bug filed without resolution
 # for now make sure jit is not enabled on sparc64
 %ifarch sparc64
-echo "ac_add_options --disable-jit" >> .mozconfig
+echo "ac_add_options --disable-tracejit" >> .mozconfig
 %endif
 
 #---------------------------------------------------------------------
@@ -192,16 +226,15 @@ esac
 
 cd %{tarballdir}
 
-INTERNAL_GECKO=%{version_internal}
-MOZ_APP_DIR=%{_libdir}/%{name}-${INTERNAL_GECKO}
-
+# -fpermissive is needed to build with gcc 4.6+ which has become stricter
+# 
 # Mozilla builds with -Wall with exception of a few warnings which show up
 # everywhere in the code; so, don't override that.
 #
-# -fpermissive is needed to build with gcc 4.6+ which has become stricter
+# Disable C++ exceptions since Mozilla code is not exception-safe
 #
 MOZ_OPT_FLAGS=$(echo "$RPM_OPT_FLAGS -fpermissive" | \
-                      %{__sed} -e 's/-Wall//' )
+                      %{__sed} -e 's/-Wall//' -e 's/-fexceptions/-fno-exceptions/g')
 export CFLAGS=$MOZ_OPT_FLAGS
 export CXXFLAGS=$MOZ_OPT_FLAGS
 
@@ -209,14 +242,16 @@ export PREFIX='%{_prefix}'
 export LIBDIR='%{_libdir}'
 
 MOZ_SMP_FLAGS=-j1
-%ifnarch ppc ppc64 s390 s390x
+# On x86 architectures, Mozilla can build up to 4 jobs at once in parallel,
+# however builds tend to fail on other arches when building in parallel.
+%ifarch %{ix86} x86_64
 [ -z "$RPM_BUILD_NCPUS" ] && \
      RPM_BUILD_NCPUS="`/usr/bin/getconf _NPROCESSORS_ONLN`"
-[ "$RPM_BUILD_NCPUS" -gt 1 ] && MOZ_SMP_FLAGS=-j2
+[ "$RPM_BUILD_NCPUS" -ge 2 ] && MOZ_SMP_FLAGS=-j2
+[ "$RPM_BUILD_NCPUS" -ge 4 ] && MOZ_SMP_FLAGS=-j4
 %endif
 
-export LDFLAGS="-Wl,-rpath,${MOZ_APP_DIR}"
-make -f client.mk build STRIP="/bin/true" MOZ_MAKE_FLAGS="$MOZ_SMP_FLAGS"
+make -f client.mk build STRIP="/bin/true" MOZ_MAKE_FLAGS="$MOZ_SMP_FLAGS" MOZ_SERVICES_SYNC="1"
 
 # create debuginfo for crash-stats.mozilla.com
 %if %{enable_mozilla_crashreporter}
@@ -228,41 +263,27 @@ make buildsymbols
 
 %install
 cd %{tarballdir}
-%{__rm} -rf $RPM_BUILD_ROOT
 
-INTERNAL_GECKO=%{version_internal}
-
-INTERNAL_APP_NAME=%{name}-${INTERNAL_GECKO}
-MOZ_APP_DIR=%{_libdir}/${INTERNAL_APP_NAME}
-
-INTERNAL_APP_SDK_NAME=%{name}-sdk-${INTERNAL_GECKO}
+INTERNAL_APP_SDK_NAME=%{name}-sdk-%{gecko_dir_ver}
 MOZ_APP_SDK_DIR=%{_libdir}/${INTERNAL_APP_SDK_NAME}
+
+# set up our prefs before install, so it gets pulled in to omni.jar
+%{__cp} -p %{SOURCE12} dist/bin/defaults/pref/all-redhat.js
 
 DESTDIR=$RPM_BUILD_ROOT make install
 
-%{__mkdir_p} $RPM_BUILD_ROOT/${MOZ_APP_DIR} \
+%{__mkdir_p} $RPM_BUILD_ROOT/%{mozappdir} \
              $RPM_BUILD_ROOT%{_datadir}/idl/${INTERNAL_APP_SDK_NAME} \
              $RPM_BUILD_ROOT%{_includedir}/${INTERNAL_APP_SDK_NAME}
-%{__install} -p dist/sdk/bin/regxpcom $RPM_BUILD_ROOT/$MOZ_APP_DIR
-
 %{__mkdir_p} $RPM_BUILD_ROOT{%{_libdir},%{_bindir},%{_datadir}/applications}
-
-# set up our default preferences
-%{__cat} %{SOURCE12} | %{__sed} -e 's,RPM_VERREL,%{version}-%{release},g' > rh-default-prefs
-%{__install} -p -D -m 644 rh-default-prefs $RPM_BUILD_ROOT/${MOZ_APP_DIR}/defaults/pref/all-redhat.js
-%{__rm} rh-default-prefs
 
 # Start script install
 %{__rm} -rf $RPM_BUILD_ROOT%{_bindir}/%{name}
-%{__cat} %{SOURCE21} | %{__sed} -e 's,XULRUNNER_VERSION,%{version_internal},g' > \
+%{__cat} %{SOURCE21} | %{__sed} -e 's,XULRUNNER_VERSION,%{gecko_dir_ver},g' > \
   $RPM_BUILD_ROOT%{_bindir}/%{name}
 %{__chmod} 755 $RPM_BUILD_ROOT%{_bindir}/%{name}
 
-%{__rm} -f $RPM_BUILD_ROOT${MOZ_APP_DIR}/%{name}-config
-
-cd $RPM_BUILD_ROOT${MOZ_APP_DIR}/chrome
-find . -name "*" -type d -maxdepth 1 -exec %{__rm} -rf {} \;
-cd -
+%{__rm} -f $RPM_BUILD_ROOT%{mozappdir}/%{name}-config
 
 # Prepare our devel package
 %{__mkdir_p} $RPM_BUILD_ROOT/%{_includedir}/${INTERNAL_APP_SDK_NAME}
@@ -279,18 +300,12 @@ cd -
         $RPM_BUILD_ROOT/%{_libdir}/pkgconfig/libxul-embedding-unstable.pc
 
 # Fix multilib devel conflicts...
-%ifarch x86_64 ia64 s390x ppc64
-%define mozbits 64
-%else
-%define mozbits 32
-%endif
-
 function install_file() {
 genheader=$*
-mv ${genheader}.h ${genheader}%{mozbits}.h
+mv ${genheader}.h ${genheader}%{__isa_bits}.h
 cat > ${genheader}.h << EOF
 /* This file exists to fix multilib conflicts */
-#if defined(__x86_64__) || defined(__ia64__) || defined(__s390x__) || defined(__powerpc64__)
+#if defined(__x86_64__) || defined(__ia64__) || defined(__s390x__) || defined(__powerpc64__) || (defined(__sparc__) && defined(__arch64__))
 #include "${genheader}64.h"
 #else
 #include "${genheader}32.h"
@@ -300,24 +315,16 @@ EOF
 
 pushd $RPM_BUILD_ROOT/%{_includedir}/${INTERNAL_APP_SDK_NAME}
 install_file "mozilla-config"
-popd
-
-pushd $RPM_BUILD_ROOT/%{_includedir}/${INTERNAL_APP_SDK_NAME}
 install_file "jsautocfg"
-popd
-
-pushd $RPM_BUILD_ROOT/%{_includedir}/${INTERNAL_APP_SDK_NAME}
 install_file "js-config"
 popd
 
 %{__install} -p -c -m 755 dist/bin/xpcshell \
   dist/bin/xpidl \
-  dist/bin/xpt_dump \
-  dist/bin/xpt_link \
-  $RPM_BUILD_ROOT/${MOZ_APP_DIR}
+  $RPM_BUILD_ROOT/%{mozappdir}
 
-%{__rm} -rf $RPM_BUILD_ROOT/%{_includedir}/${INTERNAL_APP_NAME}
-%{__rm} -rf $RPM_BUILD_ROOT/%{_datadir}/idl/${INTERNAL_APP_NAME}
+%{__rm} -rf $RPM_BUILD_ROOT/%{_includedir}/%{name}-%{gecko_dir_ver}
+%{__rm} -rf $RPM_BUILD_ROOT/%{_datadir}/idl/%{name}-%{gecko_dir_ver}
 
 %{__rm} -rf $RPM_BUILD_ROOT${MOZ_APP_SDK_DIR}/include
 ln -s  %{_includedir}/${INTERNAL_APP_SDK_NAME} \
@@ -339,60 +346,38 @@ find $RPM_BUILD_ROOT/%{_includedir} -type f -name "*.h" | xargs chmod 644
 find $RPM_BUILD_ROOT/%{_datadir}/idl -type f -name "*.idl" | xargs chmod 644
 
 %{__rm} -rf $RPM_BUILD_ROOT${MOZ_APP_SDK_DIR}/sdk/lib/*.so
-pushd $RPM_BUILD_ROOT${MOZ_APP_DIR}
+pushd $RPM_BUILD_ROOT%{mozappdir}
 for i in *.so; do
-    ln -s ${MOZ_APP_DIR}/$i $RPM_BUILD_ROOT${MOZ_APP_SDK_DIR}/sdk/lib/$i
+    ln -s %{mozappdir}/$i $RPM_BUILD_ROOT${MOZ_APP_SDK_DIR}/sdk/lib/$i
 done
 popd
 
-# GRE stuff
-%ifarch x86_64 ia64 ppc64 s390x
-%define gre_conf_file gre64.conf
-%else
-%define gre_conf_file gre.conf
-%endif
-
-MOZILLA_GECKO_VERSION=`./config/milestone.pl --topsrcdir=.`
-%{__mv} $RPM_BUILD_ROOT/etc/gre.d/$MOZILLA_GECKO_VERSION".system.conf" \
-        $RPM_BUILD_ROOT/etc/gre.d/%{gre_conf_file}
-chmod 644 $RPM_BUILD_ROOT/etc/gre.d/%{gre_conf_file}
-
 # Library path
-%ifarch x86_64 ia64 ppc64 s390x
-%define ld_conf_file xulrunner-64.conf
-%else
-%define ld_conf_file xulrunner-32.conf
-%endif
+LD_SO_CONF_D=%{_sysconfdir}/ld.so.conf.d
+LD_CONF_FILE=xulrunner-%{__isa_bits}.conf
 
-%{__mkdir_p} $RPM_BUILD_ROOT/etc/ld.so.conf.d
-%{__cat} > $RPM_BUILD_ROOT/etc/ld.so.conf.d/%{ld_conf_file} << EOF
-${MOZ_APP_DIR}
+%{__mkdir_p} ${RPM_BUILD_ROOT}${LD_SO_CONF_D}
+%{__cat} > ${RPM_BUILD_ROOT}${LD_SO_CONF_D}/${LD_CONF_FILE} << EOF
+%{mozappdir}
 EOF
-                        
+
 # Copy over the LICENSE
-%{__install} -p -c -m 644 LICENSE $RPM_BUILD_ROOT${MOZ_APP_DIR}
+%{__install} -p -c -m 644 LICENSE $RPM_BUILD_ROOT%{mozappdir}
 
 # Use the system hunspell dictionaries
-%{__rm} -rf ${RPM_BUILD_ROOT}${MOZ_APP_DIR}/dictionaries
-ln -s %{_datadir}/myspell ${RPM_BUILD_ROOT}${MOZ_APP_DIR}/dictionaries
+%{__rm} -rf ${RPM_BUILD_ROOT}%{mozappdir}/dictionaries
+ln -s %{_datadir}/myspell ${RPM_BUILD_ROOT}%{mozappdir}/dictionaries
 
 # ghost files
-%{__mkdir_p} $RPM_BUILD_ROOT${MOZ_APP_DIR}/components
-touch $RPM_BUILD_ROOT${MOZ_APP_DIR}/components/compreg.dat
-touch $RPM_BUILD_ROOT${MOZ_APP_DIR}/components/xpti.dat
+%{__mkdir_p} $RPM_BUILD_ROOT%{mozappdir}/components
+touch $RPM_BUILD_ROOT%{mozappdir}/components/compreg.dat
+touch $RPM_BUILD_ROOT%{mozappdir}/components/xpti.dat
 
 # Add debuginfo for crash-stats.mozilla.com 
 %if %{enable_mozilla_crashreporter}
-# Debug symbols are stored in /usr/lib even in x86_64 arch
-DEBUG_LIB_DIR=`echo %{_libdir}|sed -e "s/lib64/lib/"`
-mkdir -p $RPM_BUILD_ROOT$DEBUG_LIB_DIR/debug%{mozappdir}
-cp dist/%{name}-%{version}*.crashreporter-symbols.zip $RPM_BUILD_ROOT$DEBUG_LIB_DIR/debug%{mozappdir}
+%{__mkdir_p} $RPM_BUILD_ROOT/%{moz_debug_dir}
+%{__cp} dist/%{symbols_file_name} $RPM_BUILD_ROOT/%{moz_debug_dir}
 %endif
-
-#---------------------------------------------------------------------
-
-%clean
-%{__rm} -rf $RPM_BUILD_ROOT
 
 #---------------------------------------------------------------------
 
@@ -405,50 +390,36 @@ cp dist/%{name}-%{version}*.crashreporter-symbols.zip $RPM_BUILD_ROOT$DEBUG_LIB_
 %preun
 # is it a final removal?
 if [ $1 -eq 0 ]; then
-  %{__rm} -rf ${MOZ_APP_DIR}/components
+  %{__rm} -rf %{mozappdir}/components
 fi
 
 %files
 %defattr(-,root,root,-)
 %{_bindir}/xulrunner
-%dir /etc/gre.d
-/etc/gre.d/%{gre_conf_file}
 %dir %{mozappdir}
 %doc %attr(644, root, root) %{mozappdir}/LICENSE
 %doc %attr(644, root, root) %{mozappdir}/README.txt
 %{mozappdir}/chrome
+%{mozappdir}/chrome.manifest
 %{mozappdir}/dictionaries
 %dir %{mozappdir}/components
 %ghost %{mozappdir}/components/compreg.dat
 %ghost %{mozappdir}/components/xpti.dat
 %{mozappdir}/components/*.so
-%{mozappdir}/components/*.xpt
-%attr(644, root, root) %{mozappdir}/components/*.js
-%{mozappdir}/defaults
-%{mozappdir}/greprefs
-%dir %{mozappdir}/icons
-%attr(644, root, root) %{mozappdir}/icons/*
-%{mozappdir}/modules
+%{mozappdir}/components/*.manifest
+%{mozappdir}/omni.jar
 %{mozappdir}/plugins
-%{mozappdir}/res
 %{mozappdir}/*.so
 %{mozappdir}/mozilla-xremote-client
 %{mozappdir}/run-mozilla.sh
-%{mozappdir}/regxpcom
 %{mozappdir}/xulrunner
 %{mozappdir}/xulrunner-bin
 %{mozappdir}/xulrunner-stub
 %{mozappdir}/platform.ini
 %{mozappdir}/dependentlibs.list
 %{_sysconfdir}/ld.so.conf.d/xulrunner*.conf
-%if %{?separated_plugins}
 %{mozappdir}/plugin-container
-%endif
-
-# XXX See if these are needed still
-%{mozappdir}/updater*
-%exclude %{mozappdir}/update.locale
-%exclude %{mozappdir}/components/components.list
+%{mozappdir}/hyphenation/*
 
 %if %{enable_mozilla_crashreporter}
 %{mozappdir}/crashreporter
@@ -458,70 +429,179 @@ fi
 
 %files devel
 %defattr(-,root,root,-)
-%dir %{_libdir}/%{name}-sdk-*
-%dir %{_libdir}/%{name}-sdk-*/sdk
-%dir %{_datadir}/idl/%{name}*%{version_internal}
-%{_datadir}/idl/%{name}*%{version_internal}
-%{_includedir}/%{name}*%{version_internal}
-%{_libdir}/%{name}-sdk-*/*
-%{_libdir}/%{name}-sdk-*/sdk/*
+%{_datadir}/idl/%{name}*%{gecko_dir_ver}
+%{_includedir}/%{name}*%{gecko_dir_ver}
+%{_libdir}/%{name}-sdk-*/
 %{_libdir}/pkgconfig/*.pc
 %{mozappdir}/xpcshell
 %{mozappdir}/xpidl
-%{mozappdir}/xpt_dump
-%{mozappdir}/xpt_link
 
 #---------------------------------------------------------------------
 
 %changelog
-* Thu Mar 24 2011 Arkady L. Shane <ashejn@yandex-team.ru> - 1.9.2.16-1.1.P
-- update to 1.9.2.16
+* Tue Oct 11 2011 Arkady L. Shane <ashejn@russianfedora.ru> 7.0.1-2.R
+- rebuilt for EL
 
-* Sat Mar 12 2011 Arkady L. Shane <ashejn@yandex-team.ru> - 1.9.2.15-1.1
-- reenable system cairo and apply gif patch
+* Mon Oct 10 2011 Martin Stransky <stransky@redhat.com> 7.0.1-2
+- Removed GRE stuff
+- Removed xulrunner rpath (mozbz#686434)
 
-* Mon Mar  7 2011 Jan Horak <jhorak@redhat.com> - 1.9.2.15-1
-- Update to 1.9.2.15
+* Fri Sep 30 2011 Jan Horak <jhorak@redhat.com> - 7.0.1-1
+- Update to 7.0.1
 
-* Tue Mar  1 2011 Jan Horak <jhorak@redhat.com> - 1.9.2.14-1
-- Update to 1.9.2.14
+* Tue Sep 27 2011 Jan Horak <jhorak@redhat.com> - 7.0-1
+- Update to 7.0
 
-* Mon Jan 10 2011 Dennis Gilmore <dennis@ausil.us> 1.9.2.13-6
+* Tue Sep  6 2011 Jan Horak <jhorak@redhat.com> - 6.0.2-1
+- Update to 6.0.2
+
+* Wed Aug 31 2011 Jan Horak <jhorak@redhat.com> - 6.0-3
+- Distrust a specific Certificate Authority
+
+* Tue Aug 16 2011 Martin Stransky <stransky@redhat.com> 6.0-2
+- Updated gtkmozembed patch
+
+* Tue Aug 16 2011 Martin Stransky <stransky@redhat.com> 6.0-1
+- 6.0
+
+* Thu Jun 30 2011 Martin Stransky <stransky@redhat.com> 5.0-5
+- Fixed build on powerpc(64)
+
+* Tue Jun 28 2011 Dan Horák <dan[at]danny.cz> - 5.0-4
+- fix build on secondary arches with IPC enabled
+
+* Tue Jun 24 2011 Martin Stransky <stransky@redhat.com> 5.0-3
+- libCurl build fix
+
+* Wed Jun 22 2011 Martin Stransky <stransky@redhat.com> 5.0-2
+- Reverted mozbz#648156 - Remove gtkmozembed
+
+* Tue Jun 21 2011 Martin Stransky <stransky@redhat.com> 5.0-1
+- 5.0
+
+* Thu May 26 2011 Martin Stransky <stransky@redhat.com> 2.0.1-2
+- Rebuild for new hunspell (rhbz#707760)
+
+* Thu Apr 28 2011 Christopher Aillon <caillon@redhat.com> - 2.0.1-1
+- 2.0.1
+
+* Thu Apr 21 2011 Christopher Aillon <caillon@redhat.com> - 2.0-4
+- Split out mozilla crashreporter symbols to its own debuginfo package
+
+* Sun Apr 10 2011 Christopher Aillon <caillon@redhat.com> - 2.0-3
+- Fix offline status issue on version upgrades
+- Fix a hang with 20+ extensions
+
+* Mon Apr  4 2011 Christopher Aillon <caillon@redhat.com> - 2.0-2
+- Fix SIGABRT in X_CloseDevice: XI_BadDevice
+- Updates for NetworkManager 0.9
+- Updates for GNOME 3
+
+* Tue Mar 22 2011 Christopher Aillon <caillon@redhat.com> - 2.0-1
+- 2.0
+
+* Fri Mar 18 2011 Christopher Aillon <caillon@redhat.com> - 2.0-0.28
+- Update to 2.0 RC2
+
+* Thu Mar 17 2011 Jan Horak <jhorak@redhat.com> - 2.0-0.27
+- Disabled gnomevfs
+- Enabled gio
+- Build with system libvpx
+
+* Wed Mar  9 2011 Christopher Aillon <caillon@redhat.com> - 2.0-0.26
+- Update to 2.0 RC 1
+
+* Sun Feb 27 2011 Christopher Aillon <caillon@redhat.com> - 2.0-0.25
+- Make Firefox's User-Agent string match upstream's
+
+* Sat Feb 26 2011 Christopher Aillon <caillon@redhat.com> - 2.0-0.24
+- Switch to using the omni chrome file format
+
+* Fri Feb 25 2011 Christopher Aillon <caillon@redhat.com> - 2.0-0.23
+- Update to 2.0 Beta 12
+
+* Sun Feb 13 2011 Dennis Gilmore <dennis@ausil.us> 2.0-0.22
 - disable nanojit on sparc64 its not supported and doesnt get automatically switched off
 
-* Mon Jan 3 2011 Martin Stransky <stransky@redhat.com> 1.9.2.13-5
-- renamed libsqlite3.so to libmozsqlite3.so (rhbz#658471)
+* Thu Feb 10 2011 Christopher Aillon <caillon@redhat.com> - 2.0-0.21
+- Also provide arch-agnostic versions of gecko virtual provides
 
-* Mon Jan  3 2011 Jan Horak <jhorak@redhat.com> - 1.9.2.13-4
-- Enabled mozilla crash reporter
+* Thu Feb 10 2011 Christopher Aillon <caillon@redhat.com> - 2.0-0.20
+- Introduce better versioning for our gecko virtual provides
+- Now, the gecko-libs and gecko-devel virtual provides will be pinned
+  to an individual Gecko release, so packages can do things like
+    Requires: gecko-libs = 2.0-beta11
+    BuildRequires: gecko-libs = 2.0-beta11
+- Final releases will be pinned to e.g. 2.0-1 regardless of %%{release}
+- Also, make sure those virtual provides are arch-specific
 
-* Mon Jan 3 2011 Martin Stransky <stransky@redhat.com> 1.9.2.13-3
-- reverted fix for rhbz#658471, breaks gnome shell
-- disabled system cairo, breaks animated gifs (rhbz#628331)
+* Tue Feb  8 2011 Christopher Aillon <caillon@redhat.com> - 2.0-0.19
+- Update to 2.0 Beta 11
 
-* Mon Dec 20 2010 Martin Stransky <stransky@redhat.com> 1.9.2.13-2
+* Wed Jan 26 2011 Christopher Aillon <caillon@redhat.com> - 2.0-0.18
+- Fix issue with popup windows showing in the wrong place
+
+* Tue Jan 25 2011 Christopher Aillon <caillon@redhat.com> - 2.0-0.17
+- Update to 2.0 Beta 10
+
+* Fri Jan 21 2011 Dan Horák <dan[at]danny.cz> - 2.0-0.16.b9
+- updated the 64bit-big-endian patch (bmo#627664)
+- added fix for build with --disable-methodjit (bmo#623277)
+
+* Fri Jan 14 2011 Christopher Aillon <caillon@redhat.com> 2.0-0.15.b9
+- Update to 2.0 Beta 9
+
+* Thu Jan 11 2011 Tom Callaway <spot@fedoraproject.org> 2.0-0.14.b8
+- enable system sqlite (see https://fedorahosted.org/fpc/ticket/34)
+
+* Thu Dec 23 2010 Martin Stransky <stransky@redhat.com> 2.0-0.13.b8
+- reverted fix for rhbz#658471
+
+* Wed Dec 22 2010 Dan Horák <dan[at]danny.cz> - 2.0-0.11.b8
+- updated the 64bit-big-endian patch
+
+* Tue Dec 21 2010 Martin Stransky <stransky@redhat.com> 2.0-0.11.b8
+- enable url-classifier and jar format for chrome files
+
+* Tue Dec 21 2010 Martin Stransky <stransky@redhat.com> 2.0-0.10.b8
+- Update to 2.0b8
+
+* Mon Dec 20 2010 Martin Stransky <stransky@redhat.com> 2.0-0.9.b8
 - removed unused library path (rhbz#658471)
 
-* Thu Dec  9 2010 Jan Horak <jhorak@redhat.com> - 1.9.2.13-1
-- Update to 1.9.2.13
+* Fri Dec 17 2010 Dan Horák <dan[at]danny.cz> - 2.0-0.8.b7
+- disable the crash reporter on non-x86 arches
+- add sparc64 as 64-bit arch
 
-* Wed Oct 27 2010 Jan Horak <jhorak@redhat.com> - 1.9.2.12-1
-- Update to 1.9.2.12
+* Tue Dec 14 2010 Jan Horak <jhorak@redhat.com> - 2.0-0.7.b7
+- Enable mozilla crash reporter
 
-* Tue Oct 19 2010 Jan Horak <jhorak@redhat.com> - 1.9.2.11-1
-- Update to 1.9.2.11
+* Thu Nov 11 2010 Dan Horák <dan[at]danny.cz> - 2.0-0.6.b7
+- The s390 patch is not needed anymore
 
-* Tue Oct 05 2010 jkeating - 1.9.2.10-1.1
+* Thu Nov 11 2010 Jan Horak <jhorak@redhat.com> - 2.0-0.5.b7
+- Update to 2.0b7
+
+* Thu Nov 4 2010 Christopher Aillon <caillon@redhat.com> 2.0-0.4.b6
+- Ensure that WM_CLASS matches the desktop file
+
+* Wed Nov 3 2010 Martin Stransky <stransky@redhat.com> 2.0-0.3.b6
+- Libnotify rebuild (rhbz#649071)
+
+* Wed Sep 29 2010 jkeating - 2.0-0.2b6
 - Rebuilt for gcc bug 634757
 
-* Tue Sep 21 2010 Martin Stransky <stransky@redhat.com> 1.9.2.10-1
-- Update to 1.9.2.10
+* Tue Sep 21 2010 Martin Stransky <stransky@redhat.com> 2.0-0.1.b6
+- Update to 2.0b6
 
-* Mon Sep  6 2010 Jan Horak <jhorak@redhat.com> - 1.9.2.9-1
-- Update to 1.9.2.9
+* Tue Sep  7 2010 Tom "spot" Callaway <tcallawa@redhat.com> 1.9.3.0-0.2.b4
+- spec file cleanup
 
-* Mon Aug 9 2010 Martin Stransky <stransky@redhat.com> 1.9.2.7-2
-- added build-fix by Adam Tkac <atkac@redhat.com>
+* Fri Aug 27 2010 Martin Stransky <stransky@redhat.com> 1.9.3.0-0.1.b4
+- Update to 1.9.3.1 beta 4
+
+* Mon Aug 16 2010 Martin Stransky <stransky@redhat.com> 1.9.3.0-0.b3
+- Update to 1.9.3.1 beta 3
 
 * Tue Jul 20 2010 Jan Horak <jhorak@redhat.com> - 1.9.2.7-1
 - Update to 1.9.2.7
