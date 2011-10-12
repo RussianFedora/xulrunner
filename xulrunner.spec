@@ -441,6 +441,7 @@ fi
 %changelog
 * Tue Oct 11 2011 Arkady L. Shane <ashejn@russianfedora.ru> 7.0.1-2.R
 - rebuilt for EL
+- drop libnotify version
 
 * Mon Oct 10 2011 Martin Stransky <stransky@redhat.com> 7.0.1-2
 - Removed GRE stuff
