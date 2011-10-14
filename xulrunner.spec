@@ -81,8 +81,8 @@ Patch35:        xulrunner-2.0-NetworkManager09.patch
 
 # ---------------------------------------------------
 
-BuildRequires:  nspr-devel >= %{nspr_version}
-BuildRequires:  nss-devel >= %{nss_version}
+#BuildRequires:  nspr-devel >= %{nspr_version}
+#BuildRequires:  nss-devel >= %{nss_version}
 BuildRequires:  cairo-devel >= %{cairo_version}
 BuildRequires:  libpng-devel
 BuildRequires:  libjpeg-devel
@@ -97,7 +97,7 @@ BuildRequires:  freetype-devel >= %{freetype_version}
 BuildRequires:  libXt-devel
 BuildRequires:  libXrender-devel
 BuildRequires:  hunspell-devel
-BuildRequires:  sqlite-devel >= %{sqlite_version}
+#BuildRequires:  sqlite-devel >= %{sqlite_version}
 BuildRequires:  startup-notification-devel
 BuildRequires:  alsa-lib-devel
 BuildRequires:  libnotify-devel
@@ -107,9 +107,9 @@ BuildRequires:  libcurl-devel
 BuildRequires:  libvpx-devel
 
 Requires:       mozilla-filesystem
-Requires:       nspr >= %{nspr_version}
-Requires:       nss >= %{nss_version}
-Requires:       sqlite >= %{sqlite_build_version}
+#Requires:       nspr >= %{nspr_version}
+#Requires:       nss >= %{nss_version}
+#Requires:       sqlite >= %{sqlite_build_version}
 Provides:       gecko-libs = %{gecko_verrel}
 Provides:       gecko-libs%{?_isa} = %{gecko_verrel}
 
@@ -147,7 +147,7 @@ Requires: freetype-devel >= %{freetype_version}
 Requires: libXt-devel
 Requires: libXrender-devel
 Requires: hunspell-devel
-Requires: sqlite-devel
+#Requires: sqlite-devel
 Requires: startup-notification-devel
 Requires: alsa-lib-devel
 Requires: libnotify-devel
