@@ -1,7 +1,7 @@
 # Minimal required versions
 %global nspr_version 4.8.7
 %global nss_version 3.12.9
-%global cairo_version 1.6.0
+%global cairo_version 1.6.1
 %global freetype_version 2.1.9
 %global sqlite_version 3.6.20
 %global libnotify_version 0.7.0
