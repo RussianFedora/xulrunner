@@ -441,6 +441,7 @@ fi
 %changelog
 * Fri Oct 13 2011 Arkady L. Shane <ashejn@russianfedora.ru> 7.0.1-3.R
 - downgrade some versions
+- do not use system nss, nspr and sqlite
 
 * Tue Oct 11 2011 Arkady L. Shane <ashejn@russianfedora.ru> 7.0.1-2.R
 - rebuilt for EL
