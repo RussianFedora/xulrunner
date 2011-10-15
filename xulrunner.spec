@@ -50,7 +50,7 @@
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
 Version:        7.0.1
-Release:        3.el6.R
+Release:        4.el6.R
 URL:            http://developer.mozilla.org/En/XULRunner
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
@@ -440,7 +440,10 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
-* Fri Oct 13 2011 Arkady L. Shane <ashejn@russianfedora.ru> 7.0.1-3.R
+* Sat Oct 15 2011 Arkady L. Shane <ashejn@russianfedora.ru> 7.0.1-4.R
+- rebuilt
+
+* Fri Oct 14 2011 Arkady L. Shane <ashejn@russianfedora.ru> 7.0.1-3.R
 - downgrade some versions
 - do not use system nss, nspr and sqlite
 
