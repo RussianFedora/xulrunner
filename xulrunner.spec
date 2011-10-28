@@ -75,6 +75,8 @@ Patch21:        mozilla-libjpeg-turbo.patch
 Patch23:        wmclass.patch
 Patch24:        crashreporter-remove-static.patch
 
+Patch25:        xulrunner-6.0-cairo10.patch
+
 # Upstream patches
 Patch34:        xulrunner-2.0-network-link-service.patch
 Patch35:        xulrunner-2.0-NetworkManager09.patch
@@ -83,7 +85,7 @@ Patch35:        xulrunner-2.0-NetworkManager09.patch
 
 BuildRequires:  nspr-devel >= %{nspr_version}
 BuildRequires:  nss-devel >= %{nss_version}
-BuildRequires:  cairo-devel >= %{cairo_version}
+BuildRequires:  cairo10-devel >= %{cairo_version}
 BuildRequires:  libpng-devel
 BuildRequires:  libjpeg-devel
 BuildRequires:  zip
@@ -133,7 +135,7 @@ Provides: gecko-devel-unstable%{?_isa} = %{gecko_verrel}
 
 Requires: nspr-devel >= %{nspr_version}
 Requires: nss-devel >= %{nss_version}
-Requires: cairo-devel >= %{cairo_version}
+Requires: cairo10-devel >= %{cairo_version}
 Requires: libjpeg-devel
 Requires: zip
 Requires: bzip2-devel
@@ -195,6 +197,8 @@ sed -e 's/__RPM_VERSION_INTERNAL__/%{gecko_dir_ver}/' %{P:%%PATCH0} \
 %patch21 -p2 -b .jpeg-turbo
 %patch23 -p1 -b .wmclass
 %patch24 -p1 -b .static
+
+%patch25 -p1 -b .cairo10
 
 %patch34 -p1 -b .network-link-service
 %patch35 -p1 -b .NetworkManager09
