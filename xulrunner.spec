@@ -75,7 +75,7 @@ Patch21:        mozilla-libjpeg-turbo.patch
 Patch23:        wmclass.patch
 Patch24:        crashreporter-remove-static.patch
 
-Patch25:        xulrunner-6.0-cairo10.patch
+Patch25:        xulrunner-7.0.1-cairo10.patch
 
 # Upstream patches
 Patch34:        xulrunner-2.0-network-link-service.patch
