@@ -1,0 +1,157 @@
+diff -up mozilla-2.0/configure.cairo10 mozilla-2.0/configure
+--- mozilla-release/configure.cairo10	2011-03-18 08:47:03.000000000 -0400
++++ mozilla-release/configure	2011-03-21 22:32:18.342271106 -0400
+@@ -23963,29 +23963,29 @@ fi
+   else
+      PKG_CONFIG_MIN_VERSION=0.9.0
+      if $PKG_CONFIG --atleast-pkgconfig-version $PKG_CONFIG_MIN_VERSION; then
+-        echo $ac_n "checking for cairo >= $CAIRO_VERSION pixman-1 freetype2 fontconfig""... $ac_c" 1>&6
+-echo "configure:23968: checking for cairo >= $CAIRO_VERSION pixman-1 freetype2 fontconfig" >&5
++        echo $ac_n "checking for cairo10 >= $CAIRO_VERSION pixman-1 freetype2 fontconfig""... $ac_c" 1>&6
++echo "configure:23968: checking for cairo10 >= $CAIRO_VERSION pixman-1 freetype2 fontconfig" >&5
+ 
+-        if $PKG_CONFIG --exists "cairo >= $CAIRO_VERSION pixman-1 freetype2 fontconfig" ; then
++        if $PKG_CONFIG --exists "cairo10 >= $CAIRO_VERSION pixman-1 freetype2 fontconfig" ; then
+             echo "$ac_t""yes" 1>&6
+             succeeded=yes
+ 
+             echo $ac_n "checking CAIRO_CFLAGS""... $ac_c" 1>&6
+ echo "configure:23975: checking CAIRO_CFLAGS" >&5
+-            CAIRO_CFLAGS=`$PKG_CONFIG --cflags "cairo >= $CAIRO_VERSION pixman-1 freetype2 fontconfig"`
++            CAIRO_CFLAGS=`$PKG_CONFIG --cflags "cairo10 >= $CAIRO_VERSION pixman-1 freetype2 fontconfig"`
+             echo "$ac_t""$CAIRO_CFLAGS" 1>&6
+ 
+             echo $ac_n "checking CAIRO_LIBS""... $ac_c" 1>&6
+ echo "configure:23980: checking CAIRO_LIBS" >&5
+             ## Remove evil flags like -Wl,--export-dynamic
+-            CAIRO_LIBS="`$PKG_CONFIG --libs \"cairo >= $CAIRO_VERSION pixman-1 freetype2 fontconfig\" |sed s/-Wl,--export-dynamic//g`"
++            CAIRO_LIBS="`$PKG_CONFIG --libs \"cairo10 >= $CAIRO_VERSION pixman-1 freetype2 fontconfig\" |sed s/-Wl,--export-dynamic//g`"
+             echo "$ac_t""$CAIRO_LIBS" 1>&6
+         else
+             CAIRO_CFLAGS=""
+             CAIRO_LIBS=""
+             ## If we have a custom action on failure, don't print errors, but 
+             ## do set a variable so people can do so.
+-            CAIRO_PKG_ERRORS=`$PKG_CONFIG --errors-to-stdout --print-errors "cairo >= $CAIRO_VERSION pixman-1 freetype2 fontconfig"`
++            CAIRO_PKG_ERRORS=`$PKG_CONFIG --errors-to-stdout --print-errors "cairo10 >= $CAIRO_VERSION pixman-1 freetype2 fontconfig"`
+             echo $CAIRO_PKG_ERRORS
+         fi
+ 
+@@ -24001,7 +24001,7 @@ echo "configure:23980: checking CAIRO_LI
+      :
+   else
+      if test "$COMPILE_ENVIRONMENT"; then 
+-       { echo "configure: error: Library requirements (cairo >= $CAIRO_VERSION pixman-1 freetype2 fontconfig) not met; consider adjusting the PKG_CONFIG_PATH environment variable if your libraries are in a nonstandard prefix so pkg-config can find them." 1>&2; exit 1; }
++       { echo "configure: error: Library requirements (cairo10 >= $CAIRO_VERSION pixman-1 freetype2 fontconfig) not met; consider adjusting the PKG_CONFIG_PATH environment variable if your libraries are in a nonstandard prefix so pkg-config can find them." 1>&2; exit 1; }
+      fi
+   fi
+ 
+@@ -24056,29 +24056,29 @@ fi
+   else
+      PKG_CONFIG_MIN_VERSION=0.9.0
+      if $PKG_CONFIG --atleast-pkgconfig-version $PKG_CONFIG_MIN_VERSION; then
+-        echo $ac_n "checking for cairo-tee >= $CAIRO_VERSION""... $ac_c" 1>&6
+-echo "configure:24061: checking for cairo-tee >= $CAIRO_VERSION" >&5
++        echo $ac_n "checking for cairo10-tee >= $CAIRO_VERSION""... $ac_c" 1>&6
++echo "configure:24061: checking for cairo10-tee >= $CAIRO_VERSION" >&5
+ 
+-        if $PKG_CONFIG --exists "cairo-tee >= $CAIRO_VERSION" ; then
++        if $PKG_CONFIG --exists "cairo10-tee >= $CAIRO_VERSION" ; then
+             echo "$ac_t""yes" 1>&6
+             succeeded=yes
+ 
+             echo $ac_n "checking CAIRO_TEE_CFLAGS""... $ac_c" 1>&6
+ echo "configure:24068: checking CAIRO_TEE_CFLAGS" >&5
+-            CAIRO_TEE_CFLAGS=`$PKG_CONFIG --cflags "cairo-tee >= $CAIRO_VERSION"`
++            CAIRO_TEE_CFLAGS=`$PKG_CONFIG --cflags "cairo10-tee >= $CAIRO_VERSION"`
+             echo "$ac_t""$CAIRO_TEE_CFLAGS" 1>&6
+ 
+             echo $ac_n "checking CAIRO_TEE_LIBS""... $ac_c" 1>&6
+ echo "configure:24073: checking CAIRO_TEE_LIBS" >&5
+             ## Remove evil flags like -Wl,--export-dynamic
+-            CAIRO_TEE_LIBS="`$PKG_CONFIG --libs \"cairo-tee >= $CAIRO_VERSION\" |sed s/-Wl,--export-dynamic//g`"
++            CAIRO_TEE_LIBS="`$PKG_CONFIG --libs \"cairo10-tee >= $CAIRO_VERSION\" |sed s/-Wl,--export-dynamic//g`"
+             echo "$ac_t""$CAIRO_TEE_LIBS" 1>&6
+         else
+             CAIRO_TEE_CFLAGS=""
+             CAIRO_TEE_LIBS=""
+             ## If we have a custom action on failure, don't print errors, but 
+             ## do set a variable so people can do so.
+-            CAIRO_TEE_PKG_ERRORS=`$PKG_CONFIG --errors-to-stdout --print-errors "cairo-tee >= $CAIRO_VERSION"`
++            CAIRO_TEE_PKG_ERRORS=`$PKG_CONFIG --errors-to-stdout --print-errors "cairo10-tee >= $CAIRO_VERSION"`
+             echo $CAIRO_TEE_PKG_ERRORS
+         fi
+ 
+@@ -24094,7 +24094,7 @@ echo "configure:24073: checking CAIRO_TE
+      :
+   else
+      if test "$COMPILE_ENVIRONMENT"; then 
+-       { echo "configure: error: Library requirements (cairo-tee >= $CAIRO_VERSION) not met; consider adjusting the PKG_CONFIG_PATH environment variable if your libraries are in a nonstandard prefix so pkg-config can find them." 1>&2; exit 1; }
++       { echo "configure: error: Library requirements (cairo10-tee >= $CAIRO_VERSION) not met; consider adjusting the PKG_CONFIG_PATH environment variable if your libraries are in a nonstandard prefix so pkg-config can find them." 1>&2; exit 1; }
+      fi
+   fi
+ 
+@@ -24148,29 +24148,29 @@ fi
+   else
+      PKG_CONFIG_MIN_VERSION=0.9.0
+      if $PKG_CONFIG --atleast-pkgconfig-version $PKG_CONFIG_MIN_VERSION; then
+-        echo $ac_n "checking for cairo-xlib-xrender >= $CAIRO_VERSION""... $ac_c" 1>&6
+-echo "configure:24153: checking for cairo-xlib-xrender >= $CAIRO_VERSION" >&5
++        echo $ac_n "checking for cairo10-xlib-xrender >= $CAIRO_VERSION""... $ac_c" 1>&6
++echo "configure:24153: checking for cairo10-xlib-xrender >= $CAIRO_VERSION" >&5
+ 
+-        if $PKG_CONFIG --exists "cairo-xlib-xrender >= $CAIRO_VERSION" ; then
++        if $PKG_CONFIG --exists "cairo10-xlib-xrender >= $CAIRO_VERSION" ; then
+             echo "$ac_t""yes" 1>&6
+             succeeded=yes
+ 
+             echo $ac_n "checking CAIRO_XRENDER_CFLAGS""... $ac_c" 1>&6
+ echo "configure:24160: checking CAIRO_XRENDER_CFLAGS" >&5
+-            CAIRO_XRENDER_CFLAGS=`$PKG_CONFIG --cflags "cairo-xlib-xrender >= $CAIRO_VERSION"`
++            CAIRO_XRENDER_CFLAGS=`$PKG_CONFIG --cflags "cairo10-xlib-xrender >= $CAIRO_VERSION"`
+             echo "$ac_t""$CAIRO_XRENDER_CFLAGS" 1>&6
+ 
+             echo $ac_n "checking CAIRO_XRENDER_LIBS""... $ac_c" 1>&6
+ echo "configure:24165: checking CAIRO_XRENDER_LIBS" >&5
+             ## Remove evil flags like -Wl,--export-dynamic
+-            CAIRO_XRENDER_LIBS="`$PKG_CONFIG --libs \"cairo-xlib-xrender >= $CAIRO_VERSION\" |sed s/-Wl,--export-dynamic//g`"
++            CAIRO_XRENDER_LIBS="`$PKG_CONFIG --libs \"cairo10-xlib-xrender >= $CAIRO_VERSION\" |sed s/-Wl,--export-dynamic//g`"
+             echo "$ac_t""$CAIRO_XRENDER_LIBS" 1>&6
+         else
+             CAIRO_XRENDER_CFLAGS=""
+             CAIRO_XRENDER_LIBS=""
+             ## If we have a custom action on failure, don't print errors, but 
+             ## do set a variable so people can do so.
+-            CAIRO_XRENDER_PKG_ERRORS=`$PKG_CONFIG --errors-to-stdout --print-errors "cairo-xlib-xrender >= $CAIRO_VERSION"`
++            CAIRO_XRENDER_PKG_ERRORS=`$PKG_CONFIG --errors-to-stdout --print-errors "cairo10-xlib-xrender >= $CAIRO_VERSION"`
+             echo $CAIRO_XRENDER_PKG_ERRORS
+         fi
+ 
+@@ -24186,7 +24186,7 @@ echo "configure:24165: checking CAIRO_XR
+      :
+   else
+      if test "$COMPILE_ENVIRONMENT"; then 
+-       { echo "configure: error: Library requirements (cairo-xlib-xrender >= $CAIRO_VERSION) not met; consider adjusting the PKG_CONFIG_PATH environment variable if your libraries are in a nonstandard prefix so pkg-config can find them." 1>&2; exit 1; }
++       { echo "configure: error: Library requirements (cairo10-xlib-xrender >= $CAIRO_VERSION) not met; consider adjusting the PKG_CONFIG_PATH environment variable if your libraries are in a nonstandard prefix so pkg-config can find them." 1>&2; exit 1; }
+      fi
+   fi
+ 
+diff -up mozilla-2.0/configure.in.cairo10 mozilla-2.0/configure.in
+--- mozilla-release/configure.in.cairo10	2011-03-18 08:32:42.000000000 -0400
++++ mozilla-release/configure.in	2011-03-21 16:54:22.779141264 -0400
+@@ -8793,12 +8793,12 @@ if test "$MOZ_TREE_CAIRO"; then
+     mv -f $CAIRO_FEATURES_H "$CAIRO_FEATURES_H".orig 2> /dev/null
+ 
+ else
+-   PKG_CHECK_MODULES(CAIRO, cairo >= $CAIRO_VERSION pixman-1 freetype2 fontconfig)
++   PKG_CHECK_MODULES(CAIRO, cairo10 >= $CAIRO_VERSION pixman-1 freetype2 fontconfig)
+    MOZ_CAIRO_CFLAGS=$CAIRO_CFLAGS
+    MOZ_CAIRO_LIBS=$CAIRO_LIBS
+-   PKG_CHECK_MODULES(CAIRO_TEE, cairo-tee >= $CAIRO_VERSION)
++   PKG_CHECK_MODULES(CAIRO_TEE, cairo10-tee >= $CAIRO_VERSION)
+    if test "$MOZ_X11"; then
+-        PKG_CHECK_MODULES(CAIRO_XRENDER, cairo-xlib-xrender >= $CAIRO_VERSION)
++        PKG_CHECK_MODULES(CAIRO_XRENDER, cairo10-xlib-xrender >= $CAIRO_VERSION)
+         MOZ_CAIRO_LIBS="$MOZ_CAIRO_LIBS $XLDFLAGS $CAIRO_XRENDER_LIBS"
+         MOZ_CAIRO_CFLAGS="$MOZ_CAIRO_CFLAGS $CAIRO_XRENDER_CFLAGS"
+    fi
