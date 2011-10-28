@@ -423,7 +423,6 @@ fi
 %{_sysconfdir}/ld.so.conf.d/xulrunner*.conf
 %{mozappdir}/plugin-container
 %{mozappdir}/hyphenation/*
-%{mozappdir}/lib*3.chk
 
 %if %{enable_mozilla_crashreporter}
 %{mozappdir}/crashreporter
