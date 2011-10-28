@@ -1,9 +1,9 @@
 # Minimal required versions
-%global nspr_version 4.8.7
-%global nss_version 3.12.9
-%global cairo_version 1.6.1
+%global nspr_version 4.8.8
+%global nss_version 3.12.10
+%global cairo_version 1.10.2
 %global freetype_version 2.1.9
-%global sqlite_version 3.6.20
+%global sqlite_version 3.7.6.3
 %global libnotify_version 0.7.0
 
 # gecko_dir_ver should be set to the version in our directory names
@@ -50,7 +50,7 @@
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
 Version:        7.0.1
-Release:        4.el6.1.R
+Release:        5.el6.R
 URL:            http://developer.mozilla.org/En/XULRunner
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
@@ -81,8 +81,8 @@ Patch35:        xulrunner-2.0-NetworkManager09.patch
 
 # ---------------------------------------------------
 
-#BuildRequires:  nspr-devel >= %{nspr_version}
-#BuildRequires:  nss-devel >= %{nss_version}
+BuildRequires:  nspr-devel >= %{nspr_version}
+BuildRequires:  nss-devel >= %{nss_version}
 BuildRequires:  cairo-devel >= %{cairo_version}
 BuildRequires:  libpng-devel
 BuildRequires:  libjpeg-devel
@@ -97,7 +97,7 @@ BuildRequires:  freetype-devel >= %{freetype_version}
 BuildRequires:  libXt-devel
 BuildRequires:  libXrender-devel
 BuildRequires:  hunspell-devel
-#BuildRequires:  sqlite-devel >= %{sqlite_version}
+BuildRequires:  sqlite-devel >= %{sqlite_version}
 BuildRequires:  startup-notification-devel
 BuildRequires:  alsa-lib-devel
 BuildRequires:  libnotify-devel
@@ -107,9 +107,9 @@ BuildRequires:  libcurl-devel
 BuildRequires:  libvpx-devel
 
 Requires:       mozilla-filesystem
-#Requires:       nspr >= %{nspr_version}
-#Requires:       nss >= %{nss_version}
-#Requires:       sqlite >= %{sqlite_build_version}
+Requires:       nspr >= %{nspr_version}
+Requires:       nss >= %{nss_version}
+Requires:       sqlite >= %{sqlite_build_version}
 Provides:       gecko-libs = %{gecko_verrel}
 Provides:       gecko-libs%{?_isa} = %{gecko_verrel}
 
@@ -131,7 +131,6 @@ Provides: gecko-devel%{?_isa} = %{gecko_verrel}
 Provides: gecko-devel-unstable = %{gecko_verrel}
 Provides: gecko-devel-unstable%{?_isa} = %{gecko_verrel}
 
-Requires: xulrunner = %{version}-%{release}
 Requires: nspr-devel >= %{nspr_version}
 Requires: nss-devel >= %{nss_version}
 Requires: cairo-devel >= %{cairo_version}
@@ -440,6 +439,9 @@ fi
 #---------------------------------------------------------------------
 
 %changelog
+* Fri Oct 28 2011 Arkady L. Shane <ashejn@russianfedora.ru> 7.0.1-5.R
+- enable system nss, nspr, sqlite and cairo again
+
 * Wed Oct 26 2011 Arkady L. Shane <ashejn@russianfedora.ru> 7.0.1-4.1.R
 - disable system cairo
 
