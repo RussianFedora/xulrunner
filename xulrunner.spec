@@ -102,7 +102,7 @@ BuildRequires:  libXrender-devel
 BuildRequires:  hunspell-devel
 BuildRequires:  startup-notification-devel
 BuildRequires:  alsa-lib-devel
-BuildRequires:  libnotify-devel >= %{libnotify_version}
+BuildRequires:  libnotify-devel
 BuildRequires:  mesa-libGL-devel
 BuildRequires:  yasm
 BuildRequires:  libcurl-devel
