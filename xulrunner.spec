@@ -233,15 +233,6 @@ echo "ac_add_options --disable-tracejit" >> .mozconfig
 #---------------------------------------------------------------------
 
 %build
-# Do not proceed with build if the sqlite require would be broken:
-# make sure the minimum requirement is non-empty, ...
-sqlite_version=$(expr "%{sqlite_version}" : '\([0-9]*\.\)[0-9]*\.') || exit 1
-# ... and that major number of the computed build-time version matches:
-case "%{sqlite_build_version}" in
-  "$sqlite_version"*) ;;
-  *) exit 1 ;;
-esac
-
 cd %{tarballdir}
 
 # -fpermissive is needed to build with gcc 4.6+ which has become stricter
