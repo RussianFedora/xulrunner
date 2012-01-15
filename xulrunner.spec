@@ -1,9 +1,9 @@
 # Minimal required versions
 %global nspr_version 4.8.8
-%global nss_version 3.12.10
+%global nss_version 3.13.1
 %global cairo_version 1.10.2
 %global freetype_version 2.1.9
-%global sqlite_version 3.7.6.3
+%global sqlite_version 3.7.4
 %global libnotify_version 0.7.0
 
 # gecko_dir_ver should be set to the version in our directory names
@@ -16,7 +16,6 @@
 %global rc_version    0
 
 %global mozappdir         %{_libdir}/%{name}-%{gecko_dir_ver}
-%global tarballdir        mozilla-release
 
 # crash reporter work only on x86/x86_64
 %ifarch %{ix86} x86_64
@@ -26,19 +25,23 @@
 %endif
 
 # The actual sqlite version (see #480989):
-#%global sqlite_build_version %(pkg-config --silence-errors --modversion sqlite3 2>/dev/null || echo 65536)
+%global sqlite_build_version %(pkg-config --silence-errors --modversion sqlite3 2>/dev/null || echo 65536)
 
+%global tarballdir  mozilla-release
 %if %{alpha_version} > 0
 %global pre_version a%{alpha_version}
 %global pre_name    alpha%{alpha_version}
+%global tarballdir  mozilla-beta
 %endif
 %if %{beta_version} > 0
 %global pre_version b%{beta_version}
 %global pre_name    beta%{beta_version}
+%global tarballdir  mozilla-beta
 %endif
 %if %{rc_version} > 0
 %global pre_version rc%{rc_version}
 %global pre_name    rc%{rc_version}
+%global tarballdir  mozilla-release
 %endif
 %if %{defined pre_version}
 %global gecko_verrel %{expand:%%{version}}-%{pre_name}
@@ -49,13 +52,13 @@
 
 Summary:        XUL Runtime for Gecko Applications
 Name:           xulrunner
-Version:        7.0.1
-Release:        5.el6.R
+Version:        9.0.1
+Release:        2%{?pre_tag}%{?dist}.R
 URL:            http://developer.mozilla.org/En/XULRunner
 License:        MPLv1.1 or GPLv2+ or LGPLv2+
 Group:          Applications/Internet
 # You can get sources at ftp://ftp.mozilla.org/pub/firefox/releases/%{version}%{?pre_ver}/source
-Source0:        ftp://ftp.mozilla.org/pub/xulrunner/releases/7.0.1/source/%{name}-%{version}.source.tar.bz2
+Source0:        ftp://ftp.mozilla.org/pub/xulrunner/releases/%{version}/source/%{name}-%{version}.source.tar.bz2
 Source10:       %{name}-mozconfig
 Source11:       %{name}-mozconfig-debuginfo
 Source12:       %{name}-redhat-default-prefs.js
@@ -64,10 +67,11 @@ Source21:       %{name}.sh.in
 # build patches
 Patch0:         xulrunner-version.patch
 Patch1:         mozilla-build.patch
-Patch9:         mozilla-build-sbrk.patch
 Patch14:        xulrunner-2.0-chromium-types.patch
-Patch16:        add-gtkmozembed.patch
-Patch18:        xulrunner-6.0-secondary-ipc.patch
+%if 0%{?fedora} <= 15
+Patch16:        add-gtkmozembed-9.0.patch
+%endif
+Patch18:        xulrunner-9.0-secondary-ipc.patch
 
 # Fedora specific patches
 Patch20:        mozilla-193-pkgconfig.patch
@@ -75,17 +79,16 @@ Patch21:        mozilla-libjpeg-turbo.patch
 Patch23:        wmclass.patch
 Patch24:        crashreporter-remove-static.patch
 
-Patch25:        xulrunner-7.0.1-cairo10.patch
-
 # Upstream patches
 Patch34:        xulrunner-2.0-network-link-service.patch
 Patch35:        xulrunner-2.0-NetworkManager09.patch
+Patch38:        mozilla-696393.patch
+# https://bugzilla.mozilla.org/show_bug.cgi?id=707993
+Patch39:        xulrunner-8.0-fix-maemo-checks-in-npapi.patch
+Patch40:        mozilla-682832-proxy.patch
 
 # ---------------------------------------------------
 
-BuildRequires:  nspr-devel >= %{nspr_version}
-BuildRequires:  nss-devel >= %{nss_version}
-BuildRequires:  cairo10-devel >= %{cairo_version}
 BuildRequires:  libpng-devel
 BuildRequires:  libjpeg-devel
 BuildRequires:  zip
@@ -99,19 +102,15 @@ BuildRequires:  freetype-devel >= %{freetype_version}
 BuildRequires:  libXt-devel
 BuildRequires:  libXrender-devel
 BuildRequires:  hunspell-devel
-BuildRequires:  sqlite-devel >= %{sqlite_version}
 BuildRequires:  startup-notification-devel
 BuildRequires:  alsa-lib-devel
-BuildRequires:  libnotify-devel
+BuildRequires:  libnotify-devel >= %{libnotify_version}
 BuildRequires:  mesa-libGL-devel
 BuildRequires:  yasm
 BuildRequires:  libcurl-devel
 BuildRequires:  libvpx-devel
 
 Requires:       mozilla-filesystem
-Requires:       nspr >= %{nspr_version}
-Requires:       nss >= %{nss_version}
-Requires:       sqlite >= %{sqlite_build_version}
 Provides:       gecko-libs = %{gecko_verrel}
 Provides:       gecko-libs%{?_isa} = %{gecko_verrel}
 
@@ -133,9 +132,7 @@ Provides: gecko-devel%{?_isa} = %{gecko_verrel}
 Provides: gecko-devel-unstable = %{gecko_verrel}
 Provides: gecko-devel-unstable%{?_isa} = %{gecko_verrel}
 
-Requires: nspr-devel >= %{nspr_version}
-Requires: nss-devel >= %{nss_version}
-Requires: cairo10-devel >= %{cairo_version}
+Requires: xulrunner = %{version}-%{release}
 Requires: libjpeg-devel
 Requires: zip
 Requires: bzip2-devel
@@ -148,7 +145,6 @@ Requires: freetype-devel >= %{freetype_version}
 Requires: libXt-devel
 Requires: libXrender-devel
 Requires: hunspell-devel
-#Requires: sqlite-devel
 Requires: startup-notification-devel
 Requires: alsa-lib-devel
 Requires: libnotify-devel
@@ -188,9 +184,10 @@ sed -e 's/__RPM_VERSION_INTERNAL__/%{gecko_dir_ver}/' %{P:%%PATCH0} \
 %{__patch} -p1 -b --suffix .version --fuzz=0 < version.patch
 
 %patch1  -p2 -b .build
-%patch9  -p2 -b .sbrk
 %patch14 -p1 -b .chromium-types
+%if 0%{?fedora} <= 15
 %patch16 -p2 -b .gtkmozembed
+%endif
 %patch18 -p2 -b .secondary-ipc
 
 %patch20 -p2 -b .pk
@@ -198,10 +195,11 @@ sed -e 's/__RPM_VERSION_INTERNAL__/%{gecko_dir_ver}/' %{P:%%PATCH0} \
 %patch23 -p1 -b .wmclass
 %patch24 -p1 -b .static
 
-%patch25 -p1 -b .cairo10
-
 %patch34 -p1 -b .network-link-service
 %patch35 -p1 -b .NetworkManager09
+%patch38 -p2 -b .696393
+%patch39 -p1 -b .707993
+%patch40 -p1 -b .682832
 
 %{__rm} -f .mozconfig
 %{__cp} %{SOURCE10} .mozconfig
@@ -209,9 +207,30 @@ sed -e 's/__RPM_VERSION_INTERNAL__/%{gecko_dir_ver}/' %{P:%%PATCH0} \
 %{__cat} %{SOURCE11} >> .mozconfig
 %endif
 
-# Upstream bug filed without resolution
-# for now make sure jit is not enabled on sparc64
-%ifarch sparc64
+# s390(x) fails to start with jemalloc enabled
+%ifarch s390 s390x
+echo "ac_add_options --disable-jemalloc" >> .mozconfig
+%endif
+
+%ifarch arm7hl
+echo "ac_add_options --with-arch=armv7-a" >> .mozconfig
+echo "ac_add_options --with-float-abi=hard" >> .mozconfig
+echo "ac_add_options --with-fpu=vfpv3-d16" >> .mozconfig
+%endif
+%ifarch arm7hnl
+echo "ac_add_options --with-arch=armv7-a" >> .mozconfig
+echo "ac_add_options --with-float-abi=hard" >> .mozconfig
+echo "ac_add_options --with-fpu=neon" >> .mozconfig
+%endif
+%ifarch armv5tel
+echo "ac_add_options --with-arch=armv5te" >> .mozconfig
+echo "ac_add_options --with-float-abi=soft" >> .mozconfig
+%endif
+
+%ifnarch %{ix86} x86_64
+echo "ac_add_options --disable-methodjit" >> .mozconfig
+echo "ac_add_options --disable-monoic" >> .mozconfig
+echo "ac_add_options --disable-polyic" >> .mozconfig
 echo "ac_add_options --disable-tracejit" >> .mozconfig
 %endif
 
@@ -220,12 +239,12 @@ echo "ac_add_options --disable-tracejit" >> .mozconfig
 %build
 # Do not proceed with build if the sqlite require would be broken:
 # make sure the minimum requirement is non-empty, ...
-#sqlite_version=$(expr "%{sqlite_version}" : '\([0-9]*\.\)[0-9]*\.') || exit 1
+sqlite_version=$(expr "%{sqlite_version}" : '\([0-9]*\.\)[0-9]*\.') || exit 1
 # ... and that major number of the computed build-time version matches:
-#case "%{sqlite_build_version}" in
-#  "$sqlite_version"*) ;;
-#  *) exit 1 ;;
-#esac
+case "%{sqlite_build_version}" in
+  "$sqlite_version"*) ;;
+  *) exit 1 ;;
+esac
 
 cd %{tarballdir}
 
@@ -323,7 +342,6 @@ install_file "js-config"
 popd
 
 %{__install} -p -c -m 755 dist/bin/xpcshell \
-  dist/bin/xpidl \
   $RPM_BUILD_ROOT/%{mozappdir}
 
 %{__rm} -rf $RPM_BUILD_ROOT/%{_includedir}/%{name}-%{gecko_dir_ver}
@@ -384,11 +402,9 @@ touch $RPM_BUILD_ROOT%{mozappdir}/components/xpti.dat
 
 #---------------------------------------------------------------------
 
-%post
-/sbin/ldconfig
+%post -p /sbin/ldconfig
 
-%postun
-/sbin/ldconfig
+%postun -p /sbin/ldconfig
 
 %preun
 # is it a final removal?
@@ -423,6 +439,7 @@ fi
 %{_sysconfdir}/ld.so.conf.d/xulrunner*.conf
 %{mozappdir}/plugin-container
 %{mozappdir}/hyphenation/*
+%{mozappdir}/*.chk
 
 %if %{enable_mozilla_crashreporter}
 %{mozappdir}/crashreporter
@@ -437,27 +454,46 @@ fi
 %{_libdir}/%{name}-sdk-*/
 %{_libdir}/pkgconfig/*.pc
 %{mozappdir}/xpcshell
-%{mozappdir}/xpidl
 
 #---------------------------------------------------------------------
 
 %changelog
-* Fri Oct 28 2011 Arkady L. Shane <ashejn@russianfedora.ru> 7.0.1-5.R
-- enable system nss, nspr, sqlite and cairo again
+* Sun Jan 15 2012 Arkady L. Shane <ashejn@russianfedora.ru> - 9.0.1-2.R
+- rebuilt without system nss, nspr, cairo and sqlite
 
-* Wed Oct 26 2011 Arkady L. Shane <ashejn@russianfedora.ru> 7.0.1-4.1.R
-- disable system cairo
+* Fri Dec 23 2011 Peter Robinson <pbrobinson@fedoraproject.org> - 9.0.1-2
+- Add compile options for ARM hfp/sfp - RHBZ #738509
 
-* Sat Oct 15 2011 Arkady L. Shane <ashejn@russianfedora.ru> 7.0.1-4.R
-- rebuilt
+* Fri Dec 23 2011 Jan Horak <jhorak@redhat.com> - 9.0.1-1
+- Update to 9.0.1
 
-* Fri Oct 14 2011 Arkady L. Shane <ashejn@russianfedora.ru> 7.0.1-3.R
-- downgrade some versions
-- do not use system nss, nspr and sqlite
+* Tue Dec 20 2011 Jan Horak <jhorak@redhat.com> - 9.0-2
+- Update to 9.0
 
-* Tue Oct 11 2011 Arkady L. Shane <ashejn@russianfedora.ru> 7.0.1-2.R
-- rebuilt for EL
-- drop libnotify version
+* Fri Dec 9 2011 Martin Stransky <stransky@redhat.com> 9.0-1.beta5
+- Updated to 9.0 Beta 5
+
+* Wed Dec  7 2011 Jan Horak <jhorak@redhat.com> - 8.0-5
+- Gnome 3 proxy settings are now honoured (mozbz#682832)
+
+* Tue Dec  6 2011 Tom Callaway <spot@fedoraproject.org> 8.0-4
+- fix bug in npapi.h causing compile failures
+
+* Fri Nov 25 2011 Martin Stransky <stransky@redhat.com> 8.0-3
+- s390 build fixes
+
+* Mon Nov 7 2011 Martin Stransky <stransky@redhat.com> 8.0-1
+- Updated to 8.0
+
+* Tue Oct 18 2011 Ville SkyttÃ¤ <ville.skytta@iki.fi> - 7.0.1-5
+- Avoid %%post/un shell invocations 
+  and dependencies (rhbz#736830).
+
+* Tue Oct 18 2011 Martin Stransky <stransky@redhat.com> 7.0.1-4
+- Updated cairo dependency (rhbz#742853)
+
+* Tue Oct 11 2011 Dan Horák <dan[at]danny.cz> 7.0.1-3
+- fix build on secondary arches
 
 * Mon Oct 10 2011 Martin Stransky <stransky@redhat.com> 7.0.1-2
 - Removed GRE stuff
