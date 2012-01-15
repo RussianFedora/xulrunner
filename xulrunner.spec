@@ -68,9 +68,7 @@ Source21:       %{name}.sh.in
 Patch0:         xulrunner-version.patch
 Patch1:         mozilla-build.patch
 Patch14:        xulrunner-2.0-chromium-types.patch
-%if 0%{?fedora} <= 15
 Patch16:        add-gtkmozembed-9.0.patch
-%endif
 Patch18:        xulrunner-9.0-secondary-ipc.patch
 
 # Fedora specific patches
@@ -185,9 +183,7 @@ sed -e 's/__RPM_VERSION_INTERNAL__/%{gecko_dir_ver}/' %{P:%%PATCH0} \
 
 %patch1  -p2 -b .build
 %patch14 -p1 -b .chromium-types
-%if 0%{?fedora} <= 15
 %patch16 -p2 -b .gtkmozembed
-%endif
 %patch18 -p2 -b .secondary-ipc
 
 %patch20 -p2 -b .pk
